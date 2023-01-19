@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en" nighteye="enabled"><head><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
     <meta charset="utf-8">
-    <title>Maria Luisa Luzio</title>
+    <title>Instituto de Formacion Artistica</title>
     <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
