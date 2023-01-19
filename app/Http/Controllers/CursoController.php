@@ -20,8 +20,12 @@ class CursoController extends Controller
      */
     public function index(Request $request)
     {
-        $Curso = Curso::all();
-        return $Curso;
+        // $Curso = Curso::all();
+
+
+        $Malla = $request->query('Malla');
+        $data = Curso::whereRaw('Malla=?',$Malla)->orderBy('NivelCurso','desc')->get();
+        return $data;
     }
     public function CursosUniqueSigla()
     {
@@ -126,10 +130,16 @@ class CursoController extends Controller
         $Cursos = Curso::distinct()->get(['NivelCurso']);
         return $Cursos;
     }
+    public function CargarMalla()
+    {
+        $data = Curso::distinct()->get(['Malla']);
+        return $data;
+    }
     public function ModificarBimestres(Request $request)
     {
         $Bimestre = $request->BiTriEstado;
-        DB::select("update cursos set BiTriEstado = '$Bimestre'");
+        $Malla = $request->Malla;
+        DB::select("update cursos set BiTriEstado = '$Bimestre' where Malla='$Malla'");
     }
     public function CargarSiglaUnique()
     {
@@ -177,7 +187,7 @@ class CursoController extends Controller
      */
     public function show(Curso $curso)
     {
-        //
+
     }
 
     /**
@@ -219,4 +229,5 @@ class CursoController extends Controller
         return 'curso eliminado';
         // return redirect('curso')->with('flash_message', 'Curso deleted!');
     }
+
 }

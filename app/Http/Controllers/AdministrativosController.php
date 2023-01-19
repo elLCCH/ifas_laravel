@@ -18,7 +18,9 @@ class AdministrativosController extends Controller
     public function index()
     {
         // $administrativo = Administrativos::all();
-        $administrativo =  DB::select("select * from administrativos order by Ap_Paterno, Ap_Materno, Nombre");
+        // $administrativo =  DB::select("select * from administrativos order by Ap_Paterno, Ap_Materno, Nombre"); //FUNCIONA PERO NO INCLUYE CANTIDAD DE ESTUDIANTES POR DOCENTE
+        $administrativo =  DB::select("SELECT a.*, (select COUNT(*) AS CantidadEstudiantes from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%' AND a.id=e.Admin_id) as CantidadEstudiantesDocente
+        FROM administrativos a  order by a.Ap_Paterno, a.Ap_Materno, a.Nombre"); //ESTE ES EL ACTUAL QUE INCLUYE ESTOS DATOS
         return $administrativo;
     }
     public function DiferenciadorIndex(Request $request)
@@ -30,10 +32,10 @@ class AdministrativosController extends Controller
     }
     public function EncontrarDocenteEspecialidad(Request $request,$id)
     {
-        
-        
+
+
         $docente = Administrativos::where('id','=', $id)->first();
-        
+
         return $docente;
     }
     /**
@@ -54,15 +56,15 @@ class AdministrativosController extends Controller
      */
     public function store(Request $request)
     {
-       
+
         if($request->hasFile('Foto')){
             $file = $request->file('Foto');
             $namefile = time().$file->getClientOriginalName();
             $file->move(public_path().'/administrativos/',$namefile);
         }
-        
 
-        
+
+
         $administrativo = new Administrativos();
         if($request->hasFile('Foto')){$administrativo->Foto = 'Administrativos/'.$namefile;} else{$administrativo->Foto = '';}
         $administrativo->Ap_Paterno= $request->input('Ap_Paterno');
@@ -114,24 +116,24 @@ class AdministrativosController extends Controller
     }
     public function actualizar(Request $request, $id)
     {
-        
+
         $requestData = $request->all();
         $administrativo =Administrativos::findOrFail($id);
-        if ($request->hasFile('Foto')) 
+        if ($request->hasFile('Foto'))
         {
             // ELIMINANDO ANTIGUA FOTO
-            
+
             File::delete(public_path().'/'.$administrativo->Foto);
             //REALIZANDO CARGA DE LA NUEVA FOTO
             $file = $request->file('Foto');
             $namefile = time().$file->getClientOriginalName();
             $file->move(public_path().'/administrativos/',$namefile);
-            
+
             // return 'paso';
         }
         // $requestData['Foto'] = 'Administrativos/'.$namefile;
-        
-        if ($request->hasFile('Foto')) 
+
+        if ($request->hasFile('Foto'))
         {//SI TIENE FOTO ENTONCES EN Foto poner sus cosas
             $requestData['Foto'] = 'administrativos/'.$namefile;
         }
@@ -160,34 +162,34 @@ class AdministrativosController extends Controller
          $administrativo =Administrativos::findOrFail($id);
          if(File::delete(public_path().'/'.$administrativo->Foto))
          {
-             Administrativos::destroy($id);    
+             Administrativos::destroy($id);
              return 'eliminado';
          }
          else {
-            Administrativos::destroy($id);  
+            Administrativos::destroy($id);
              return 'eliminado';
          }
          return 'Eliminacion Correcta';
     }
     public function autentificar(Request $request)
     {
-       
+
 
         //FINISH
         $CI = $request->input('CI');
         $pass = $request->input('Password');
         $admin = Administrativos::where('CI','=', $CI)->first();
-        
+
 
         if (Hash::check($pass, $admin->Password)) {
-            
+
             return $admin;
         }
         else
         {
             // return $admin;
             return 'NOLOG';
-            
+
         }
     }
 }

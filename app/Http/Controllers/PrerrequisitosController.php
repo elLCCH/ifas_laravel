@@ -12,10 +12,9 @@ class PrerrequisitosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
-    public function index()
+    public function index(Request $request)
     {
-
+        // $Prerrequisitos = Prerrequisitos::all();
         $Prerrequisitos =  DB::select("select p.id,p.id_materia_p,p.id_materia_s,
         m.NombreCurso as 'mat_prin',m.Sigla as 'cod_prin',
         m2.NombreCurso as 'materia_sec',m2.Sigla as 'cod_sec'
@@ -23,35 +22,29 @@ class PrerrequisitosController extends Controller
         cursos m ON m.id=p.id_materia_p LEFT JOIN
         cursos m2 ON m2.id=p.id_materia_s");
         return $Prerrequisitos;
-
+    }
+    public function store(Request $request)
+    {
+        $requestData = $request->all();
+        Prerrequisitos::insert($requestData);
+        return 'Prerrequisitos creado';
+    }
+    public function show($id)
+    {
+        $data = Prerrequisitos::where('id','=',$id)->firstOrFail();
+        return $data;
+    }
+    public function update(Request $request, $id)
+    {
+         $requestData = $request->all();
+        Prerrequisitos::where('id','=',$id)->update($requestData);
+        return $requestData;
     }
 
-        public function store(Request $request)
-        {
-            $data = $request->all();
-            Prerrequisitos::insert($data);
-            return response()->json(["mensaje" => "Prerrequisitos Registrado Correctamente"], 200);
-        }
-
-        public function show($id)
-        {
-            $data = Prerrequisitos::where('id','=',$id)->firstOrFail();
-            return response()->json($data, 200);
-        }
-
-        public function update(Request $request, $id)
-        {
-            $data = $request->all();
-            Prerrequisitos::where('id','=',$id)->update($data);
-            return response()->json(["mensaje" => "Prerrequisitos Modificado Correctamente"], 200);
-        }
-        public function destroy($id)
-
-        {
-            $data =  DB::select("delete from Prerrequisitos where id='$id'");
-            return response()->json(["mensaje" => "Prerrequisitos Eliminado Correctamente"], 200);
-        }
-
-
+    public function destroy($id)
+    {
+        Prerrequisitos::destroy($id);
+        return 'Prerrequisitos eliminado';
+    }
 
 }
