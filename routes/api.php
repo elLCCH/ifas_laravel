@@ -27,11 +27,18 @@ Route::get('ListaAgrupacionMateriasXCursos/{idAdmin}', 'App\Http\Controllers\Cur
 Route::get('CargarSiglaUnique', 'App\Http\Controllers\CursoController@CargarSiglaUnique');
 Route::post('ModificarBimestres', 'App\Http\Controllers\CursoController@ModificarBimestres');
 Route::get('CursosUniqueSigla', 'App\Http\Controllers\CursoController@CursosUniqueSigla');
+Route::get('CargarMalla', 'App\Http\Controllers\CursoController@CargarMalla');
 /*CALIFICACIONES*/
 Route::resource('calificacion', 'App\Http\Controllers\CalificacionesController');
 Route::post('EncontrarNivelCurso/{idEst}', 'App\Http\Controllers\CalificacionesController@EncontrarNivelCurso');
 Route::delete('EliminarEstudianteDelCurso/{idEst}', 'App\Http\Controllers\CalificacionesController@EliminarEstudianteDelCurso');
 Route::get('ListarXCursoCalif/{idCurso}', 'App\Http\Controllers\CalificacionesController@ListarXCursoCalif');
+Route::post('ListarForCentralizadorFinal', 'App\Http\Controllers\CalificacionesController@ListarForCentralizadorFinal');
+Route::post('ListarForHeaderFinal', 'App\Http\Controllers\CalificacionesController@ListarForHeaderFinal');
+Route::post('ObtenerFechaRetiro', 'App\Http\Controllers\CalificacionesController@ObtenerFechaRetiro');
+Route::post('VerificarSegundaInstancia', 'App\Http\Controllers\CalificacionesController@VerificarSegundaInstancia');
+Route::get('ListarEstadisticasCentralizadorFinal', 'App\Http\Controllers\CalificacionesController@ListarEstadisticasCentralizadorFinal');
+
 /*ESTUDIANTES*/
 Route::resource('Estudiante', 'App\Http\Controllers\EstudiantesController');
 Route::post('EstudianteUpdate/{admin}', 'App\Http\Controllers\EstudiantesController@actualizar');
@@ -42,6 +49,7 @@ Route::post('EstudianteAUTH', 'App\Http\Controllers\EstudiantesController@autent
 Route::get('ObtenerNombreCompleto/{idEst}', 'App\Http\Controllers\EstudiantesController@ObtenerNombreCompleto');
 Route::post('OrdenarLista', 'App\Http\Controllers\EstudiantesController@OrdenarLista');
 Route::get('indexSelection/{idest}', 'App\Http\Controllers\EstudiantesController@indexSelection');
+Route::get('DetectarCantidadEstudiantesInscritos', 'App\Http\Controllers\EstudiantesController@DetectarCantidadEstudiantesInscritos');
 /*ADMINISTRATIVOS_CURSOS*/
 Route::resource('AdminCursos', 'App\Http\Controllers\AdministrativosCursosController');
 Route::post('EliminarAdminCursos', 'App\Http\Controllers\AdministrativosCursosController@EliminarAdminCursos');
@@ -56,9 +64,17 @@ Route::post('AdministrativoUpdate/{admin}', 'App\Http\Controllers\Administrativo
 Route::resource('Publicacion', 'App\Http\Controllers\PublicacionesController');
 Route::post('PublicacionUpdate/{admin}', 'App\Http\Controllers\PublicacionesController@actualizar');
 
+/*AREA EVENTOS*/
+Route::resource('AreaEventos', 'App\Http\Controllers\AreaeventosController');
 /*PRERREQUISITOS*/
 Route::resource('Prerrequisito', 'App\Http\Controllers\PrerrequisitosController');
-
+/*EVENTOS*/
+Route::resource('Evento', 'App\Http\Controllers\EventosController');
+Route::get('EventoActivo', 'App\Http\Controllers\EventosController@EventoActivo');
+Route::post('updateEvento/{idEven}', 'App\Http\Controllers\EventosController@updateEvento');
+/*INS EVENTOS*/
+Route::resource('InsEvento', 'App\Http\Controllers\InsEventosController');
+Route::post('updateInsEvento/{idIns}', 'App\Http\Controllers\InsEventosController@updateInsEvento');
 // ENVIAR MAIL
 Route::post('EnviarConfirmacion', 'App\Http\Controllers\EmailsController@Mails');
 // Route::post('EnviarConfirmacion', function () {
@@ -85,6 +101,8 @@ Route::post('ConsultarApiUniqueCI', 'App\Http\Controllers\ApisController@Consult
 Route::get('ListarHorariosSuperiorApi', 'App\Http\Controllers\ApisController@ListarHorariosSuperiorApi');
 Route::get('ListarHorariosCapacitacionApi', 'App\Http\Controllers\ApisController@ListarHorariosCapacitacionApi');
 Route::post('ConsultarApiCursosEst', 'App\Http\Controllers\ApisController@ConsultarApiCursosEst');
+Route::get('ListarAreasOCarrerasONivel', 'App\Http\Controllers\ApisController@ListarAreasOCarrerasONivel');
+Route::get('ListarAbreviacionDptosApi', 'App\Http\Controllers\ApisController@ListarAbreviacionDptosApi');
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
