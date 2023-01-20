@@ -1,0 +1,5 @@
+---
+deployment:
+  task:
+    - export DEPLOYPATH=/home/pcbafcze/laravel/
+    - /bin/rsync -av / $DEPLOYPATH
