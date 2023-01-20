@@ -103,6 +103,7 @@ Route::get('ListarHorariosCapacitacionApi', 'App\Http\Controllers\ApisController
 Route::post('ConsultarApiCursosEst', 'App\Http\Controllers\ApisController@ConsultarApiCursosEst');
 Route::get('ListarAreasOCarrerasONivel', 'App\Http\Controllers\ApisController@ListarAreasOCarrerasONivel');
 Route::get('ListarAbreviacionDptosApi', 'App\Http\Controllers\ApisController@ListarAbreviacionDptosApi');
+Route::get('ListarTipoMateriaApi', 'App\Http\Controllers\ApisController@ListarTipoMateriaApi');
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
