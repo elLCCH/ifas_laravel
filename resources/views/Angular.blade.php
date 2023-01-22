@@ -30,7 +30,7 @@
 
       <link rel="stylesheet" href="assets/scripts_validation/estilos.min.css">
 
-  <link rel="stylesheet" href="/assets/Angular/styles.ef46db3751d8e999.css">
+  <link rel="stylesheet" href="/assets/Angular/assets/styles.ef46db3751d8e999.css">
   </head>
   <body>
     <app-root></app-root>
