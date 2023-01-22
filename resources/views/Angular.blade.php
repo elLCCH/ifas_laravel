@@ -55,11 +55,11 @@
     body{
 
       /* background-image: url(" http://localhost:8000/fijos/fondopirata.jpg"); */
-      background-image:  linear-gradient(-10deg, #b12a02 -100%, #ffffff 100%);
+      /*background-image:  linear-gradient(-10deg, #b12a02 -100%, #ffffff 100%);
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center center;
-      background-attachment: fixed;
+      background-attachment: fixed;*/
     }
   </style>
   <script type="text/javascript">
