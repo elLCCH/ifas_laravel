@@ -28,7 +28,7 @@
       <!-- Theme style -->
       <link rel="stylesheet" href="/assets/Angular/assets/dist/css/adminlte.min.css">
 
-
+      <link rel="stylesheet" href="assets/scripts_validation/estilos.min.css">
 
   <link rel="stylesheet" href="/assets/Angular/styles.ef46db3751d8e999.css">
   </head>
@@ -46,7 +46,7 @@
     </script>
 
 
-    <script src="/assets/Angular/runtime.107f6d2cb5107d36.js" type="module"></script><script src="/assets/Angular/polyfills.613581c0a8854c9d.js" type="module"></script><script src="/assets/Angular/main.2867a6847638c1fb.js" type="module"></script>
+    <script src="/assets/Angular/runtime.107f6d2cb5107d36.js" type="module"></script><script src="/assets/Angular/polyfills.613581c0a8854c9d.js" type="module"></script><script src="/assets/Angular/main.ac59a7da6f2e3d51.js" type="module"></script>
 
   <script src="/assets/Angular/assets/pdf-2.10.558.min.js" defer></script>
   <script src="/assets/Angular/assets/viewer-2.10.558.min.js" defer></script>

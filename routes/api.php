@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+/*AÑO*/
+Route::get('DeterminarInstituto', 'App\Http\Controllers\AnioController@DeterminarInstituto');
+
 /*CURSO*/
 Route::resource('curso', 'App\Http\Controllers\CursoController');
 Route::get('cursoUnique', 'App\Http\Controllers\CursoController@CargarCursosUnique');
@@ -86,11 +89,8 @@ Route::post('EnviarConfirmacion', 'App\Http\Controllers\EmailsController@Mails')
 // });
 
 //LISTAS DE APIs - APIS CONTROLLER
-Route::get('ListarCursosApi', 'App\Http\Controllers\ApisController@ListarCursosApi');
-Route::get('ListarInstrumentosApi', 'App\Http\Controllers\ApisController@ListarInstrumentosApi');
 Route::get('ListarInstrumentosModernosApi', 'App\Http\Controllers\ApisController@ListarInstrumentosModernosApi');
 Route::get('ListarMensionesModernasApi', 'App\Http\Controllers\ApisController@ListarMensionesModernasApi');
-Route::get('ListarMensionesApi', 'App\Http\Controllers\ApisController@ListarMensionesApi');
 Route::get('ListarCursosPostulantesApi', 'App\Http\Controllers\ApisController@ListarCursosPostulantesApi');
 Route::get('ListarCategoriasApi', 'App\Http\Controllers\ApisController@ListarCategoriasApi');
 Route::get('DisponibilidadInscripciones', 'App\Http\Controllers\ApisController@DisponibilidadInscripciones');
@@ -101,9 +101,17 @@ Route::post('ConsultarApiUniqueCI', 'App\Http\Controllers\ApisController@Consult
 Route::get('ListarHorariosSuperiorApi', 'App\Http\Controllers\ApisController@ListarHorariosSuperiorApi');
 Route::get('ListarHorariosCapacitacionApi', 'App\Http\Controllers\ApisController@ListarHorariosCapacitacionApi');
 Route::post('ConsultarApiCursosEst', 'App\Http\Controllers\ApisController@ConsultarApiCursosEst');
-Route::get('ListarAreasOCarrerasONivel', 'App\Http\Controllers\ApisController@ListarAreasOCarrerasONivel');
 Route::get('ListarAbreviacionDptosApi', 'App\Http\Controllers\ApisController@ListarAbreviacionDptosApi');
+
+// NUEVA GESTION
 Route::get('ListarTipoMateriaApi', 'App\Http\Controllers\ApisController@ListarTipoMateriaApi');
+Route::get('ListarCursosApi', 'App\Http\Controllers\ApisController@ListarCursosApi');
+Route::get('ListarAreasApi', 'App\Http\Controllers\ApisController@ListarAreasApi');
+Route::get('ListarProgramasApi', 'App\Http\Controllers\ApisController@ListarProgramasApi');
+Route::get('ListarCarrerasApi', 'App\Http\Controllers\ApisController@ListarCarrerasApi');
+Route::get('ListarMensionesApi', 'App\Http\Controllers\ApisController@ListarMensionesApi');
+Route::get('ListarInstrumentosApi', 'App\Http\Controllers\ApisController@ListarInstrumentosApi');
+Route::get('ListarNiveles', 'App\Http\Controllers\ApisController@ListarNiveles');
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

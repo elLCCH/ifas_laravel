@@ -12,9 +12,15 @@ class AnioController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function DeterminarInstituto()
+    {
+        // return 'MARIA LUISA LUZIO';
+        // return 'FOLKLORE';
+        return 'BELLAS ARTES';
+    }
     public function index()
     {
-        //asdasd
+        //
     }
 
     /**
