@@ -28,7 +28,7 @@
       <!-- Theme style -->
       <link rel="stylesheet" href="/assets/Angular/assets/dist/css/adminlte.min.css">
 
-      <link rel="stylesheet" href="assets/scripts_validation/estilos.min.css">
+      <link rel="stylesheet" href="/assets/Angular/assets/scripts_validation/estilos.min.css">
 
   <link rel="stylesheet" href="/assets/Angular/assets/styles.ef46db3751d8e999.css">
   </head>
