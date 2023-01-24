@@ -130,7 +130,7 @@ class ApisController extends Controller
     public function ListarMensionesApi() //USADO EN ESTUDIANTES, LISTA LAS MENCIONES
     {
         $data = Array (
-            "0" => Array ("Mension" => "INSTRUMENTISTA","Nivel"=>"NINGUNA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
+            "0" => Array ("Mension" => "INSTRUMENTISTA","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
             // // NUEVA MALLA
             //MARIA LUISA LUZIO Y FOLKLO,"Ifa"=>"MARIA LUISA LUZIO"RE
             "1" => Array ("Mension" => "CANTO LIRICO","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
