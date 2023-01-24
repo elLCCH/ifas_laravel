@@ -34,7 +34,7 @@ class ApisController extends Controller
         $data = Array (
             "0" => Array ("Tipo" => "TEORICA","Detalle" => "MATERIA NORMAL Y RECTA","Ifa"=>"TODOS"),
             "1" => Array ("Tipo" => "PRACTICA","Detalle" => "MATERIA DINAMICA MEZCLADO DE ESTUDIANTES Y DOCENTES","Ifa"=>"MARIA LUISA LUZIO"),
-            "2" => Array ("Tipo" => "PRACTICA.","Detalle" => "MATERIA NORMAL Y RECTA","Ifa"=>"TODOS"),
+            "2" => Array ("Tipo" => "PRACTICA.","Detalle" => "MATERIA NORMAL Y RECTA","Ifa"=>"FOLKLORE o BELLAS ARTES"),
         );
         return $data;
     }
@@ -63,15 +63,15 @@ class ApisController extends Controller
             "17" => Array ("NivelCurso" => "PRIMERO INICIAL","Para" => "NUEVOS o  ANTIGUOS","Ifa"=>"FOLKLORE"),
             "18" => Array ("NivelCurso" => "SEGUNDO INICIAL","Para" => "ANTIGUOS","Ifa"=>"FOLKLORE"),
             //PARA BELLAS ARTES...................,
-            "19" => Array ("NivelCurso" => "PRIMER SEMESTRE","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
-            "20" => Array ("NivelCurso" => "SEGUNDO SEMESTRE","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
-            "21" => Array ("NivelCurso" => "TERCER SEMESTRE","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
-            "22" => Array ("NivelCurso" => "CUARTO SEMESTRE","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
-            "23" => Array ("NivelCurso" => "QUINTO SEMESTRE","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
-            "24" => Array ("NivelCurso" => "SEXTO SEMESTRE","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
-            "25" => Array ("NivelCurso" => "PRIMERO SUPERIOR","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
-            "26" => Array ("NivelCurso" => "SEGUNDO SUPERIOR","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
-            "27" => Array ("NivelCurso" => "TERCERO SUPERIOR","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
+            "19" => Array ("NivelCurso" => "PRIMERO SUPERIOR","Para" => "NUEVOS o ANTIGUOS","Ifa"=>"BELLAS ARTES"),
+            "20" => Array ("NivelCurso" => "SEGUNDO SUPERIOR","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
+            "21" => Array ("NivelCurso" => "TERCERO SUPERIOR","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
+            "22" => Array ("NivelCurso" => "CUARTO SUPERIOR","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
+            "23" => Array ("NivelCurso" => "QUINTO SUPERIOR","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
+            "24" => Array ("NivelCurso" => "SEXTO SUPERIOR","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
+            "25" => Array ("NivelCurso" => "PRIMERO CAPACITACION","Para" => "NUEVOS o ANTIGUOS","Ifa"=>"BELLAS ARTES"),
+            "26" => Array ("NivelCurso" => "SEGUNDO CAPACITACION","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
+            "27" => Array ("NivelCurso" => "TERCERO CAPACITACION","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES"),
         );
         return $data;
         // return ' ';
@@ -79,12 +79,14 @@ class ApisController extends Controller
     public function ListarAreasApi() //USADO EN ESTUDIANTES, LISTA LAS MENCIONES
     {
         $data = Array (
-            "0" => Array ("Area" => "CLASICA","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
-            // // NUEVA MALLA.....,
-            "1" => Array ("Area" => "ARTES ESCENICAS","Estado"=>"INACTIVO","Ifa"=>"OTRO"),
-            "2" => Array ("Area" => "ARTES MUSICALES","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO o FOLKLORE"),
-            "3" => Array ("Area" => "ARTES VISUALES","Estado"=>"ACTIVO","Ifa"=>"BELLAS ARTES"),
-            "4" => Array ("Area" => "ARTES AUDIOVISUALES","Estado"=>"INACTIVO","Ifa"=>"OTRO"),
+            "0" => Array ("Area" => "CLASICA","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO","Malla"=>"ANTIGUA"),
+            // // NUEVA MALLA....,"Malla"=>"NUEVA".,
+            "1" => Array ("Area" => "ARTES ESCENICAS","Estado"=>"INACTIVO","Ifa"=>"OTRO","Malla"=>"NUEVA"),
+            "2" => Array ("Area" => "ARTES MUSICALES","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO o FOLKLORE","Malla"=>"NUEVA"),
+            "3" => Array ("Area" => "ARTES VISUALES","Estado"=>"ACTIVO","Ifa"=>"BELLAS ARTES","Malla"=>"NUEVA"),
+            "4" => Array ("Area" => "ARTES AUDIOVISUALES","Estado"=>"INACTIVO","Ifa"=>"OTRO","Malla"=>"NUEVA"),
+            "4" => Array ("Area" => "BOLIVIANA","Estado"=>"ACTIVO","Ifa"=>"FOLKLORE","Malla"=>"ANTIGUA"),
+            "4" => Array ("Area" => "ARTES PLASTICAS Y VISUALES","Estado"=>"ACTIVO","Ifa"=>"BELLAS ARTES","Malla"=>"ANTIGUA"),
         );
         return $data;
     }
@@ -92,11 +94,12 @@ class ApisController extends Controller
     {
         $data = Array (
             //NUEVA MALLA
-            "0" => Array ("Programa" => "DANZA","Pertenece"=>"ARTES ESCENICAS","Ifa"=>"OTRO"),
-            "1" => Array ("Programa" => "TEATRO","Pertenece"=>"ARTES ESCENICAS","Ifa"=>"OTRO"),
-            "2" => Array ("Programa" => "MUSICA","Pertenece"=>"ARTES MUSICALES","Ifa"=>"MARIA LUISA LUZIO o FOLKLORE"),
-            "3" => Array ("Programa" => "ARTES PLASTICAS Y VISUALES","Pertenece"=>"ARTES VISUALES","Ifa"=>"BELLAS ARTES"),
-            "4" => Array ("Programa" => "CINEMATOGRAFIA Y ARTES AUDIOVISUALES","Pertenece"=>"ARTES AUDIOVISUALES","Ifa"=>"OTRO"),
+            "0" => Array ("Programa" => "DANZA","Pertenece"=>"ARTES ESCENICAS","Ifa"=>"OTRO","Malla"=>"NUEVA"),
+            "1" => Array ("Programa" => "TEATRO","Pertenece"=>"ARTES ESCENICAS","Ifa"=>"OTRO","Malla"=>"NUEVA"),
+            "2" => Array ("Programa" => "MUSICA","Pertenece"=>"ARTES MUSICALES","Ifa"=>"MARIA LUISA LUZIO o FOLKLORE","Malla"=>"NUEVA"),
+            "3" => Array ("Programa" => "ARTES PLASTICAS Y VISUALES","Pertenece"=>"ARTES VISUALES","Ifa"=>"BELLAS ARTES","Malla"=>"NUEVA"),
+            "4" => Array ("Programa" => "CINEMATOGRAFIA Y ARTES AUDIOVISUALES","Pertenece"=>"ARTES AUDIOVISUALES","Ifa"=>"OTRO","Malla"=>"NUEVA"),
+            "5" => Array ("Programa" => "NINGUNA","Pertenece"=>"TODOS","Ifa"=>"TODOS","Malla"=>"ANTIGUA"),
         );
         return $data;
     }
@@ -106,11 +109,11 @@ class ApisController extends Controller
         $data = Array (
             "0" => Array ("Carrera" => "MUSICA","Denominacion" => "NINGUNA","Malla"=>"ANTIGUA","Pertenece"=>"NINGUNA","Ifa"=>"MARIA LUISA LUZIO"),
             //NUEVA MALLA 2023.....,"Ifa"=>"MARIA LUISA LUZIO"..
-            "1" => Array ("Carrera" => "MÚSICA CLÁSICA/ACADÉMICA","Denominacion" => " EN MÚSICA CLÁSICA/ACADÉMICA","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
-            "2" => Array ("Carrera" => "CANTO LÍRICO","Denominacion" => "CANTO LÍRICO","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"OTRO"),
+            "1" => Array ("Carrera" => "MUSICA CLASICA/ACADEMICA","Denominacion" => " EN MÚSICA CLÁSICA/ACADÉMICA","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
+            "2" => Array ("Carrera" => "CANTO LIRICO","Denominacion" => "CANTO LÍRICO","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"OTRO"),
             "3" => Array ("Carrera" => "MÚSICA MODERNA","Denominacion" => " EN MÚSICA MODERNA","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"OTRO"),
             "4" => Array ("Carrera" => "MUSICA BOLIVIANA","Denominacion" => " EN MÚSICA BOLIVIANA","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE"),
-            "5" => Array ("Carrera" => "ARTES PLASTICAS Y VISUALES","Denominacion" => " ","Malla"=>"NUEVA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES"),
+            "5" => Array ("Carrera" => "ARTES PLASTICAS Y VISUALES","Denominacion" => " ","Malla"=>"NUEVA o ANTIGUA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES"),
             "6" => Array ("Carrera" => "REALIZACION DE CINEMATOGRAFIA Y ARTES AUDIOVISUALES","Denominacion" => " ","Malla"=>"NUEVA","Pertenece"=>"CINEMATOGRAFIA Y ARTES AUDIOVISUALES","Ifa"=>"OTRO"),
             "7" => Array ("Carrera" => "DANZA CLASICA","Denominacion" => " ","Malla"=>"NUEVA","Pertenece"=>"DANZA","Ifa"=>"OTRO"),
             "8" => Array ("Carrera" => "DANZA CONTEMPORANEA","Denominacion" => " ","Malla"=>"NUEVA","Pertenece"=>"DANZA","Ifa"=>"OTRO"),
@@ -130,17 +133,18 @@ class ApisController extends Controller
             "0" => Array ("Mension" => "INSTRUMENTISTA","Nivel"=>"NINGUNA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
             // // NUEVA MALLA
             //MARIA LUISA LUZIO Y FOLKLO,"Ifa"=>"MARIA LUISA LUZIO"RE
-            "1" => Array ("Mension" => "CANTO LIRICO","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
-            "2" => Array ("Mension" => "DIRECCION","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
-            "3" => Array ("Mension" => "COMPOSICION","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
-            "4" => Array ("Mension" => "INVESTIGACION MUSICAL","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE"),
-            "5" => Array ("Mension" => "COMPOSICION MUSICAL","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE"),
-            "6" => Array ("Mension" => "PRODUCCION MUSICAL","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE",),
+            "1" => Array ("Mension" => "CANTO LIRICO","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
+            "2" => Array ("Mension" => "DIRECCION","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
+            "3" => Array ("Mension" => "COMPOSICION","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
+            "4" => Array ("Mension" => "INVESTIGACION MUSICAL","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE"),
+            "5" => Array ("Mension" => "COMPOSICION MUSICAL","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE"),
+            "6" => Array ("Mension" => "PRODUCCION MUSICAL","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE",),
             //FOLKLORE ANTIGUA
-            "7" => Array ("Mension" => "PINTURA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES",),
-            "8" => Array ("Mension" => "ESCULTURA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES",),
-            "9" => Array ("Mension" => "ARTES PLASTICAS","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES",),
-            "10" => Array ("Mension" => "CERAMICA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES",),
+            "7" => Array ("Mension" => "PINTURA","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES",),
+            "8" => Array ("Mension" => "ESCULTURA","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES",),
+            "9" => Array ("Mension" => "ARTES PLASTICAS","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES",),
+            "10" => Array ("Mension" => "CERAMICA","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES",),
+            "11" => Array ("Mension" => "NINGUNA","Malla"=>"NUEVA","Nivel"=>"NINGUNA","Pertenece"=>"TODOS","Ifa"=>"TODOS",),
         );
         return $data;
     }
@@ -151,14 +155,14 @@ class ApisController extends Controller
             "0" => Array ("InstEspecialidad" => "PIANO CLASICO","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
             "1" => Array ("InstEspecialidad" => "GUITARRA CLASICA","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
             "2" => Array ("InstEspecialidad" => "VIOLIN","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
-            "3" => Array ("InstEspecialidad" => "VIOLA","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
+            "3" => Array ("InstEspecialidad" => "VIOLA","Estado"=>"INACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
             "4" => Array ("InstEspecialidad" => "VIOLONCHELO","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
             "5" => Array ("InstEspecialidad" => "CONTRABAJO","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
-            "6" => Array ("InstEspecialidad" => "CLARINETE","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
+            "6" => Array ("InstEspecialidad" => "CLARINETE","Estado"=>"INACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
             "7" => Array ("InstEspecialidad" => "SAXOFON CLASICO","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
             "8" => Array ("InstEspecialidad" => "TROMPETA","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
-            "9" => Array ("InstEspecialidad" => "TROMBON","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
-           "10" => Array ("InstEspecialidad" => "ACORDEON","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
+            "9" => Array ("InstEspecialidad" => "TROMBON","Estado"=>"INACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
+           "10" => Array ("InstEspecialidad" => "ACORDEON","Estado"=>"INACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
            "11" => Array ("InstEspecialidad" => "CHARANGO","Estado"=>"ACTIVO","Ifa"=>"FOLKLORE"),
            "12" => Array ("InstEspecialidad" => "GUITARRA","Estado"=>"ACTIVO","Ifa"=>"FOLKLORE"),
            "13" => Array ("InstEspecialidad" => "QUENA","Estado"=>"ACTIVO","Ifa"=>"FOLKLORE"),
@@ -175,9 +179,10 @@ class ApisController extends Controller
             "2" => Array ("Nivel" => "LICENCIATURA","Pertenece"=>"TODOS","Ifa"=>"TODOS"),
             "3" => Array ("Nivel" => "BASICO","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE"),
             "4" => Array ("Nivel" => "INICIAL","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE"),
-            "4" => Array ("Nivel" => "INICIACION EN MUSICA CLASICA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
-            "4" => Array ("Nivel" => "BASICO EN MUSICA CLASICA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
-            "4" => Array ("Nivel" => "INTERMEDIO EN MUSICA CLASICA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
+            "5" => Array ("Nivel" => "INICIACION EN MUSICA CLASICA/ACADEMICA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
+            "6" => Array ("Nivel" => "BASICO EN MUSICA CLASICA/ACADEMICA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
+            "7" => Array ("Nivel" => "INTERMEDIO EN MUSICA CLASICA/ACADEMICA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO"),
+            "8" => Array ("Nivel" => "CAPACITACION","Pertenece"=>"BELLAS ARTES","Ifa"=>"BELLAS ARTES"),
         );
         return $data;
     }

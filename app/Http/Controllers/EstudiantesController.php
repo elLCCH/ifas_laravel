@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Estudiantes;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use PhpParser\Node\Stmt\Else_;
+use Illuminate\Support\Arr;
 
 class EstudiantesController extends Controller
 {
@@ -47,125 +49,161 @@ class EstudiantesController extends Controller
     /*PARA LA NUEVA GESTION*/
     public function DetectarCantidadEstudiantesInscritos()
     {
-        $AntiguosNoInscritos =DB::select("select COUNT(*) AS AntiguosNoInscritos from estudiantes e where e.Observacion LIKE '%NO INSCRITO%'");
-        $CantidadInscritos =DB::select("select COUNT(*) AS CantidadInscritos from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'");
-        //CANTIDADES DE ESTUDIANTES POR NIVEL
-        $PrimeroSuperior = DB::select("select COUNT(*) AS PrimeroSuperior from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO SUPERIOR'");
-        $SegundoSuperior = DB::select("select COUNT(*) AS SegundoSuperior from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO SUPERIOR'");
-        $TerceroSuperior = DB::select("select COUNT(*) AS TerceroSuperior from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO SUPERIOR'");
-        $PrimeroIntermedio = DB::select("select COUNT(*) AS PrimeroIntermedio from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INTERMEDIO'");
-        $SegundoIntermedio = DB::select("select COUNT(*) AS SegundoIntermedio from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INTERMEDIO'");
-        $TerceroIntermedio = DB::select("select COUNT(*) AS TerceroIntermedio from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INTERMEDIO'");
-        $PrimeroBasico = DB::select("select COUNT(*) AS PrimeroBasico from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO BASICO'");
-        $SegundoBasico = DB::select("select COUNT(*) AS SegundoBasico from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO BASICO'");
-        $TerceroBasico = DB::select("select COUNT(*) AS TerceroBasico from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO BASICO'");
-        $PrimeroIniciacion = DB::select("select COUNT(*) AS PrimeroIniciacion from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INICIACION'");
-        $SegundoIniciacion = DB::select("select COUNT(*) AS SegundoIniciacion from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INICIACION'");
-        $TerceroIniciacion = DB::select("select COUNT(*) AS TerceroIniciacion from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INICIACION'");
+        $anioController = new AnioController(); //ANIO CONTROLLER
+        $apisController = new ApisController(); //APIS CONTROLLER
+        $ifa = $anioController->DeterminarInstituto();  //recogiendo nombre de q ifa
+        $cursos_solicitados = $apisController->ListarCursosApi(); //recogiendo todos los cursos q estan registrados
+        $instrumentosEspecialidad = $apisController->ListarInstrumentosApi(); //recogiendo los instrumentos de especialidad
 
+        $cursos_solicitados = collect($cursos_solicitados)->where('Ifa', $ifa)->all(); //filtramos los cursos q pertenecen a un ifa
+        $instrumentosEspecialidad = collect($instrumentosEspecialidad)->where('Ifa', $ifa)->where('Estado','ACTIVO')->all(); //filtramos los instrumentos q pertenecen a un ifa
+        // $Lista = array(); //CANTIDADES TOTALES CURSO
+        // $ListaInst = array(); //CANTIDADES INST
+        // $Lista[] =DB::select("select COUNT(*) AS 'ANTIGUOS NO INSCRITOS' from estudiantes e where e.Observacion LIKE '%NO INSCRITO%'")[0];
+        // $Lista[]=DB::select("select COUNT(*) AS 'CANTIDAD INSCRITOS' from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'")[0];
+        $Lista=new Estudiantes(); //CANTIDADES TOTALES CURSO
+        $ListaInst = new Estudiantes(); //CANTIDADES INST
+        $Lista['ANTIGUOS NO INSCRITOS'] =DB::select("select COUNT(*) AS 'ANTIGUOS NO INSCRITOS' from estudiantes e where e.Observacion LIKE '%NO INSCRITO%'")[0];
+        $Lista['CANTIDAD INSCRITOS']=DB::select("select COUNT(*) AS 'CANTIDAD INSCRITOS' from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'")[0];
 
-        //cantidades de estudiantes por nivel INSTRUMENTO
-        $PrimeroSuperiorPiano    = DB::select("select COUNT(*) AS PrimeroSuperiorPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO SUPERIOR' and (e.Especialidad LIKE '%PIANO%')");
-        $PrimeroSuperiorViolin   = DB::select("select COUNT(*) AS PrimeroSuperiorViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO SUPERIOR' and (e.Especialidad LIKE '%VIOLIN%')");
-        $PrimeroSuperiorGuitarra = DB::select("select COUNT(*) AS PrimeroSuperiorGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO SUPERIOR' and (e.Especialidad LIKE '%GUITARRA%')");
-
-        $SegundoSuperiorPiano    = DB::select("select COUNT(*) AS SegundoSuperiorPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO SUPERIOR' and (e.Especialidad LIKE '%PIANO%')");
-        $SegundoSuperiorViolin   = DB::select("select COUNT(*) AS SegundoSuperiorViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO SUPERIOR' and (e.Especialidad LIKE '%VIOLIN%')");
-        $SegundoSuperiorGuitarra = DB::select("select COUNT(*) AS SegundoSuperiorGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO SUPERIOR' and (e.Especialidad LIKE '%GUITARRA%')");
-
-        $TerceroSuperiorPiano    = DB::select("select COUNT(*) AS TerceroSuperiorPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO SUPERIOR' and (e.Especialidad LIKE '%PIANO%')");
-        $TerceroSuperiorViolin   = DB::select("select COUNT(*) AS TerceroSuperiorViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO SUPERIOR' and (e.Especialidad LIKE '%VIOLIN%')");
-        $TerceroSuperiorGuitarra = DB::select("select COUNT(*) AS TerceroSuperiorGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO SUPERIOR' and (e.Especialidad LIKE '%GUITARRA%')");
-
-        $PrimeroIntermedioPiano    = DB::select("select COUNT(*) AS PrimeroIntermedioPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INTERMEDIO' and (e.Especialidad LIKE '%PIANO%')");
-        $PrimeroIntermedioViolin   = DB::select("select COUNT(*) AS PrimeroIntermedioViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INTERMEDIO' and (e.Especialidad LIKE '%VIOLIN%')");
-        $PrimeroIntermedioGuitarra = DB::select("select COUNT(*) AS PrimeroIntermedioGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INTERMEDIO' and (e.Especialidad LIKE '%GUITARRA%')");
-
-        $SegundoIntermedioPiano    = DB::select("select COUNT(*) AS SegundoIntermedioPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INTERMEDIO' and (e.Especialidad LIKE '%PIANO%')");
-        $SegundoIntermedioViolin   = DB::select("select COUNT(*) AS SegundoIntermedioViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INTERMEDIO' and (e.Especialidad LIKE '%VIOLIN%')");
-        $SegundoIntermedioGuitarra = DB::select("select COUNT(*) AS SegundoIntermedioGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INTERMEDIO' and (e.Especialidad LIKE '%GUITARRA%')");
-
-        $TerceroIntermedioPiano    = DB::select("select COUNT(*) AS TerceroIntermedioPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INTERMEDIO' and (e.Especialidad LIKE '%PIANO%')");
-        $TerceroIntermedioViolin   = DB::select("select COUNT(*) AS TerceroIntermedioViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INTERMEDIO' and (e.Especialidad LIKE '%VIOLIN%')");
-        $TerceroIntermedioGuitarra = DB::select("select COUNT(*) AS TerceroIntermedioGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INTERMEDIO' and (e.Especialidad LIKE '%GUITARRA%')");
-
-        $PrimeroBasicoPiano    = DB::select("select COUNT(*) AS PrimeroBasicoPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO BASICO' and (e.Especialidad LIKE '%PIANO%')");
-        $PrimeroBasicoViolin   = DB::select("select COUNT(*) AS PrimeroBasicoViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO BASICO' and (e.Especialidad LIKE '%VIOLIN%')");
-        $PrimeroBasicoGuitarra = DB::select("select COUNT(*) AS PrimeroBasicoGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO BASICO' and (e.Especialidad LIKE '%GUITARRA%')");
-
-        $SegundoBasicoPiano    = DB::select("select COUNT(*) AS SegundoBasicoPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO BASICO' and (e.Especialidad LIKE '%PIANO%')");
-        $SegundoBasicoViolin   = DB::select("select COUNT(*) AS SegundoBasicoViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO BASICO' and (e.Especialidad LIKE '%VIOLIN%')");
-        $SegundoBasicoGuitarra = DB::select("select COUNT(*) AS SegundoBasicoGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO BASICO' and (e.Especialidad LIKE '%GUITARRA%')");
-
-        $TerceroBasicoPiano    = DB::select("select COUNT(*) AS TerceroBasicoPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO BASICO' and (e.Especialidad LIKE '%PIANO%')");
-        $TerceroBasicoViolin   = DB::select("select COUNT(*) AS TerceroBasicoViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO BASICO' and (e.Especialidad LIKE '%VIOLIN%')");
-        $TerceroBasicoGuitarra = DB::select("select COUNT(*) AS TerceroBasicoGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO BASICO' and (e.Especialidad LIKE '%GUITARRA%')");
-
-        $PrimeroIniciacionPiano    = DB::select("select COUNT(*) AS PrimeroIniciacionPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INICIACION' and (e.Especialidad LIKE '%PIANO%')");
-        $PrimeroIniciacionViolin   = DB::select("select COUNT(*) AS PrimeroIniciacionViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INICIACION' and (e.Especialidad LIKE '%VIOLIN%')");
-        $PrimeroIniciacionGuitarra = DB::select("select COUNT(*) AS PrimeroIniciacionGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INICIACION' and (e.Especialidad LIKE '%GUITARRA%')");
-
-        $SegundoIniciacionPiano    = DB::select("select COUNT(*) AS SegundoIniciacionPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INICIACION' and (e.Especialidad LIKE '%PIANO%')");
-        $SegundoIniciacionViolin   = DB::select("select COUNT(*) AS SegundoIniciacionViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INICIACION' and (e.Especialidad LIKE '%VIOLIN%')");
-        $SegundoIniciacionGuitarra = DB::select("select COUNT(*) AS SegundoIniciacionGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INICIACION' and (e.Especialidad LIKE '%GUITARRA%')");
-
-        $TerceroIniciacionPiano    = DB::select("select COUNT(*) AS TerceroIniciacionPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INICIACION' and (e.Especialidad LIKE '%PIANO%')");
-        $TerceroIniciacionViolin   = DB::select("select COUNT(*) AS TerceroIniciacionViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INICIACION' and (e.Especialidad LIKE '%VIOLIN%')");
-        $TerceroIniciacionGuitarra = DB::select("select COUNT(*) AS TerceroIniciacionGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INICIACION' and (e.Especialidad LIKE '%GUITARRA%')");
+        foreach ($cursos_solicitados as $k) {
+            $course=$k['NivelCurso'];
+            $resCantidadTotal =  DB::select("select COUNT(*) AS '$course' from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='$course'");
+            //FUNCIONA, ES CANTIDAD DE INSTRUMENTOS POR CURSO...
+            foreach ($instrumentosEspecialidad as $i) {
+                $inst=$i['InstEspecialidad'];
+                $nameSelect = $course.' '.$inst;
+                $resCantidadEspecialidadxCursos = DB::select("select COUNT(*) AS '$nameSelect' from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='$course' and (e.Especialidad LIKE '%$inst%')");
+                $ListaInst[$nameSelect]=$resCantidadEspecialidadxCursos[0];
+                // array_push($ListaInst,$resCantidadEspecialidadxCursos[0]); //ARRAY PUSH
+            }
+            $Lista[$course]=$resCantidadTotal[0];
+            // array_push($Lista,$resCantidadTotal[0]); //ARRAY PUSH
+        }
         return response()->json([
-
-            "CantidadInscritos"=> $CantidadInscritos[0],
-            "AntiguosNoInscritos" => $AntiguosNoInscritos[0],
-            "PrimeroSuperior" => $PrimeroSuperior[0],
-            "SegundoSuperior" => $SegundoSuperior[0],
-            "TerceroSuperior" => $TerceroSuperior[0],
-            "PrimeroIntermedio" => $PrimeroIntermedio[0],
-            "SegundoIntermedio" => $SegundoIntermedio[0],
-            "TerceroIntermedio" => $TerceroIntermedio[0],
-            "PrimeroBasico"=> $PrimeroBasico[0],
-            "SegundoBasico"=> $SegundoBasico[0],
-            "TerceroBasico"=> $TerceroBasico[0],
-            "PrimeroIniciacion" => $PrimeroIniciacion[0],
-            "SegundoIniciacion" => $SegundoIniciacion[0],
-            "TerceroIniciacion" => $TerceroIniciacion[0],
-            "PrimeroSuperiorPiano" => $PrimeroSuperiorPiano[0],
-            "PrimeroSuperiorViolin" => $PrimeroSuperiorViolin[0],
-            "PrimeroSuperiorGuitarra" => $PrimeroSuperiorGuitarra[0],
-            "SegundoSuperiorPiano" => $SegundoSuperiorPiano[0],
-            "SegundoSuperiorViolin" => $SegundoSuperiorViolin[0],
-            "SegundoSuperiorGuitarra" => $SegundoSuperiorGuitarra[0],
-            "TerceroSuperiorPiano" => $TerceroSuperiorPiano[0],
-            "TerceroSuperiorViolin" => $TerceroSuperiorViolin[0],
-            "TerceroSuperiorGuitarra" => $TerceroSuperiorGuitarra[0],
-            "PrimeroIntermedioPiano" => $PrimeroIntermedioPiano[0],
-            "PrimeroIntermedioViolin" => $PrimeroIntermedioViolin[0],
-            "PrimeroIntermedioGuitarra" => $PrimeroIntermedioGuitarra[0],
-            "SegundoIntermedioPiano" => $SegundoIntermedioPiano[0],
-            "SegundoIntermedioViolin" => $SegundoIntermedioViolin[0],
-            "SegundoIntermedioGuitarra" => $SegundoIntermedioGuitarra[0],
-            "TerceroIntermedioPiano" => $TerceroIntermedioPiano[0],
-            "TerceroIntermedioViolin" => $TerceroIntermedioViolin[0],
-            "TerceroIntermedioGuitarra" => $TerceroIntermedioGuitarra[0],
-            "PrimeroBasicoPiano"    => $PrimeroBasicoPiano[0],
-            "PrimeroBasicoViolin" => $PrimeroBasicoViolin[0],
-            "PrimeroBasicoGuitarra" => $PrimeroBasicoGuitarra[0],
-            "SegundoBasicoPiano" => $SegundoBasicoPiano[0],
-            "SegundoBasicoViolin" => $SegundoBasicoViolin[0],
-            "SegundoBasicoGuitarra" => $SegundoBasicoGuitarra[0],
-            "TerceroBasicoPiano" => $TerceroBasicoPiano[0],
-            "TerceroBasicoViolin" => $TerceroBasicoViolin[0],
-            "TerceroBasicoGuitarra" => $TerceroBasicoGuitarra[0],
-            "PrimeroIniciacionPiano"   => $PrimeroIniciacionPiano[0],
-            "PrimeroIniciacionViolin" => $PrimeroIniciacionViolin[0],
-            "PrimeroIniciacionGuitarra" => $PrimeroIniciacionGuitarra[0],
-            "SegundoIniciacionPiano" => $SegundoIniciacionPiano[0],
-            "SegundoIniciacionViolin" => $SegundoIniciacionViolin[0],
-            "SegundoIniciacionGuitarra" => $SegundoIniciacionGuitarra[0],
-            "TerceroIniciacionPiano" => $TerceroIniciacionPiano[0],
-            "TerceroIniciacionViolin" => $TerceroIniciacionViolin[0],
-            "TerceroIniciacionGuitarra" => $TerceroIniciacionGuitarra[0],
-
+            "CantidadTotalCursos"=> $Lista,
+            "CantidadInstrumentos" => $ListaInst,
         ], 200);
+        return $Lista;
+        // $AntiguosNoInscritos =DB::select("select COUNT(*) AS AntiguosNoInscritos from estudiantes e where e.Observacion LIKE '%NO INSCRITO%'");
+        // $CantidadInscritos =DB::select("select COUNT(*) AS CantidadInscritos from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'");
+        // //CANTIDADES DE ESTUDIANTES POR NIVEL
+        // $PrimeroSuperior = DB::select("select COUNT(*) AS PrimeroSuperior from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO SUPERIOR'");
+        // $SegundoSuperior = DB::select("select COUNT(*) AS SegundoSuperior from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO SUPERIOR'");
+        // $TerceroSuperior = DB::select("select COUNT(*) AS TerceroSuperior from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO SUPERIOR'");
+        // $PrimeroIntermedio = DB::select("select COUNT(*) AS PrimeroIntermedio from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INTERMEDIO'");
+        // $SegundoIntermedio = DB::select("select COUNT(*) AS SegundoIntermedio from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INTERMEDIO'");
+        // $TerceroIntermedio = DB::select("select COUNT(*) AS TerceroIntermedio from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INTERMEDIO'");
+        // $PrimeroBasico = DB::select("select COUNT(*) AS PrimeroBasico from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO BASICO'");
+        // $SegundoBasico = DB::select("select COUNT(*) AS SegundoBasico from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO BASICO'");
+        // $TerceroBasico = DB::select("select COUNT(*) AS TerceroBasico from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO BASICO'");
+        // $PrimeroIniciacion = DB::select("select COUNT(*) AS PrimeroIniciacion from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INICIACION'");
+        // $SegundoIniciacion = DB::select("select COUNT(*) AS SegundoIniciacion from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INICIACION'");
+        // $TerceroIniciacion = DB::select("select COUNT(*) AS TerceroIniciacion from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INICIACION'");
+
+
+        // //cantidades de estudiantes por nivel INSTRUMENTO
+        // $PrimeroSuperiorPiano    = DB::select("select COUNT(*) AS PrimeroSuperiorPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO SUPERIOR' and (e.Especialidad LIKE '%PIANO%')");
+        // $PrimeroSuperiorViolin   = DB::select("select COUNT(*) AS PrimeroSuperiorViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO SUPERIOR' and (e.Especialidad LIKE '%VIOLIN%')");
+        // $PrimeroSuperiorGuitarra = DB::select("select COUNT(*) AS PrimeroSuperiorGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO SUPERIOR' and (e.Especialidad LIKE '%GUITARRA%')");
+
+        // $SegundoSuperiorPiano    = DB::select("select COUNT(*) AS SegundoSuperiorPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO SUPERIOR' and (e.Especialidad LIKE '%PIANO%')");
+        // $SegundoSuperiorViolin   = DB::select("select COUNT(*) AS SegundoSuperiorViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO SUPERIOR' and (e.Especialidad LIKE '%VIOLIN%')");
+        // $SegundoSuperiorGuitarra = DB::select("select COUNT(*) AS SegundoSuperiorGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO SUPERIOR' and (e.Especialidad LIKE '%GUITARRA%')");
+
+        // $TerceroSuperiorPiano    = DB::select("select COUNT(*) AS TerceroSuperiorPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO SUPERIOR' and (e.Especialidad LIKE '%PIANO%')");
+        // $TerceroSuperiorViolin   = DB::select("select COUNT(*) AS TerceroSuperiorViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO SUPERIOR' and (e.Especialidad LIKE '%VIOLIN%')");
+        // $TerceroSuperiorGuitarra = DB::select("select COUNT(*) AS TerceroSuperiorGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO SUPERIOR' and (e.Especialidad LIKE '%GUITARRA%')");
+
+        // $PrimeroIntermedioPiano    = DB::select("select COUNT(*) AS PrimeroIntermedioPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INTERMEDIO' and (e.Especialidad LIKE '%PIANO%')");
+        // $PrimeroIntermedioViolin   = DB::select("select COUNT(*) AS PrimeroIntermedioViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INTERMEDIO' and (e.Especialidad LIKE '%VIOLIN%')");
+        // $PrimeroIntermedioGuitarra = DB::select("select COUNT(*) AS PrimeroIntermedioGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INTERMEDIO' and (e.Especialidad LIKE '%GUITARRA%')");
+
+        // $SegundoIntermedioPiano    = DB::select("select COUNT(*) AS SegundoIntermedioPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INTERMEDIO' and (e.Especialidad LIKE '%PIANO%')");
+        // $SegundoIntermedioViolin   = DB::select("select COUNT(*) AS SegundoIntermedioViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INTERMEDIO' and (e.Especialidad LIKE '%VIOLIN%')");
+        // $SegundoIntermedioGuitarra = DB::select("select COUNT(*) AS SegundoIntermedioGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INTERMEDIO' and (e.Especialidad LIKE '%GUITARRA%')");
+
+        // $TerceroIntermedioPiano    = DB::select("select COUNT(*) AS TerceroIntermedioPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INTERMEDIO' and (e.Especialidad LIKE '%PIANO%')");
+        // $TerceroIntermedioViolin   = DB::select("select COUNT(*) AS TerceroIntermedioViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INTERMEDIO' and (e.Especialidad LIKE '%VIOLIN%')");
+        // $TerceroIntermedioGuitarra = DB::select("select COUNT(*) AS TerceroIntermedioGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INTERMEDIO' and (e.Especialidad LIKE '%GUITARRA%')");
+
+        // $PrimeroBasicoPiano    = DB::select("select COUNT(*) AS PrimeroBasicoPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO BASICO' and (e.Especialidad LIKE '%PIANO%')");
+        // $PrimeroBasicoViolin   = DB::select("select COUNT(*) AS PrimeroBasicoViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO BASICO' and (e.Especialidad LIKE '%VIOLIN%')");
+        // $PrimeroBasicoGuitarra = DB::select("select COUNT(*) AS PrimeroBasicoGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO BASICO' and (e.Especialidad LIKE '%GUITARRA%')");
+
+        // $SegundoBasicoPiano    = DB::select("select COUNT(*) AS SegundoBasicoPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO BASICO' and (e.Especialidad LIKE '%PIANO%')");
+        // $SegundoBasicoViolin   = DB::select("select COUNT(*) AS SegundoBasicoViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO BASICO' and (e.Especialidad LIKE '%VIOLIN%')");
+        // $SegundoBasicoGuitarra = DB::select("select COUNT(*) AS SegundoBasicoGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO BASICO' and (e.Especialidad LIKE '%GUITARRA%')");
+
+        // $TerceroBasicoPiano    = DB::select("select COUNT(*) AS TerceroBasicoPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO BASICO' and (e.Especialidad LIKE '%PIANO%')");
+        // $TerceroBasicoViolin   = DB::select("select COUNT(*) AS TerceroBasicoViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO BASICO' and (e.Especialidad LIKE '%VIOLIN%')");
+        // $TerceroBasicoGuitarra = DB::select("select COUNT(*) AS TerceroBasicoGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO BASICO' and (e.Especialidad LIKE '%GUITARRA%')");
+
+        // $PrimeroIniciacionPiano    = DB::select("select COUNT(*) AS PrimeroIniciacionPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INICIACION' and (e.Especialidad LIKE '%PIANO%')");
+        // $PrimeroIniciacionViolin   = DB::select("select COUNT(*) AS PrimeroIniciacionViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INICIACION' and (e.Especialidad LIKE '%VIOLIN%')");
+        // $PrimeroIniciacionGuitarra = DB::select("select COUNT(*) AS PrimeroIniciacionGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='PRIMERO INICIACION' and (e.Especialidad LIKE '%GUITARRA%')");
+
+        // $SegundoIniciacionPiano    = DB::select("select COUNT(*) AS SegundoIniciacionPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INICIACION' and (e.Especialidad LIKE '%PIANO%')");
+        // $SegundoIniciacionViolin   = DB::select("select COUNT(*) AS SegundoIniciacionViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INICIACION' and (e.Especialidad LIKE '%VIOLIN%')");
+        // $SegundoIniciacionGuitarra = DB::select("select COUNT(*) AS SegundoIniciacionGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='SEGUNDO INICIACION' and (e.Especialidad LIKE '%GUITARRA%')");
+
+        // $TerceroIniciacionPiano    = DB::select("select COUNT(*) AS TerceroIniciacionPiano from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INICIACION' and (e.Especialidad LIKE '%PIANO%')");
+        // $TerceroIniciacionViolin   = DB::select("select COUNT(*) AS TerceroIniciacionViolin from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INICIACION' and (e.Especialidad LIKE '%VIOLIN%')");
+        // $TerceroIniciacionGuitarra = DB::select("select COUNT(*) AS TerceroIniciacionGuitarra from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='TERCERO INICIACION' and (e.Especialidad LIKE '%GUITARRA%')");
+        // return response()->json([
+
+        //     "CantidadInscritos"=> $CantidadInscritos[0],
+        //     "AntiguosNoInscritos" => $AntiguosNoInscritos[0],
+        //     "PrimeroSuperior" => $PrimeroSuperior[0],
+        //     "SegundoSuperior" => $SegundoSuperior[0],
+        //     "TerceroSuperior" => $TerceroSuperior[0],
+        //     "PrimeroIntermedio" => $PrimeroIntermedio[0],
+        //     "SegundoIntermedio" => $SegundoIntermedio[0],
+        //     "TerceroIntermedio" => $TerceroIntermedio[0],
+        //     "PrimeroBasico"=> $PrimeroBasico[0],
+        //     "SegundoBasico"=> $SegundoBasico[0],
+        //     "TerceroBasico"=> $TerceroBasico[0],
+        //     "PrimeroIniciacion" => $PrimeroIniciacion[0],
+        //     "SegundoIniciacion" => $SegundoIniciacion[0],
+        //     "TerceroIniciacion" => $TerceroIniciacion[0],
+        //     "PrimeroSuperiorPiano" => $PrimeroSuperiorPiano[0],
+        //     "PrimeroSuperiorViolin" => $PrimeroSuperiorViolin[0],
+        //     "PrimeroSuperiorGuitarra" => $PrimeroSuperiorGuitarra[0],
+        //     "SegundoSuperiorPiano" => $SegundoSuperiorPiano[0],
+        //     "SegundoSuperiorViolin" => $SegundoSuperiorViolin[0],
+        //     "SegundoSuperiorGuitarra" => $SegundoSuperiorGuitarra[0],
+        //     "TerceroSuperiorPiano" => $TerceroSuperiorPiano[0],
+        //     "TerceroSuperiorViolin" => $TerceroSuperiorViolin[0],
+        //     "TerceroSuperiorGuitarra" => $TerceroSuperiorGuitarra[0],
+        //     "PrimeroIntermedioPiano" => $PrimeroIntermedioPiano[0],
+        //     "PrimeroIntermedioViolin" => $PrimeroIntermedioViolin[0],
+        //     "PrimeroIntermedioGuitarra" => $PrimeroIntermedioGuitarra[0],
+        //     "SegundoIntermedioPiano" => $SegundoIntermedioPiano[0],
+        //     "SegundoIntermedioViolin" => $SegundoIntermedioViolin[0],
+        //     "SegundoIntermedioGuitarra" => $SegundoIntermedioGuitarra[0],
+        //     "TerceroIntermedioPiano" => $TerceroIntermedioPiano[0],
+        //     "TerceroIntermedioViolin" => $TerceroIntermedioViolin[0],
+        //     "TerceroIntermedioGuitarra" => $TerceroIntermedioGuitarra[0],
+        //     "PrimeroBasicoPiano"    => $PrimeroBasicoPiano[0],
+        //     "PrimeroBasicoViolin" => $PrimeroBasicoViolin[0],
+        //     "PrimeroBasicoGuitarra" => $PrimeroBasicoGuitarra[0],
+        //     "SegundoBasicoPiano" => $SegundoBasicoPiano[0],
+        //     "SegundoBasicoViolin" => $SegundoBasicoViolin[0],
+        //     "SegundoBasicoGuitarra" => $SegundoBasicoGuitarra[0],
+        //     "TerceroBasicoPiano" => $TerceroBasicoPiano[0],
+        //     "TerceroBasicoViolin" => $TerceroBasicoViolin[0],
+        //     "TerceroBasicoGuitarra" => $TerceroBasicoGuitarra[0],
+        //     "PrimeroIniciacionPiano"   => $PrimeroIniciacionPiano[0],
+        //     "PrimeroIniciacionViolin" => $PrimeroIniciacionViolin[0],
+        //     "PrimeroIniciacionGuitarra" => $PrimeroIniciacionGuitarra[0],
+        //     "SegundoIniciacionPiano" => $SegundoIniciacionPiano[0],
+        //     "SegundoIniciacionViolin" => $SegundoIniciacionViolin[0],
+        //     "SegundoIniciacionGuitarra" => $SegundoIniciacionGuitarra[0],
+        //     "TerceroIniciacionPiano" => $TerceroIniciacionPiano[0],
+        //     "TerceroIniciacionViolin" => $TerceroIniciacionViolin[0],
+        //     "TerceroIniciacionGuitarra" => $TerceroIniciacionGuitarra[0],
+
+        // ], 200);
     }
     #endregion NEW GESTION
     /**
@@ -266,8 +304,11 @@ class EstudiantesController extends Controller
         $estudiante->Curso_Solicitado= $request->input('Curso_Solicitado');
         $estudiante->Mension= $request->input('Mension'); //new
         $estudiante->Area= $request->input('Area'); //new
+        $estudiante->Programa= $request->input('Programa'); //new
+        $estudiante->Nivel= $request->input('Nivel'); //new
+        $estudiante->Malla= $request->input('Malla'); //new
         $estudiante->Admin_id= $request->input('Admin_id');
-        $estudiante->created_at= '2022-02-18'; //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
+        // $estudiante->created_at= '2022-02-18'; //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
 
         if($request->hasFile('Certificado')){$estudiante->Certificado = 'CertificadosNacDocumentos/'.$namefileCertificado;} else{$estudiante->Certificado = '';}
         if($request->hasFile('DocColUni')){$estudiante->DocColUni = 'DocColUniDocumentos/'.$namefileDocColUni;} else{$estudiante->DocColUni = '';}
