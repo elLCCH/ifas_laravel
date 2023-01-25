@@ -14,3 +14,5 @@ yarn-error.log
 /public
 /app/Providers
 .cpanel.yml
+AnioController.php
+estilos.min.css
