@@ -24,7 +24,8 @@ class CursoController extends Controller
 
 
         $Malla = $request->query('Malla');
-        $data = Curso::whereRaw('Malla=?',$Malla)->orderBy('NivelCurso','desc')->get();
+        $Anio_id = $request->query('Anio_id');
+        $data = Curso::whereRaw('Anio_id=?',$Anio_id)->whereRaw('Malla=?',$Malla)->orderBy('NivelCurso','desc')->get();
         return $data;
     }
     public function CursosUniqueSigla()

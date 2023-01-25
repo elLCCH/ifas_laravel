@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use PhpParser\Node\Stmt\Else_;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Date;
 
 class EstudiantesController extends Controller
 {
@@ -284,7 +285,7 @@ class EstudiantesController extends Controller
         $estudiante->OcupacionM= $request->input('OcupacionM');
         $estudiante->NumCelM= $request->input('NumCelM');
         $estudiante->Direccion= $request->input('Direccion');
-        $estudiante->Telefono= $request->input('Telefono');
+        $estudiante->Admin_idPC= $request->input('Admin_idPC');
         $estudiante->Celular= $request->input('Celular');
         $estudiante->NColegio= $request->input('NColegio');
         $estudiante->TipoColegio= $request->input('TipoColegio');
@@ -309,6 +310,9 @@ class EstudiantesController extends Controller
         $estudiante->Malla= $request->input('Malla'); //new
         $estudiante->Admin_id= $request->input('Admin_id');
         // $estudiante->created_at= '2022-02-18'; //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
+        // $fechahoy=new Date();
+        // $estudiante->created_at= $fechahoy->now(); //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
+        // $estudiante->updated_at= $fechahoy->now(); //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
 
         if($request->hasFile('Certificado')){$estudiante->Certificado = 'CertificadosNacDocumentos/'.$namefileCertificado;} else{$estudiante->Certificado = '';}
         if($request->hasFile('DocColUni')){$estudiante->DocColUni = 'DocColUniDocumentos/'.$namefileDocColUni;} else{$estudiante->DocColUni = '';}

@@ -20,7 +20,8 @@ class AnioController extends Controller
     }
     public function index()
     {
-        //
+        $data = Anio::all();
+        return $data;
     }
 
     /**

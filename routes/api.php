@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 /*AÑO*/
 Route::get('DeterminarInstituto', 'App\Http\Controllers\AnioController@DeterminarInstituto');
-
+Route::resource('Anio', 'App\Http\Controllers\AnioController');
 /*CURSO*/
 Route::resource('curso', 'App\Http\Controllers\CursoController');
 Route::get('cursoUnique', 'App\Http\Controllers\CursoController@CargarCursosUnique');
