@@ -143,14 +143,15 @@ class ApisController extends Controller
             //BELLAS ARTES ANTIGUA.............................,"Estado"=>"ACTIVO"..
             "7" => Array ("Mension" => "PINTURA","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES","Estado"=>"ACTIVO"),
             "8" => Array ("Mension" => "ESCULTURA","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES","Estado"=>"ACTIVO"),
-            "9" => Array ("Mension" => "ARTES PLASTICAS","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES","Estado"=>"ACTIVO"),
+            "9" => Array ("Mension" => "ARTES GRAFICAS","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES","Estado"=>"ACTIVO"),
             "10" => Array ("Mension" => "CERAMICA","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES","Estado"=>"ACTIVO"),
-            "11" => Array ("Mension" => "NINGUNA","Malla"=>"NUEVA","Nivel"=>"NINGUNA","Pertenece"=>"TODOS","Ifa"=>"TODOS","Estado"=>"ACTIVO"),
+            "11" => Array ("Mension" => "DIBUJO","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES","Estado"=>"ACTIVO"),
+            "12" => Array ("Mension" => "NINGUNA","Malla"=>"NUEVA","Nivel"=>"NINGUNA","Pertenece"=>"TODOS","Ifa"=>"TODOS","Estado"=>"ACTIVO"),
             //FOLKLORE ANTIGUA
-            "12" => Array ("Mension" => "CHARANGO","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"FOLKLORE","Estado"=>"ACTIVO"),
-            "13" => Array ("Mension" => "GUITARRA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"FOLKLORE","Estado"=>"ACTIVO"),
-            "14" => Array ("Mension" => "QUENA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"FOLKLORE","Estado"=>"ACTIVO"),
-            "15" => Array ("Mension" => "ZAMPOÑA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"FOLKLORE","Estado"=>"ACTIVO"),
+            "13" => Array ("Mension" => "CHARANGO","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"FOLKLORE","Estado"=>"ACTIVO"),
+            "14" => Array ("Mension" => "GUITARRA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"FOLKLORE","Estado"=>"ACTIVO"),
+            "15" => Array ("Mension" => "QUENA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"FOLKLORE","Estado"=>"ACTIVO"),
+            "16" => Array ("Mension" => "ZAMPOÑA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"FOLKLORE","Estado"=>"ACTIVO"),
         );
         return $data;
     }
