@@ -26,7 +26,7 @@ Route::get('cursoUnique', 'App\Http\Controllers\CursoController@CargarCursosUniq
 Route::post('ListaEstudiantes', 'App\Http\Controllers\CursoController@ListaEstudiantes');
 Route::get('BuscarNivelCurso/{idCurso}', 'App\Http\Controllers\CursoController@BuscarNivelCurso');
 Route::get('CursosPorNivel/{Nivel}', 'App\Http\Controllers\CursoController@CargarCursosPorNivel');
-Route::get('ListaAgrupacionMateriasXCursos/{idAdmin}', 'App\Http\Controllers\CursoController@ListaAgrupacionMateriasXCursos');
+Route::post('ListaAgrupacionMateriasXCursos/{idAdmin}', 'App\Http\Controllers\CursoController@ListaAgrupacionMateriasXCursos');
 Route::get('CargarSiglaUnique', 'App\Http\Controllers\CursoController@CargarSiglaUnique');
 Route::post('ModificarBimestres', 'App\Http\Controllers\CursoController@ModificarBimestres');
 Route::get('CursosUniqueSigla', 'App\Http\Controllers\CursoController@CursosUniqueSigla');

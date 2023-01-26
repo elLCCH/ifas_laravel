@@ -40,57 +40,70 @@ class CursoController extends Controller
     }
     public function ListaAgrupacionMateriasXCursos(Request $request, $id)
     {
+
+        $Malla = $request->input('Malla');
+        $Anio_id = $request->input('Anio_id');
         // $tipo = $request->query('tipo');
         // $curso = Curso::whereRaw('NivelCurso=?',$tipo)->orderBy('NombreCurso','desc')->get();
         // return $curso;
 
         // $adminID = $request->input('admin_id');
         $adminID = $id;
-        $curso = Curso::query()->orderBy('NivelCurso', 'ASC')->get();
+        // $curso = Curso::query()->orderBy('NivelCurso', 'ASC')->get(); //ACA SELECCIONA TODOS LOS CURSOS DE LA TABLA PARA LAS MANIOBRAS
 
+        //PERO YANO LO NECESITAMOS YA Q TENEMOS QUE HACERLO POR GESTION
+        $curso =Curso::where('Anio_id',$Anio_id)->where('Malla',$Malla)->orderBy('NivelCurso','desc')->get();
+        // return $curso;
 
-        foreach ($curso as $C) {
-            // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-            $NewCurso = Curso::where('id','=',$C->id)->first();
+        try {
+            foreach ($curso as $C) {
+                // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
+                $NewCurso = Curso::where('id','=',$C->id)->first();
 
-            $verificacion = Administrativos_Cursos::where('Admin_id','=', $adminID)->where('Curso_id','=',$C->id)->first();
-            if ($verificacion != "" || $verificacion !=null) {
-                //ESTE DOCENTE TIENE PUESTO EL CURSO ENTONCES ACTIVADO
-                $NewCurso['Existencia'] = 'ACTIVADO';
+                $verificacion = Administrativos_Cursos::where('Admin_id','=', $adminID)->where('Curso_id','=',$C->id)->first();
+                if ($verificacion != "" || $verificacion !=null) {
+                    //ESTE DOCENTE TIENE PUESTO EL CURSO ENTONCES ACTIVADO
+                    $NewCurso['Existencia'] = 'ACTIVADO';
 
-                $NewCurso['idAdmin'] = '';
-                $NewCurso['Ap_Paterno'] = '';
-                $NewCurso['Ap_Materno'] = '';
-                $NewCurso['Nombre'] = '';
-            } else {
-                //ESTE DONCENTE NO TIENE ACTIVADO ESTE CURSO, X LO TANTO VERIFICAR SI OTROS DOCENTES SI LO TIENEN
-                $AllAdmin = Administrativos::query()->get();
-                foreach ($AllAdmin as $admin) {
-                    $verificacionOtrosAdmins = Administrativos_Cursos::where('Admin_id','=', $admin->id)->where('Curso_id','=',$C->id)->first();
-                    if ($verificacionOtrosAdmins != "" || $verificacionOtrosAdmins !=null) {
-                        //EL ADMINISTRADOR X YA TIENE ACTIVADO ESTE CURSO
-                        $NewCurso['Existencia'] = 'ACTIVO';
-                        $NewCurso['idAdmin'] = $admin->id;
-                        $NewCurso['Ap_Paterno'] = $admin->Ap_Paterno;
-                        $NewCurso['Ap_Materno'] = $admin->Ap_Materno;
-                        $NewCurso['Nombre'] = $admin->Nombre;
-                        break;
+                    $NewCurso['idAdmin'] = '';
+                    $NewCurso['Ap_Paterno'] = '';
+                    $NewCurso['Ap_Materno'] = '';
+                    $NewCurso['Nombre'] = '';
+                } else {
+                    //ESTE DONCENTE NO TIENE ACTIVADO ESTE CURSO, X LO TANTO VERIFICAR SI OTROS DOCENTES SI LO TIENEN
+                    $AllAdmin = Administrativos::query()->get();
+                    foreach ($AllAdmin as $admin) {
+                        $verificacionOtrosAdmins = Administrativos_Cursos::where('Admin_id','=', $admin->id)->where('Curso_id','=',$C->id)->first();
+                        if ($verificacionOtrosAdmins != "" || $verificacionOtrosAdmins !=null) {
+                            //EL ADMINISTRADOR X YA TIENE ACTIVADO ESTE CURSO
+                            $NewCurso['Existencia'] = 'ACTIVO';
+                            $NewCurso['idAdmin'] = $admin->id;
+                            $NewCurso['Ap_Paterno'] = $admin->Ap_Paterno;
+                            $NewCurso['Ap_Materno'] = $admin->Ap_Materno;
+                            $NewCurso['Nombre'] = $admin->Nombre;
+                            break;
+                        }
+                        else{
+                            $NewCurso['Existencia'] = 'INACTIVO';
+                            $NewCurso['idAdmin'] = '';
+                            $NewCurso['Ap_Paterno'] = '';
+                            $NewCurso['Ap_Materno'] = '';
+                            $NewCurso['Nombre'] = '';
+                        }
                     }
-                    else{
-                        $NewCurso['Existencia'] = 'INACTIVO';
-                        $NewCurso['idAdmin'] = '';
-                        $NewCurso['Ap_Paterno'] = '';
-                        $NewCurso['Ap_Materno'] = '';
-                        $NewCurso['Nombre'] = '';
-                    }
+
+
                 }
-
-
+                $Lista[] = $NewCurso;
             }
-            $Lista[] = $NewCurso;
+
+            return $Lista;
+        } catch (\Throwable $e) {
+            // return $request;
+            report($e);
+            return false;
         }
 
-        return $Lista;
     }
     public function ListaEstudiantes(Request $request)
     {
