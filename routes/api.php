@@ -22,19 +22,22 @@ Route::get('DeterminarInstituto', 'App\Http\Controllers\AnioController@Determina
 Route::resource('Anio', 'App\Http\Controllers\AnioController');
 /*CURSO*/
 Route::resource('curso', 'App\Http\Controllers\CursoController');
-Route::get('cursoUnique', 'App\Http\Controllers\CursoController@CargarCursosUnique');
+Route::post('cursoUnique', 'App\Http\Controllers\CursoController@CargarCursosUnique');
 Route::post('ListaEstudiantes', 'App\Http\Controllers\CursoController@ListaEstudiantes');
 Route::get('BuscarNivelCurso/{idCurso}', 'App\Http\Controllers\CursoController@BuscarNivelCurso');
-Route::get('CursosPorNivel/{Nivel}', 'App\Http\Controllers\CursoController@CargarCursosPorNivel');
+Route::post('MateriasxEstudianteAnio', 'App\Http\Controllers\CursoController@MateriasxEstudianteAnio');
+Route::post('MateriasxAnioMallaNivelCurso', 'App\Http\Controllers\CursoController@MateriasxAnioMallaNivelCurso');
+Route::post('MateriasxAnioMalla', 'App\Http\Controllers\CursoController@MateriasxAnioMalla');
 Route::post('ListaAgrupacionMateriasXCursos/{idAdmin}', 'App\Http\Controllers\CursoController@ListaAgrupacionMateriasXCursos');
 Route::get('CargarSiglaUnique', 'App\Http\Controllers\CursoController@CargarSiglaUnique');
 Route::post('ModificarBimestres', 'App\Http\Controllers\CursoController@ModificarBimestres');
 Route::get('CursosUniqueSigla', 'App\Http\Controllers\CursoController@CursosUniqueSigla');
 Route::get('CargarMalla', 'App\Http\Controllers\CursoController@CargarMalla');
+Route::post('ClonarGestion', 'App\Http\Controllers\CursoController@ClonarGestion');
 /*CALIFICACIONES*/
 Route::resource('calificacion', 'App\Http\Controllers\CalificacionesController');
 Route::post('EncontrarNivelCurso/{idEst}', 'App\Http\Controllers\CalificacionesController@EncontrarNivelCurso');
-Route::delete('EliminarEstudianteDelCurso/{idEst}', 'App\Http\Controllers\CalificacionesController@EliminarEstudianteDelCurso');
+Route::post('EliminarEstudianteDelCurso', 'App\Http\Controllers\CalificacionesController@EliminarEstudianteDelCurso');
 Route::get('ListarXCursoCalif/{idCurso}', 'App\Http\Controllers\CalificacionesController@ListarXCursoCalif');
 Route::post('ListarForCentralizadorFinal', 'App\Http\Controllers\CalificacionesController@ListarForCentralizadorFinal');
 Route::post('ListarForHeaderFinal', 'App\Http\Controllers\CalificacionesController@ListarForHeaderFinal');
@@ -71,6 +74,7 @@ Route::post('PublicacionUpdate/{admin}', 'App\Http\Controllers\PublicacionesCont
 Route::resource('AreaEventos', 'App\Http\Controllers\AreaeventosController');
 /*PRERREQUISITOS*/
 Route::resource('Prerrequisito', 'App\Http\Controllers\PrerrequisitosController');
+Route::post('indexListarxGestion', 'App\Http\Controllers\PrerrequisitosController@indexListarxGestion');
 /*EVENTOS*/
 Route::resource('Evento', 'App\Http\Controllers\EventosController');
 Route::get('EventoActivo', 'App\Http\Controllers\EventosController@EventoActivo');

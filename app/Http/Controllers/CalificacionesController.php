@@ -803,9 +803,13 @@ class CalificacionesController extends Controller
      */
     public function store(Request $request)
     {
-        $requestData = $request->all();
-        Calificaciones::insert($requestData);
-        return $requestData;
+        $data = $request->toArray();
+        for ($i=0; $i < sizeof($data); $i++) {
+            // $fila = $request[$i];
+             Calificaciones::insert($data[$i]);
+        }
+
+        return $request;
         // return 'calificacion creado';
     }
 
@@ -857,9 +861,11 @@ class CalificacionesController extends Controller
     {
         //
     }
-    public function EliminarEstudianteDelCurso($idEst)
+    public function EliminarEstudianteDelCurso(Request $request)
     {
-        Calificaciones::where('estudiante_id','=',$idEst)->delete();
+        $idEst = $request->input('idEst');
+        $Anio_id = $request->input('Anio_id');
+        Calificaciones::where('estudiante_id',$idEst)->where('anio_id',$Anio_id)->delete();
         return 'Eliminacion del Estudiante Curso Correcto';
     }
 }

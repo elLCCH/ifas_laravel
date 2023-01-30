@@ -23,6 +23,17 @@ class PrerrequisitosController extends Controller
         cursos m2 ON m2.id=p.id_materia_s");
         return $Prerrequisitos;
     }
+    public function indexListarxGestion(Request $request)
+    {
+        $Anio_id = $request->input('Anio_id');
+        $Prerrequisitos =  DB::select("select p.id,p.id_materia_p,p.id_materia_s,p.Anio_id,
+        m.NombreCurso as 'mat_prin',m.Sigla as 'cod_prin',
+        m2.NombreCurso as 'materia_sec',m2.Sigla as 'cod_sec'
+        from prerrequisitos p LEFT JOIN
+        cursos m ON m.id=p.id_materia_p LEFT JOIN
+        cursos m2 ON m2.id=p.id_materia_s where p.Anio_id=$Anio_id");
+        return $Prerrequisitos;
+    }
     public function store(Request $request)
     {
         $requestData = $request->all();

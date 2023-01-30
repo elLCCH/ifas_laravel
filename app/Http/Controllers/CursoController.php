@@ -7,6 +7,7 @@ use App\Models\Calificaciones;
 use App\Models\Curso;
 use App\Models\Estudiantes;
 use App\Models\Administrativos_Cursos;
+use App\Models\Prerrequisitos;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,6 +29,66 @@ class CursoController extends Controller
         $data = Curso::whereRaw('Anio_id=?',$Anio_id)->whereRaw('Malla=?',$Malla)->orderBy('NivelCurso','desc')->get();
         return $data;
     }
+    public function ClonarGestion(Request $request)
+    {
+
+        // $Malla = $request->input('Malla'); //MALLA A CLONAR
+        $Anio_id = $request->query('Anio_id'); //GESTION A CLONAR
+        $New_Anio_id = $request->query('New_Anio_id'); //NUEVA GESTION //4
+
+        $Anio_idinput = $request->input('Anio_id'); //GESTION A CLONAR
+        $New_Anio_idinput = $request->input('New_Anio_id'); //NUEVA GESTION //4
+
+        //CLONANDO MATERIAS PARA NUEVA GESTION
+        // DB::select("INSERT INTO `cursos` SELECT 0, NombreCurso ,NivelCurso, Sigla, Tipo,BiTriEstado,Horas,Malla,created_at,updated_at,$New_Anio_idinput FROM cursos WHERE Anio_id=$Anio_idinput");
+        // SELECT * from cursos where Anio_id=
+        $dataMateriass= curso::where('Anio_id','=',$Anio_idinput)->get();
+        // $dataMateriass = DB::select("select * from cursos where Anio_id=$Anio_idinput");
+
+        // foreach ($dataMateriass as $c ) {
+        //     $curso = new curso();
+        //     $curso->NombreCurso= $c->NombreCurso;
+        //     $curso->NivelCurso= $c->NivelCurso;
+        //     $curso->Sigla= $c->Sigla;
+        //     $curso->Tipo= $c->Tipo;
+        //     $curso->BiTriEstado= 'NINGUN BIMESTRE';
+        //     $curso->Horas= $c->Horas;
+        //     $curso->Malla= $c->Malla;
+        //     $curso->Anio_id= $New_Anio_idinput;
+        //     $curso->save();
+        // }
+
+
+        //clonar prerrequisitos
+        $PrerreqAnteriorGestion = Prerrequisitos::where('Anio_id','=',$Anio_idinput)->get();
+        // $Lista[]=array();
+        foreach ($PrerreqAnteriorGestion as $r) {
+            $ObtenerMateriaPrimariaAntes = DB::select("select * from cursos where id=$r->id_materia_p");
+            $ObtenerMateriasSecundariasAntes = DB::select("select * from cursos where id=$r->id_materia_s");
+
+            $Primaria = $ObtenerMateriaPrimariaAntes[0]->Sigla;
+            $Secundaria = $ObtenerMateriasSecundariasAntes[0]->Sigla;
+
+            $ObtenerMateriaPrimaria = DB::select("select * from cursos where Sigla='$Primaria' and Anio_id=$New_Anio_idinput");
+            $ObtenerMateriasSecundarias = DB::select("select * from cursos where Sigla='$Secundaria' and Anio_id=$New_Anio_idinput");
+
+            // $Lista[]=$ObtenerMateriaPrimaria;
+            $PrimariaNew = $ObtenerMateriaPrimaria[0]->id;
+            $SecundariaNew = $ObtenerMateriasSecundarias[0]->id;
+
+
+            $Prerreq = new Prerrequisitos();
+            $Prerreq->id_materia_p= $PrimariaNew;
+            $Prerreq->id_materia_s= $SecundariaNew;
+            $Prerreq->Anio_id= $New_Anio_idinput;
+            $Prerreq->save();
+        //     // DB::select("INSERT INTO `prerrequisitos` value (0, $PrimariaNew,$SecundariaNew,null,null,4)");
+        }
+
+        // return 'CLONACION EXITOSA';
+        return $ObtenerMateriasSecundarias;
+
+    }
     public function CursosUniqueSigla()
     {
         $dataUnique=DB::select("SELECT DISTINCT Sigla, NombreCurso FROM cursos ORDER BY Sigla");
@@ -37,6 +98,58 @@ class CursoController extends Controller
             $Lista[] = $data;
         }
         return $Lista;
+    }
+    public function MateriasxAnioMallaNivelCurso(Request $request)
+    {
+        //USADO PARA CARGAR TODAS LAS MATEREIAS DE UN ANIO MALLA NIVEL // USADO PARA ASIGNAR MATERIAS A LOS ESTUDIANTES
+        $Malla = $request->input('Malla');
+        $Anio_id = $request->input('Anio_id');
+        $NivelCurso = $request->input('NivelCurso');
+
+        $materias = DB::select("SELECT cursos.id,`cursos`.`Sigla` as 'cod_prin',cursos.Anio_id,cursos.NivelCurso as 'CursoP',cursos.Malla,cursos.NombreCurso as 'mat_prin',
+        cursos.id as 'id_materia_p',prerrequisitos.id_materia_s,(select c.Sigla from cursos c where c.id=prerrequisitos.id_materia_s) as 'cod_sec'
+                FROM `cursos`
+                    LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.Malla='$Malla' and cursos.NivelCurso = '$NivelCurso'");
+        $SiTienePrerreq = true;
+        foreach ($materias as $k) {
+            if ($k->cod_sec==null) {
+                $SiTienePrerreq = false;
+            }
+        }
+        if ($SiTienePrerreq ==false) {
+            $materias = DB::select("SELECT cursos.id,`cursos`.`Sigla` as 'cod_prin',cursos.Anio_id,cursos.NivelCurso as 'CursoP',cursos.Malla,cursos.NombreCurso as 'mat_prin',
+            cursos.id as 'id_materia_p',(SELECT p.id_materia_s as 'id_materia_s2' from prerrequisitos p where p.id_materia_p =  (select c.id from cursos c where c.Sigla=cursos.Sigla and c.NivelCurso NOT LIKE 'SEGUNDO BASICO B' and c.Anio_id=$Anio_id LIMIT 1)LIMIT 1) AS 'id_materia_sec',(select c.Sigla from cursos c where c.id=id_materia_sec) as 'cod_sec'
+                    FROM `cursos`
+                        LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.Malla='$Malla' and cursos.NivelCurso = '$NivelCurso';
+            ");
+        }
+        return $materias;
+    }
+    public function MateriasxAnioMalla(Request $request)
+    {
+        //USADO PARA CARGAR TODAS LAS MATEREIAS DE UN ANIO MALLA NIVEL // USADO PARA ASIGNAR MATERIAS A LOS ESTUDIANTES
+        $Malla = $request->input('Malla');
+        $Anio_id = $request->input('Anio_id');
+
+
+        $materias = DB::select("SELECT cursos.id,`cursos`.`Sigla` as 'cod_prin',cursos.Anio_id,cursos.NivelCurso as 'CursoP',cursos.Malla,cursos.NombreCurso as 'mat_prin',
+        cursos.id as 'id_materia_p',prerrequisitos.id_materia_s,(select c.Sigla from cursos c where c.id=prerrequisitos.id_materia_s) as 'cod_sec'
+                FROM `cursos`
+                    LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.Malla='$Malla' ");
+        $SiTienePrerreq = true;
+        foreach ($materias as $k) {
+            if ($k->cod_sec==null) {
+                $SiTienePrerreq = false;
+            }
+        }
+        if ($SiTienePrerreq ==false) {
+            $materias = DB::select("SELECT cursos.id,`cursos`.`Sigla` as 'cod_prin',cursos.Anio_id,cursos.NivelCurso as 'CursoP',cursos.Malla,cursos.NombreCurso as 'mat_prin',
+            cursos.id as 'id_materia_p',(SELECT p.id_materia_s as 'id_materia_s2' from prerrequisitos p where p.id_materia_p =  (select c.id from cursos c where c.Sigla=cursos.Sigla and c.NivelCurso NOT LIKE 'SEGUNDO BASICO B' and c.Anio_id=$Anio_id LIMIT 1)LIMIT 1) AS 'id_materia_sec',(select c.Sigla from cursos c where c.id=id_materia_sec) as 'cod_sec'
+                    FROM `cursos`
+                        LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.Malla='$Malla';
+            ");
+        }
+        return $materias;
     }
     public function ListaAgrupacionMateriasXCursos(Request $request, $id)
     {
@@ -137,12 +250,17 @@ class CursoController extends Controller
         $NivelCursoObtenido = $CursoData->NivelCurso;
         return $NivelCursoObtenido;
     }
-    public function CargarCursosUnique()
+    public function CargarCursosUnique(Request $request)
     {
         // $Curso = Curso::all();
         // $Cursos = $Curso->unique('NivelCurso');
-        $Cursos = Curso::distinct()->get(['NivelCurso']);
-        return $Cursos;
+
+        $Malla = $request->input('Malla');
+        $Anio_id = $request->input('Anio_id');
+        $data = Curso::where('Anio_id',$Anio_id)->where('Malla',$Malla)->distinct()->orderBy('NivelCurso','desc')->get(['NivelCurso']);
+
+        // $Cursos = Curso::distinct()->get(['NivelCurso']);
+        return $data;
     }
     public function CargarMalla()
     {
@@ -160,13 +278,21 @@ class CursoController extends Controller
         $Cursos = Curso::distinct()->get(['Sigla']);
         return $Cursos;
     }
-    public function CargarCursosPorNivel(Request $request, $Nivel)
+    public function MateriasxEstudianteAnio(Request $request)
     {
+        //CARGAR MATERIAS DE UN ESTUDIANTE DE UNA GESTION
         // $Nivel="SUPERIORRRR";
-        $curso = Curso::where('NivelCurso','=',$Nivel)->get();
+        $Estudiante_id = $request->input('Estudiante_id');
+        $Anio_id = $request->input('Anio_id');
+        $data = DB::select("SELECT `calificaciones`.`id`,calificaciones.anio_id,calificaciones.curso_id,calificaciones.estudiante_id,calificaciones.Promedio, anios.Anio, cursos.NombreCurso,cursos.NivelCurso,cursos.Sigla,cursos.Malla
+        FROM `calificaciones`
+            LEFT JOIN `estudiantes` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
+            LEFT JOIN `cursos` ON calificaciones.curso_id = `cursos`.`id`
+            LEFT JOIN `anios` ON `calificaciones`.`anio_id` = `anios`.`id` where estudiantes.id=$Estudiante_id and anios.id=$Anio_id");
+        // $curso = Curso::where('NivelCurso','=',$Nivel)->get();
                 //  Curso::where('id','=',$id)->update($requestData);
 
-        return $curso;
+        return $data;
     }
     /**
      * Show the form for creating a new resource.
