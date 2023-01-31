@@ -26,7 +26,12 @@ class CursoController extends Controller
 
         $Malla = $request->query('Malla');
         $Anio_id = $request->query('Anio_id');
-        $data = Curso::whereRaw('Anio_id=?',$Anio_id)->whereRaw('Malla=?',$Malla)->orderBy('NivelCurso','desc')->get();
+        if ($Malla =='nulo') {
+            $data = Curso::whereRaw('Anio_id=?',$Anio_id)->orderBy('NivelCurso','desc')->get();
+        }else{
+            $data = Curso::whereRaw('Anio_id=?',$Anio_id)->whereRaw('Malla=?',$Malla)->orderBy('NivelCurso','desc')->get();
+        }
+
         return $data;
     }
     public function ClonarGestion(Request $request)
@@ -121,6 +126,32 @@ class CursoController extends Controller
             cursos.id as 'id_materia_p',(SELECT p.id_materia_s as 'id_materia_s2' from prerrequisitos p where p.id_materia_p =  (select c.id from cursos c where c.Sigla=cursos.Sigla and c.NivelCurso NOT LIKE 'SEGUNDO BASICO B' and c.Anio_id=$Anio_id LIMIT 1)LIMIT 1) AS 'id_materia_sec',(select c.Sigla from cursos c where c.id=id_materia_sec) as 'cod_sec'
                     FROM `cursos`
                         LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.Malla='$Malla' and cursos.NivelCurso = '$NivelCurso';
+            ");
+        }
+        return $materias;
+    }
+    public function MateriasxAnioNivel(Request $request)
+    {
+        //USADO PARA CARGAR TODAS LAS MATEREIAS DE UN ANIO MALLA NIVEL // USADO PARA ASIGNAR MATERIAS A LOS ESTUDIANTES
+        // $Malla = $request->input('Malla');
+        $Anio_id = $request->input('Anio_id');
+        $NivelCurso = $request->input('NivelCurso');
+
+        $materias = DB::select("SELECT cursos.id,`cursos`.`Sigla` as 'cod_prin',cursos.Anio_id,cursos.NivelCurso as 'CursoP',cursos.Malla,cursos.NombreCurso as 'mat_prin',
+        cursos.id as 'id_materia_p',prerrequisitos.id_materia_s,(select c.Sigla from cursos c where c.id=prerrequisitos.id_materia_s) as 'cod_sec'
+                FROM `cursos`
+                    LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.NivelCurso = '$NivelCurso'");
+        $SiTienePrerreq = true;
+        foreach ($materias as $k) {
+            if ($k->cod_sec==null) {
+                $SiTienePrerreq = false;
+            }
+        }
+        if ($SiTienePrerreq ==false) {
+            $materias = DB::select("SELECT cursos.id,`cursos`.`Sigla` as 'cod_prin',cursos.Anio_id,cursos.NivelCurso as 'CursoP',cursos.Malla,cursos.NombreCurso as 'mat_prin',
+            cursos.id as 'id_materia_p',(SELECT p.id_materia_s as 'id_materia_s2' from prerrequisitos p where p.id_materia_p =  (select c.id from cursos c where c.Sigla=cursos.Sigla and c.NivelCurso NOT LIKE 'SEGUNDO BASICO B' and c.Anio_id=$Anio_id LIMIT 1)LIMIT 1) AS 'id_materia_sec',(select c.Sigla from cursos c where c.id=id_materia_sec) as 'cod_sec'
+                    FROM `cursos`
+                        LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.NivelCurso = '$NivelCurso';
             ");
         }
         return $materias;
@@ -220,23 +251,50 @@ class CursoController extends Controller
     }
     public function ListaEstudiantes(Request $request)
     {
-        try {
-            //obtengo la fila del curso deseado pero solo por su Id  del curso
-            $CursoData = Curso::where('NivelCurso','=', $request->NivelCurso)->first();
-            //obtener la lista de los estudiantes pero solo por su estudiante_id ...
-            //DIGAMOS UN ESTUDIANTE ESTA EN SEGUNDO MEDIO ENTONCES HABRA 5 DEL MISMO YA Q EL CURSO TIENE 5 MATERIAS
-            $CalificacionesData = Calificaciones::where('curso_id','=', $CursoData->id)->get();
-            //ELIMINAR VALORES DUPLICADOS POR estudiante_id
-            $CalificacionesData = $CalificacionesData->unique('estudiante_id');
-            $Lista = array();
-            foreach ($CalificacionesData as $C) {
-                $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-                $Lista[] = $EstudiantesData;
+        $NivelCurso= $request->NivelCurso;
+        $idMateria=$request->idMateria; //I
+        $Materia=$request->Materia;
+        $Anio_id=$request->Anio_id;
+
+
+        if ($idMateria=='') {
+            try {
+                //obtengo la fila del curso deseado pero solo por su Id  del curso
+                $CursoData = Curso::where('NivelCurso','=', $NivelCurso)->where('Anio_id','=',$Anio_id)->first(); //ANTES SE USABA
+                //obtener la lista de los estudiantes pero solo por su estudiante_id ...
+                //DIGAMOS UN ESTUDIANTE ESTA EN SEGUNDO MEDIO ENTONCES HABRA 5 DEL MISMO YA Q EL CURSO TIENE 5 MATERIAS
+                $CalificacionesData = Calificaciones::where('curso_id','=', $CursoData->id)->where('Anio_id','=',$Anio_id)->get(); //ANTES SE USABA
+                $CalificacionesData = $CalificacionesData->unique('estudiante_id');
+                $Lista = array();
+                foreach ($CalificacionesData as $C) {
+                    $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
+                    $Lista[] = $EstudiantesData;
+                }
+                return $Lista;
+            } catch (Exception $e) {
+                return 'EL CURSO NO TIENE ESTUDIANTES';
             }
-            return $Lista;
-        } catch (Exception $e) {
-            return 'EL CURSO NO TIENE ESTUDIANTES';
+        }else{
+            try {
+                //obtengo la fila del curso deseado pero solo por su Id  del curso
+                // $CursoData = Curso::where('NivelCurso','=', $NivelCurso)->where('Anio_id','=',$Anio_id)->first(); //ANTES SE USABA
+                //obtener la lista de los estudiantes pero solo por su estudiante_id ...
+                //DIGAMOS UN ESTUDIANTE ESTA EN SEGUNDO MEDIO ENTONCES HABRA 5 DEL MISMO YA Q EL CURSO TIENE 5 MATERIAS
+                // $CalificacionesData = Calificaciones::where('curso_id','=', $CursoData->id)->where('Anio_id','=',$Anio_id)->get(); //ANTES SE USABA
+                $CalificacionesData = Calificaciones::where('curso_id','=', $idMateria)->where('Anio_id','=',$Anio_id)->get(); //AHORA ESTE ES
+                //ELIMINAR VALORES DUPLICADOS POR estudiante_id
+                $CalificacionesData = $CalificacionesData->unique('estudiante_id');
+                $Lista = array();
+                foreach ($CalificacionesData as $C) {
+                    $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
+                    $Lista[] = $EstudiantesData;
+                }
+                return $Lista;
+            } catch (Exception $e) {
+                return 'EL CURSO NO TIENE ESTUDIANTES';
+            }
         }
+
 
 
 
@@ -257,7 +315,10 @@ class CursoController extends Controller
 
         $Malla = $request->input('Malla');
         $Anio_id = $request->input('Anio_id');
-        $data = Curso::where('Anio_id',$Anio_id)->where('Malla',$Malla)->distinct()->orderBy('NivelCurso','desc')->get(['NivelCurso']);
+
+            $data = Curso::where('Anio_id',$Anio_id)->where('Malla',$Malla)->distinct()->orderBy('NivelCurso','desc')->get(['NivelCurso']);
+
+
 
         // $Cursos = Curso::distinct()->get(['NivelCurso']);
         return $data;
@@ -325,9 +386,10 @@ class CursoController extends Controller
      * @param  \App\Models\Curso  $curso
      * @return \Illuminate\Http\Response
      */
-    public function show(Curso $curso)
+    public function show($id)
     {
-
+        $data = Curso::where('id','=',$id)->firstOrFail();
+        return response()->json($data, 200);
     }
 
     /**

@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+/*HORARIO */
+Route::resource('Horario', 'App\Http\Controllers\HorariosController');
+Route::post('updateHorario/{id}', 'App\Http\Controllers\HorariosController@updateHorario');
 /*AÑO*/
 Route::get('DeterminarInstituto', 'App\Http\Controllers\AnioController@DeterminarInstituto');
 Route::resource('Anio', 'App\Http\Controllers\AnioController');
@@ -27,6 +30,7 @@ Route::post('ListaEstudiantes', 'App\Http\Controllers\CursoController@ListaEstud
 Route::get('BuscarNivelCurso/{idCurso}', 'App\Http\Controllers\CursoController@BuscarNivelCurso');
 Route::post('MateriasxEstudianteAnio', 'App\Http\Controllers\CursoController@MateriasxEstudianteAnio');
 Route::post('MateriasxAnioMallaNivelCurso', 'App\Http\Controllers\CursoController@MateriasxAnioMallaNivelCurso');
+Route::post('MateriasxAnioNivel', 'App\Http\Controllers\CursoController@MateriasxAnioNivel');
 Route::post('MateriasxAnioMalla', 'App\Http\Controllers\CursoController@MateriasxAnioMalla');
 Route::post('ListaAgrupacionMateriasXCursos/{idAdmin}', 'App\Http\Controllers\CursoController@ListaAgrupacionMateriasXCursos');
 Route::get('CargarSiglaUnique', 'App\Http\Controllers\CursoController@CargarSiglaUnique');

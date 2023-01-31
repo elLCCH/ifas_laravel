@@ -4,82 +4,81 @@ namespace App\Http\Controllers;
 
 use App\Models\horarios;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class HorariosController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+    public function index(Request $request)
+        {
+            // $data =  DB::select("");
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+            $Anio_id = $request->query('Anio_id');
+            $data = horarios::whereRaw('Anio_id=?',$Anio_id)->orderBy('NivelCurso','desc')->get();
+            return response()->json($data, 200);
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        public function store(Request $request)
+        {
+            $data = $request->all();
+            if($request->hasFile('Horario')){
+                $file = $request->file('Horario');
+                $namefile = time().$file->getClientOriginalName();
+                $file->move(public_path().'/Horarios/',$namefile);
+            }
+            if($request->hasFile('Horario')){
+                $data['Horario']='Horarios/'.$namefile;
+            }
+            else{
+                $data['Horario']='';
+            }
+            Horarios::insert($data);
+            return response()->json(["mensaje" => "Horarios Registrado Correctamente"], 200);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\horarios  $horarios
-     * @return \Illuminate\Http\Response
-     */
-    public function show(horarios $horarios)
-    {
-        //
-    }
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\horarios  $horarios
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(horarios $horarios)
-    {
-        //
-    }
+        public function show($id)
+        {
+            $data = Horarios::where('id','=',$id)->firstOrFail();
+            return response()->json($data, 200);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\horarios  $horarios
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, horarios $horarios)
-    {
-        //
-    }
+        public function updateHorario(Request $request, $id)
+        {
+            $data = $request->all();
+            // $inscrito = horarios::findOrFail($id);
+            $even = horarios::where('id','=',$id)->firstOrFail();
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\horarios  $horarios
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(horarios $horarios)
-    {
-        //
-    }
+            if ($request->hasFile('Horario'))
+            {
+                // ELIMINANDO ANTIGUA FOTO
+                File::delete(public_path().'/'.$even->Horario);
+                //REALIZANDO CARGA DE LA NUEVA FOTO
+                $file = $request->file('Horario');
+                $namefile = time().$file->getClientOriginalName();
+                $file->move(public_path().'/Horarios/',$namefile);
+            }
+
+            if ($request->hasFile('Horario'))
+            {//SI TIENE FOTO ENTONCES EN Foto poner sus cosas
+                $data['Horario'] = 'Horarios/'.$namefile;
+            }
+            else
+            {//SINO TIENE FOTO Y AUN ASI QUIERE ACTUALIZAR
+                $data['Horario'] = $even->Horario;
+            }
+
+            horarios::where('id','=',$id)->update($data);
+            return response()->json(["mensaje" => "horarios Modificado Correctamente"], 200);
+        }
+        public function destroy($id)
+
+        {
+
+            $even =horarios::findOrFail($id);
+            File::delete(public_path().'/'.$even->Horario);
+            $data =  DB::select("delete from horarios where id='$id'");
+            return response()->json(["mensaje" => "horarios Eliminado Correctamente"], 200);
+
+        }
 }
