@@ -66,6 +66,8 @@ class EstudiantesController extends Controller
         $ListaInst = new Estudiantes(); //CANTIDADES INST
         $Lista['ANTIGUOS NO INSCRITOS'] =DB::select("select COUNT(*) AS 'ANTIGUOS NO INSCRITOS' from estudiantes e where e.Observacion LIKE '%NO INSCRITO%'")[0];
         $Lista['CANTIDAD INSCRITOS']=DB::select("select COUNT(*) AS 'CANTIDAD INSCRITOS' from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'")[0];
+        $Lista['CANTIDAD NUEVOS INSCRITOS']=DB::select("select COUNT(*) AS 'CANTIDAD NUEVOS INSCRITOS' from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%' and Categoria='NUEVO'")[0];
+        $Lista['CANTIDAD ANTIGUOS INSCRITOS']=DB::select("select COUNT(*) AS 'CANTIDAD ANTIGUOS INSCRITOS' from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%' and Categoria='ANTIGUO'")[0];
 
         foreach ($cursos_solicitados as $k) {
             $course=$k['NivelCurso'];
