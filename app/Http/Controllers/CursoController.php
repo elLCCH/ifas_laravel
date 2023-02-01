@@ -50,18 +50,18 @@ class CursoController extends Controller
         $dataMateriass= curso::where('Anio_id','=',$Anio_idinput)->get();
         // $dataMateriass = DB::select("select * from cursos where Anio_id=$Anio_idinput");
 
-        // foreach ($dataMateriass as $c ) {
-        //     $curso = new curso();
-        //     $curso->NombreCurso= $c->NombreCurso;
-        //     $curso->NivelCurso= $c->NivelCurso;
-        //     $curso->Sigla= $c->Sigla;
-        //     $curso->Tipo= $c->Tipo;
-        //     $curso->BiTriEstado= 'NINGUN BIMESTRE';
-        //     $curso->Horas= $c->Horas;
-        //     $curso->Malla= $c->Malla;
-        //     $curso->Anio_id= $New_Anio_idinput;
-        //     $curso->save();
-        // }
+        foreach ($dataMateriass as $c ) {
+            $curso = new curso();
+            $curso->NombreCurso= $c->NombreCurso;
+            $curso->NivelCurso= $c->NivelCurso;
+            $curso->Sigla= $c->Sigla;
+            $curso->Tipo= $c->Tipo;
+            $curso->BiTriEstado= 'NINGUN BIMESTRE';
+            $curso->Horas= $c->Horas;
+            $curso->Malla= $c->Malla;
+            $curso->Anio_id= $New_Anio_idinput;
+            $curso->save();
+        }
 
 
         //clonar prerrequisitos
