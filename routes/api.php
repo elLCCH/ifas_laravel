@@ -22,6 +22,7 @@ Route::resource('Horario', 'App\Http\Controllers\HorariosController');
 Route::post('updateHorario/{id}', 'App\Http\Controllers\HorariosController@updateHorario');
 /*AÑO*/
 Route::get('DeterminarInstituto', 'App\Http\Controllers\AnioController@DeterminarInstituto');
+Route::get('ObtenerLogo', 'App\Http\Controllers\AnioController@ObtenerLogo');
 Route::resource('Anio', 'App\Http\Controllers\AnioController');
 /*CURSO*/
 Route::resource('curso', 'App\Http\Controllers\CursoController');

@@ -345,7 +345,7 @@ class CursoController extends Controller
         // $Nivel="SUPERIORRRR";
         $Estudiante_id = $request->input('Estudiante_id');
         $Anio_id = $request->input('Anio_id');
-        $data = DB::select("SELECT `calificaciones`.`id`,calificaciones.anio_id,calificaciones.curso_id,calificaciones.estudiante_id,calificaciones.Promedio, anios.Anio, cursos.NombreCurso,cursos.NivelCurso,cursos.Sigla,cursos.Malla
+        $data = DB::select("SELECT `calificaciones`.`id`,calificaciones.anio_id,calificaciones.curso_id,calificaciones.estudiante_id,calificaciones.Promedio,calificaciones.PruebaRecuperacion, anios.Anio, cursos.NombreCurso,cursos.NivelCurso,cursos.Sigla,cursos.Malla
         FROM `calificaciones`
             LEFT JOIN `estudiantes` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
             LEFT JOIN `cursos` ON calificaciones.curso_id = `cursos`.`id`
