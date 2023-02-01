@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class TareasEstudiantes extends Command
 {
@@ -41,5 +42,7 @@ class TareasEstudiantes extends Command
         // return 0;
         //ACTUALIZAR EDADES DE LOS ESTUDIANTES
         DB::select("UPDATE estudiantes e set e.Edad= TIMESTAMPDIFF(YEAR,e.FechNac,CURDATE())");
+        $texto = "[".date("Y-m-d H:i:s")."]:SE ACTUALIZARON LAS EDADES";
+        Storage::append("archivo.txt",$texto);
     }
 }

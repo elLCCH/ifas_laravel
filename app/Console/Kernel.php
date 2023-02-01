@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+USE Illuminate\Support\Facades\DB;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,7 +25,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('estudiantes:tareas')->hourly();
+        $schedule->command('estudiantes:tareas')->everyFiveMinutes();
+        // $schedule->call(function () {
+        //     DB::select("UPDATE estudiantes e set e.Edad= TIMESTAMPDIFF(YEAR,e.FechNac,CURDATE())");
+        // })->daily();
     }
 
     /**

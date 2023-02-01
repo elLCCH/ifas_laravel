@@ -48,7 +48,7 @@ class EstudiantesController extends Controller
     }
     #region NEW GESTION
     /*PARA LA NUEVA GESTION*/
-    public function DetectarCantidadEstudiantesInscritos()
+    public function DetectarCantidadEstudiantesInscritos() //ESTADISTICAS
     {
         $anioController = new AnioController(); //ANIO CONTROLLER
         $apisController = new ApisController(); //APIS CONTROLLER
