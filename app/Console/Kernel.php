@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('estudiantes:tareas')->everyFiveMinutes();
+        $schedule->command('estudiantes:tareas');
         // $schedule->call(function () {
         //     DB::select("UPDATE estudiantes e set e.Edad= TIMESTAMPDIFF(YEAR,e.FechNac,CURDATE())");
         // })->daily();
@@ -33,7 +33,7 @@ class Kernel extends ConsoleKernel
 
     /**
      * Register the commands for the application.
-     *
+     *s
      * @return void
      */
     protected function commands()
