@@ -73,6 +73,9 @@ class ApisController extends Controller
             "26" => Array ("NivelCurso" => "PRIMERO CAPACITACION","Para" => "NUEVOS o ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
             "27" => Array ("NivelCurso" => "SEGUNDO CAPACITACION","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
             "28" => Array ("NivelCurso" => "TERCERO CAPACITACION","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
+            "29" => Array ("NivelCurso" => "CAPACITACION I TEEN","Para" => "NUEVOS o ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
+            "30" => Array ("NivelCurso" => "CAPACITACION II TEEN","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
+            "31" => Array ("NivelCurso" => "CAPACITACION III TEEN","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
         );
         return $data;
         // return ' ';
@@ -165,7 +168,7 @@ class ApisController extends Controller
             "3" => Array ("InstEspecialidad" => "VIOLA","Estado"=>"INHABILITADO","Ifa"=>"MARIA LUISA LUZIO"),
             "4" => Array ("InstEspecialidad" => "VIOLONCHELO","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
             "5" => Array ("InstEspecialidad" => "CONTRABAJO","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
-            "6" => Array ("InstEspecialidad" => "CLARINETE","Estado"=>"INHABILITADO","Ifa"=>"MARIA LUISA LUZIO"),
+            "6" => Array ("InstEspecialidad" => "CLARINETE","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
             "7" => Array ("InstEspecialidad" => "SAXOFON CLASICO","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
             "8" => Array ("InstEspecialidad" => "TROMPETA","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
             "9" => Array ("InstEspecialidad" => "TROMBON","Estado"=>"INHABILITADO","Ifa"=>"MARIA LUISA LUZIO"),

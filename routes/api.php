@@ -23,6 +23,7 @@ Route::post('updateHorario/{id}', 'App\Http\Controllers\HorariosController@updat
 /*AÑO*/
 Route::get('DeterminarInstituto', 'App\Http\Controllers\AnioController@DeterminarInstituto');
 Route::get('ObtenerLogo', 'App\Http\Controllers\AnioController@ObtenerLogo');
+Route::get('indexAll', 'App\Http\Controllers\AnioController@indexAll');
 Route::resource('Anio', 'App\Http\Controllers\AnioController');
 /*CURSO*/
 Route::resource('curso', 'App\Http\Controllers\CursoController');
@@ -61,6 +62,7 @@ Route::get('ObtenerNombreCompleto/{idEst}', 'App\Http\Controllers\EstudiantesCon
 Route::post('OrdenarLista', 'App\Http\Controllers\EstudiantesController@OrdenarLista');
 Route::get('indexSelection/{idest}', 'App\Http\Controllers\EstudiantesController@indexSelection');
 Route::get('DetectarCantidadEstudiantesInscritos', 'App\Http\Controllers\EstudiantesController@DetectarCantidadEstudiantesInscritos');
+Route::post('VerificarCursoParalelo', 'App\Http\Controllers\EstudiantesController@VerificarCursoParalelo');
 /*ADMINISTRATIVOS_CURSOS*/
 Route::resource('AdminCursos', 'App\Http\Controllers\AdministrativosCursosController');
 Route::post('EliminarAdminCursos', 'App\Http\Controllers\AdministrativosCursosController@EliminarAdminCursos');

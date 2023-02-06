@@ -25,16 +25,32 @@ class EstudiantesController extends Controller
         // return $data;
 
         // $estudiante = Estudiantes::orderBy('id', 'DESC')->get();
-        $data = DB::select("SELECT e.id, e.Ap_Paterno,e.Ap_Materno,e.Nombre,e.CI,e.Matricula,e.Categoria,e.Observacion,e.Estado, e.Curso_Solicitado
+        $data = DB::select("SELECT e.id, e.Ap_Paterno,e.Ap_Materno,e.Nombre,e.Turno,e.CI,e.Matricula,e.Categoria,e.Observacion,e.Estado, e.Curso_Solicitado
         FROM estudiantes e order by e.id desc");
         return $data;
 
+    }
+    public function VerificarCursoParalelo(Request $request)
+    {
+        $CI= $request->CI;
+        $Anio_id = $request->Anio_id;
+        $estExiste = DB::select("select * from estudiantes where CI='$CI'");
+        $data = DB::select("SELECT `calificaciones`.`id`,calificaciones.estudiante_id,calificaciones.anio_id, estudiantes.Ap_Paterno,estudiantes.Ap_Materno,estudiantes.Nombre,estudiantes.CI, cursos.NivelCurso, cursos.NombreCurso,anios.Anio
+        FROM `calificaciones`
+            LEFT JOIN `estudiantes` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
+            LEFT JOIN `cursos` ON `calificaciones`.`curso_id` = `cursos`.`id`
+            LEFT JOIN `anios` ON `calificaciones`.`anio_id` = `anios`.`id` WHERE estudiantes.CI = '$CI' and anios.id = $Anio_id");
+        return response()->json([
+            "estExiste"=> $estExiste,
+            "Lista" => $data,
+        ], 200);
     }
     public function indexSelection($id)
     {
         $est = Estudiantes::where('id','=', $id)->first();
         return $est;
     }
+
     public function EstudianteCuadro($id)
     {
         $EstCuadro = DB::table('Estudiantes')
