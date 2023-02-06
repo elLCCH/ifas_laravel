@@ -46,7 +46,7 @@
     </script>
 
 
-    <script src="/assets/Angular/runtime.107f6d2cb5107d36.js" type="module"></script><script src="/assets/Angular/polyfills.613581c0a8854c9d.js" type="module"></script><script src="/assets/Angular/main.1b04d68166412d84.js" type="module"></script>
+    <script src="/assets/Angular/runtime.107f6d2cb5107d36.js" type="module"></script><script src="/assets/Angular/polyfills.613581c0a8854c9d.js" type="module"></script><script src="/assets/Angular/main.d735c40f34e3976e.js" type="module"></script>
 
   <script src="/assets/Angular/assets/pdf-2.10.558.min.js" defer></script>
   <script src="/assets/Angular/assets/viewer-2.10.558.min.js" defer></script>
