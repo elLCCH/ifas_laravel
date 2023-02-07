@@ -34,6 +34,15 @@ class CursoController extends Controller
 
         return $data;
     }
+    public function RespaldarSiglas(Request $request)
+    {
+        $Malla = $request->input('Malla');
+        $Anio_id = $request->input('Anio_id');
+        DB::select("update cursos set SiglaRespaldo = Sigla where Anio_id=$Anio_id and Malla='$Malla'");
+        return 'SE RESPALDO CORRECTAMENTE';
+
+    }
+
     public function ClonarGestion(Request $request)
     {
 
@@ -112,7 +121,7 @@ class CursoController extends Controller
         $NivelCurso = $request->input('NivelCurso');
 
         $materias = DB::select("SELECT cursos.id,`cursos`.`Sigla` as 'cod_prin',cursos.Anio_id,cursos.NivelCurso as 'CursoP',cursos.Malla,cursos.NombreCurso as 'mat_prin',
-        cursos.id as 'id_materia_p',prerrequisitos.id_materia_s,(select c.Sigla from cursos c where c.id=prerrequisitos.id_materia_s) as 'cod_sec'
+        cursos.id as 'id_materia_p',prerrequisitos.id_materia_s,(select c.Sigla from cursos c where c.id=prerrequisitos.id_materia_s) as 'cod_sec',(select cc.SiglaRespaldo from cursos cc where cc.id=prerrequisitos.id_materia_s) as 'cod_secRespaldo'
                 FROM `cursos`
                     LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.Malla='$Malla' and cursos.NivelCurso = '$NivelCurso'");
         $SiTienePrerreq = true;
@@ -123,7 +132,7 @@ class CursoController extends Controller
         }
         if ($SiTienePrerreq ==false) {
             $materias = DB::select("SELECT cursos.id,`cursos`.`Sigla` as 'cod_prin',cursos.Anio_id,cursos.NivelCurso as 'CursoP',cursos.Malla,cursos.NombreCurso as 'mat_prin',
-            cursos.id as 'id_materia_p',(SELECT p.id_materia_s as 'id_materia_s2' from prerrequisitos p where p.id_materia_p =  (select c.id from cursos c where c.Sigla=cursos.Sigla and c.NivelCurso NOT LIKE 'SEGUNDO BASICO B' and c.Anio_id=$Anio_id LIMIT 1)LIMIT 1) AS 'id_materia_sec',(select c.Sigla from cursos c where c.id=id_materia_sec) as 'cod_sec'
+            cursos.id as 'id_materia_p',(SELECT p.id_materia_s as 'id_materia_s2' from prerrequisitos p where p.id_materia_p =  (select c.id from cursos c where c.Sigla=cursos.Sigla and c.NivelCurso NOT LIKE 'SEGUNDO BASICO B' and c.Anio_id=$Anio_id LIMIT 1)LIMIT 1) AS 'id_materia_sec',(select c.Sigla from cursos c where c.id=id_materia_sec) as 'cod_sec',(select cc.SiglaRespaldo from cursos cc where cc.id=id_materia_sec) as 'cod_secRespaldo'
                     FROM `cursos`
                         LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.Malla='$Malla' and cursos.NivelCurso = '$NivelCurso';
             ");
@@ -345,7 +354,7 @@ class CursoController extends Controller
         // $Nivel="SUPERIORRRR";
         $Estudiante_id = $request->input('Estudiante_id');
         $Anio_id = $request->input('Anio_id');
-        $data = DB::select("SELECT `calificaciones`.`id`,calificaciones.anio_id,calificaciones.curso_id,calificaciones.estudiante_id,calificaciones.Promedio,calificaciones.PruebaRecuperacion, anios.Anio, cursos.NombreCurso,cursos.NivelCurso,cursos.Sigla,cursos.Malla
+        $data = DB::select("SELECT `calificaciones`.`id`,calificaciones.anio_id,calificaciones.curso_id,calificaciones.estudiante_id,calificaciones.Promedio,calificaciones.PruebaRecuperacion, anios.Anio, cursos.NombreCurso,cursos.NivelCurso,cursos.Sigla,cursos.SiglaRespaldo,cursos.Malla
         FROM `calificaciones`
             LEFT JOIN `estudiantes` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
             LEFT JOIN `cursos` ON calificaciones.curso_id = `cursos`.`id`
@@ -431,5 +440,12 @@ class CursoController extends Controller
         return 'curso eliminado';
         // return redirect('curso')->with('flash_message', 'Curso deleted!');
     }
+    public function cursoYPrerreq($id)
+    {
 
+        DB::select("delete from prerrequisitos where id_materia_s='$id'");
+        Curso::destroy($id);
+        return 'curso eliminado';
+        // return redirect('curso')->with('flash_message', 'Curso deleted!');
+    }
 }

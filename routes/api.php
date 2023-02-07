@@ -40,6 +40,8 @@ Route::post('ModificarBimestres', 'App\Http\Controllers\CursoController@Modifica
 Route::get('CursosUniqueSigla', 'App\Http\Controllers\CursoController@CursosUniqueSigla');
 Route::get('CargarMalla', 'App\Http\Controllers\CursoController@CargarMalla');
 Route::post('ClonarGestion', 'App\Http\Controllers\CursoController@ClonarGestion');
+Route::post('RespaldarSiglas', 'App\Http\Controllers\CursoController@RespaldarSiglas');
+Route::delete('cursoYPrerreq/{idCurso}', 'App\Http\Controllers\CursoController@cursoYPrerreq');
 /*CALIFICACIONES*/
 Route::resource('calificacion', 'App\Http\Controllers\CalificacionesController');
 Route::post('EncontrarNivelCurso/{idEst}', 'App\Http\Controllers\CalificacionesController@EncontrarNivelCurso');
