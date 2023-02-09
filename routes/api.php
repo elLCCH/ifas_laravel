@@ -63,8 +63,9 @@ Route::post('EstudianteAUTH', 'App\Http\Controllers\EstudiantesController@autent
 Route::get('ObtenerNombreCompleto/{idEst}', 'App\Http\Controllers\EstudiantesController@ObtenerNombreCompleto');
 Route::post('OrdenarLista', 'App\Http\Controllers\EstudiantesController@OrdenarLista');
 Route::get('indexSelection/{idest}', 'App\Http\Controllers\EstudiantesController@indexSelection');
-Route::get('DetectarCantidadEstudiantesInscritos', 'App\Http\Controllers\EstudiantesController@DetectarCantidadEstudiantesInscritos');
+Route::post('DetectarCantidadEstudiantesInscritos', 'App\Http\Controllers\EstudiantesController@DetectarCantidadEstudiantesInscritos');
 Route::post('VerificarCursoParalelo', 'App\Http\Controllers\EstudiantesController@VerificarCursoParalelo');
+Route::get('EstadisticasAsigEstudiantes/{idAnio}', 'App\Http\Controllers\EstudiantesController@EstadisticasAsigEstudiantes');
 /*ADMINISTRATIVOS_CURSOS*/
 Route::resource('AdminCursos', 'App\Http\Controllers\AdministrativosCursosController');
 Route::post('EliminarAdminCursos', 'App\Http\Controllers\AdministrativosCursosController@EliminarAdminCursos');

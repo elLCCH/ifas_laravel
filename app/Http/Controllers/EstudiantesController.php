@@ -62,17 +62,37 @@ class EstudiantesController extends Controller
 
         return $EstCuadro->NivelCurso;
     }
+    //LISTAR ESTADISTICAS DE ASIG ESTS
+    public function EstadisticasAsigEstudiantes($idAnio)
+    {
+        $data = DB::select("SELECT cursos.NivelCurso,cursos.NombreCurso,cursos.Malla,anios.Anio,
+        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and calif2.Categoria = 'NUEVO' and est2.Sexo = 'MASCULINO') as Nuevos_M,
+        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and calif2.Categoria = 'NUEVO' and est2.Sexo = 'FEMENINO') as Nuevos_F,
+        (select COUNT(calif1.estudiante_id) from calificaciones calif1, estudiantes est1 where calif1.estudiante_id=est1.id and calif1.curso_id=cursos.id and calif1.Categoria = 'NUEVO') as Total_Nuevos,
+        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and calif2.Categoria = 'ANTIGUO' and est2.Sexo = 'MASCULINO') as Antiguos_M,
+        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and calif2.Categoria = 'ANTIGUO' and est2.Sexo = 'FEMENINO') as Antiguos_F,
+        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and calif2.Categoria = 'ANTIGUO') as Total_Antiguos,
+        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and est2.Sexo = 'MASCULINO') as Total_M,
+        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and est2.Sexo = 'FEMENINO') as Total_F,
+        (select COUNT(calif.estudiante_id) from calificaciones calif where calif.curso_id=cursos.id) as Total_Gral
+        FROM `cursos`
+            LEFT JOIN `anios` ON `cursos`.`Anio_id` = `anios`.`id` WHERE anios.id=$idAnio");
+            return $data;
+    }
     #region NEW GESTION
     /*PARA LA NUEVA GESTION*/
-    public function DetectarCantidadEstudiantesInscritos() //ESTADISTICAS
+    public function DetectarCantidadEstudiantesInscritos(Request $request) //ESTADISTICAS
     {
+        $cursos_solicitados = $request->data;
         $anioController = new AnioController(); //ANIO CONTROLLER
         $apisController = new ApisController(); //APIS CONTROLLER
         $ifa = $anioController->DeterminarInstituto();  //recogiendo nombre de q ifa
-        $cursos_solicitados = $apisController->ListarCursosApi(); //recogiendo todos los cursos q estan registrados
+
+        // $cursos_solicitados = $apisController->ListarCursosApi(); //recogiendo todos los cursos q estan registrados ANTES USABAMOS
+        // $cursos_solicitados =Estudiantes::distinct()->get(['Curso_Solicitado']); //recogiendo todos los cursos q estan registrados
         $instrumentosEspecialidad = $apisController->ListarInstrumentosApi(); //recogiendo los instrumentos de especialidad
 
-        $cursos_solicitados = collect($cursos_solicitados)->where('Ifa', $ifa)->all(); //filtramos los cursos q pertenecen a un ifa
+        // $cursos_solicitados = collect($cursos_solicitados)->where('Ifa', $ifa)->all(); //filtramos los cursos q pertenecen a un ifa ANTES USABAMOS
         $instrumentosEspecialidad = collect($instrumentosEspecialidad)->where('Ifa', $ifa)->where('Estado','ACTIVO')->all(); //filtramos los instrumentos q pertenecen a un ifa
         // $Lista = array(); //CANTIDADES TOTALES CURSO
         // $ListaInst = array(); //CANTIDADES INST
@@ -86,7 +106,7 @@ class EstudiantesController extends Controller
         $Lista['CANTIDAD ANTIGUOS INSCRITOS']=DB::select("select COUNT(*) AS 'CANTIDAD ANTIGUOS INSCRITOS' from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%' and Categoria='ANTIGUO'")[0];
 
         foreach ($cursos_solicitados as $k) {
-            $course=$k['NivelCurso'];
+            $course=$k['Curso_Solicitado'];
             $resCantidadTotal =  DB::select("select COUNT(*) AS '$course' from estudiantes e where e.Observacion NOT LIKE '%NO INSCRITO%'	and e.Curso_Solicitado='$course'");
             //FUNCIONA, ES CANTIDAD DE INSTRUMENTOS POR CURSO...
             foreach ($instrumentosEspecialidad as $i) {

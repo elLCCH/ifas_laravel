@@ -857,9 +857,10 @@ class CalificacionesController extends Controller
      * @param  \App\Models\Calificaciones  $calificaciones
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Calificaciones $calificaciones)
+    public function destroy($id)
     {
-        //
+        $data =  DB::select("delete from calificaciones where id='$id'");
+        return response()->json(["mensaje" => "calificaciones Eliminado Correctamente"], 200);
     }
     public function EliminarEstudianteDelCurso(Request $request)
     {
