@@ -32,9 +32,9 @@ class ApisController extends Controller
     public function ListarTipoMateriaApi() //USADO EN EL MOMENTO DE CREAR MATERIAS PARA ESCOGER TIPO DE MATERIA
     {
         $data = Array (
-            "0" => Array ("Tipo" => "TEORICA","Detalle" => "MATERIA NORMAL Y RECTA","Ifa"=>"TODOS","Estado"=>"ACTIVO"),
-            "1" => Array ("Tipo" => "PRACTICA","Detalle" => "MATERIA DINAMICA MEZCLADO DE ESTUDIANTES Y DOCENTES","Ifa"=>"MARIA LUISA LUZIO","Estado"=>"ACTIVO"),
-            "2" => Array ("Tipo" => "PRACTICA.","Detalle" => "MATERIA NORMAL Y RECTA","Ifa"=>"FOLKLORE ORURO o BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
+            "0" => Array ("Tipo" => "TEORICA","Detalle" => "PERMITE 1 DOCENTE CON 1 MATERIA","Ifa"=>"TODOS","Estado"=>"ACTIVO"),
+            "1" => Array ("Tipo" => "PRACTICA","Detalle" => "PERMITE MULTIPLES DOCENTES PARA 1 MATERIA","Ifa"=>"TODOS","Estado"=>"ACTIVO"),
+            "2" => Array ("Tipo" => "PRACTICA.","Detalle" => "PERMITE 1 DOCENTE CON 1 MATERIA","Ifa"=>"FOLKLORE ORURO o BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
         );
         return $data;
     }
