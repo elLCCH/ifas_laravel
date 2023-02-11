@@ -261,12 +261,12 @@ class CursoController extends Controller
     public function ListaEstudiantes(Request $request)
     {
         $NivelCurso= $request->NivelCurso;
-        $idMateria=$request->idMateria; //I
+        $idMateria=$request->idMateria;
         $Materia=$request->Materia;
         $Anio_id=$request->Anio_id;
 
 
-        if ($idMateria=='') {
+        if ($idMateria=='' || $idMateria ==null) {
             try {
                 //obtengo la fila del curso deseado pero solo por su Id  del curso
                 $CursoData = Curso::where('NivelCurso','=', $NivelCurso)->where('Anio_id','=',$Anio_id)->first(); //ANTES SE USABA
@@ -275,9 +275,19 @@ class CursoController extends Controller
                 $CalificacionesData = Calificaciones::where('curso_id','=', $CursoData->id)->where('Anio_id','=',$Anio_id)->get(); //ANTES SE USABA
                 $CalificacionesData = $CalificacionesData->unique('estudiante_id');
                 $Lista = array();
+                $cont=0;
                 foreach ($CalificacionesData as $C) {
-                    $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-                    $Lista[] = $EstudiantesData;
+                    // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
+                    $EstudiantesData = DB::select("SELECT `estudiantes`.*, calificaciones.Arrastre
+                    FROM `estudiantes`
+                        LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
+                        WHERE estudiantes.id=$C->estudiante_id and calificaciones.anio_id=$Anio_id");
+
+                    $Lista[] = $EstudiantesData[0];
+
+
+                    // $cont++;
+
                 }
                 return $Lista;
             } catch (Exception $e) {
@@ -295,8 +305,12 @@ class CursoController extends Controller
                 $CalificacionesData = $CalificacionesData->unique('estudiante_id');
                 $Lista = array();
                 foreach ($CalificacionesData as $C) {
-                    $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-                    $Lista[] = $EstudiantesData;
+                    // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
+                    $EstudiantesData = DB::select("SELECT `estudiantes`.*, calificaciones.Arrastre
+                    FROM `estudiantes`
+                        LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
+                        WHERE estudiantes.id=$C->estudiante_id and calificaciones.anio_id=$Anio_id and calificaciones.curso_id=$idMateria");
+                    $Lista[] = $EstudiantesData[0];
                 }
                 return $Lista;
             } catch (Exception $e) {
