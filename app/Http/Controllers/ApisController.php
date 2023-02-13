@@ -34,7 +34,7 @@ class ApisController extends Controller
         $data = Array (
             "0" => Array ("Tipo" => "TEORICA","Detalle" => "PERMITE 1 DOCENTE CON 1 MATERIA","Ifa"=>"TODOS","Estado"=>"ACTIVO"),
             "1" => Array ("Tipo" => "PRACTICA","Detalle" => "PERMITE MULTIPLES DOCENTES PARA 1 MATERIA","Ifa"=>"TODOS","Estado"=>"ACTIVO"),
-            "2" => Array ("Tipo" => "PRACTICA.","Detalle" => "PERMITE 1 DOCENTE CON 1 MATERIA","Ifa"=>"FOLKLORE ORURO o BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
+            "2" => Array ("Tipo" => "PRACTICA.","Detalle" => "PERMITE 1 DOCENTE CON 1 MATERIA","Ifa"=>"TODOS","Estado"=>"ACTIVO"),
         );
         return $data;
     }
