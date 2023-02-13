@@ -269,25 +269,25 @@ class CursoController extends Controller
         if ($idMateria=='' || $idMateria ==null) {
             try {
                 //obtengo la fila del curso deseado pero solo por su Id  del curso
-                $CursoData = Curso::where('NivelCurso','=', $NivelCurso)->where('Anio_id','=',$Anio_id)->first(); //ANTES SE USABA
+                $CursoData = Curso::where('NivelCurso','=', $NivelCurso)->where('Anio_id','=',$Anio_id)->get();
                 //obtener la lista de los estudiantes pero solo por su estudiante_id ...
                 //DIGAMOS UN ESTUDIANTE ESTA EN SEGUNDO MEDIO ENTONCES HABRA 5 DEL MISMO YA Q EL CURSO TIENE 5 MATERIAS
-                $CalificacionesData = Calificaciones::where('curso_id','=', $CursoData->id)->where('Anio_id','=',$Anio_id)->get(); //ANTES SE USABA
-                $CalificacionesData = $CalificacionesData->unique('estudiante_id');
                 $Lista = array();
-                $cont=0;
-                foreach ($CalificacionesData as $C) {
-                    // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-                    $EstudiantesData = DB::select("SELECT `estudiantes`.*, calificaciones.Arrastre
-                    FROM `estudiantes`
-                        LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
-                        WHERE estudiantes.id=$C->estudiante_id and calificaciones.anio_id=$Anio_id");
+                foreach ($CursoData as $k ) {
+                    $CalificacionesData = Calificaciones::where('curso_id','=', $k->id)->where('Anio_id','=',$Anio_id)->get();
+                    $CalificacionesData = $CalificacionesData->unique('estudiante_id');
 
-                    $Lista[] = $EstudiantesData[0];
+                    $cont=0;
+                    foreach ($CalificacionesData as $C) {
+                        // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
+                        $EstudiantesData = DB::select("SELECT  calificaciones.Arrastre, cursos.NivelCurso, `estudiantes`.*
+                        FROM `estudiantes`
+                            LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
+                            LEFT JOIN `cursos` ON `calificaciones`.`curso_id` = `cursos`.`id`
+                            WHERE estudiantes.id=$C->estudiante_id and calificaciones.anio_id=$Anio_id and cursos.NivelCurso='$NivelCurso'");
 
-
-                    // $cont++;
-
+                        $Lista[] = $EstudiantesData[0];
+                    }
                 }
                 return $Lista;
             } catch (Exception $e) {
