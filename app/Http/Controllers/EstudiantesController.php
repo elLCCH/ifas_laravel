@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Estudiantes;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -348,9 +349,8 @@ class EstudiantesController extends Controller
         $estudiante->Malla= $request->input('Malla'); //new
         $estudiante->Admin_id= $request->input('Admin_id');
         // $estudiante->created_at= '2022-02-18'; //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
-        // $fechahoy=new Date();
-        // $estudiante->created_at= $fechahoy->now(); //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
-        // $estudiante->updated_at= $fechahoy->now(); //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
+        $estudiante->created_at=  Carbon::now(); //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
+        $estudiante->updated_at=  Carbon::now(); //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
 
         if($request->hasFile('Certificado')){$estudiante->Certificado = 'CertificadosNacDocumentos/'.$namefileCertificado;} else{$estudiante->Certificado = '';}
         if($request->hasFile('DocColUni')){$estudiante->DocColUni = 'DocColUniDocumentos/'.$namefileDocColUni;} else{$estudiante->DocColUni = '';}
@@ -593,6 +593,16 @@ class EstudiantesController extends Controller
         }
         if ($request->Admin_id == 'null') {
             $requestData['Admin_id']=null;
+        }
+        if ($request->Observacion != 'NO INSCRITO') {
+            $requestData['updated_at']= Carbon::now(); //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
+
+        }else{
+
+            // $fechahoy=new Date();
+            $requestData['created_at']=  Carbon::now(); //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
+            $requestData['updated_at']=  Carbon::now(); //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
+            //USAREMOS EL CREATED PARA EL CUADRO DE ESTUDIANTES
         }
         Estudiantes::where('id','=',$id)->update($requestData);
         return 'Datos Estudiante Modificados';

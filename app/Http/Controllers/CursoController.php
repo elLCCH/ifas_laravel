@@ -280,10 +280,11 @@ class CursoController extends Controller
                     $cont=0;
                     foreach ($CalificacionesData as $C) {
                         // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-                        $EstudiantesData = DB::select("SELECT  calificaciones.Arrastre, cursos.NivelCurso, `estudiantes`.*
+                        $EstudiantesData = DB::select("SELECT  calificaciones.Arrastre, cursos.NivelCurso, `estudiantes`.*, administrativos.Ap_Paterno as Ap_PAdmin,administrativos.Ap_Materno as Ap_MAdmin,administrativos.Nombre as NombreAdmin
                         FROM `estudiantes`
                             LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
                             LEFT JOIN `cursos` ON `calificaciones`.`curso_id` = `cursos`.`id`
+                            LEFT JOIN `administrativos` ON `administrativos`.`id` = `estudiantes`.`Admin_id`
                             WHERE estudiantes.id=$C->estudiante_id and calificaciones.anio_id=$Anio_id and cursos.NivelCurso='$NivelCurso'");
 
                         $Lista[] = $EstudiantesData[0];
@@ -306,9 +307,10 @@ class CursoController extends Controller
                 $Lista = array();
                 foreach ($CalificacionesData as $C) {
                     // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-                    $EstudiantesData = DB::select("SELECT `estudiantes`.*, calificaciones.Arrastre
+                    $EstudiantesData = DB::select("SELECT `estudiantes`.*, calificaciones.Arrastre,  administrativos.Ap_Paterno as Ap_PAdmin,administrativos.Ap_Materno as Ap_MAdmin,administrativos.Nombre as NombreAdmin
                     FROM `estudiantes`
                         LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
+                        LEFT JOIN `administrativos` ON `administrativos`.`id` = `estudiantes`.`Admin_id`
                         WHERE estudiantes.id=$C->estudiante_id and calificaciones.anio_id=$Anio_id and calificaciones.curso_id=$idMateria");
                     $Lista[] = $EstudiantesData[0];
                 }

@@ -54,15 +54,15 @@ class ApisController extends Controller
             "9" => Array ("NivelCurso" => "PRIMERO INICIACION","Para" => "NUEVOS (8 a 11 años)","Ifa"=>"MARIA LUISA LUZIO","Estado"=>"ACTIVO"),
             "10" => Array ("NivelCurso" => "SEGUNDO INICIACION","Para" => "SOLO ANTIGUOS","Ifa"=>"MARIA LUISA LUZIO","Estado"=>"ACTIVO"),
             "11" => Array ("NivelCurso" => "TERCERO INICIACION","Para" => "SOLO ANTIGUOS","Ifa"=>"MARIA LUISA LUZIO","Estado"=>"ACTIVO"),
-            //PARA FOLKLORE ORURO  ...............
-            "12" => Array ("NivelCurso" => "PRIMER AÑO","Para" => "NUEVO o ANTIGUOS","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
-            "13" => Array ("NivelCurso" => "SEGUNDO AÑO","Para" => "SOLO ANTIGUOS","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
-            "14" => Array ("NivelCurso" => "TERCER AÑO","Para" => "SOLO ANTIGUOS","Ifa"=>"FOLKLORE ORURO","Estado"=>"INHABILITADO"),
-            "15" => Array ("NivelCurso" => "PRIMERO BASICO","Para" => "NUEVOS o ANTIGUOS","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
-            "16" => Array ("NivelCurso" => "SEGUNDO BASICO","Para" => "SOLO ANTIGUOS","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
-            "17" => Array ("NivelCurso" => "PRIMERO INICIAL","Para" => "NUEVOS o  ANTIGUOS","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
-            "18" => Array ("NivelCurso" => "SEGUNDO INICIAL","Para" => "ANTIGUOS","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
-            "19" => Array ("NivelCurso" => "CAPACITACION","Para" => "NUEVOS","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            //PARA DEL FOLKLORE ORURO  ...............
+            "12" => Array ("NivelCurso" => "PRIMER AÑO","Para" => "NUEVO o ANTIGUOS","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "13" => Array ("NivelCurso" => "SEGUNDO AÑO","Para" => "SOLO ANTIGUOS","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "14" => Array ("NivelCurso" => "TERCER AÑO","Para" => "SOLO ANTIGUOS","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"INHABILITADO"),
+            "15" => Array ("NivelCurso" => "PRIMERO BASICO","Para" => "NUEVOS o ANTIGUOS","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "16" => Array ("NivelCurso" => "SEGUNDO BASICO","Para" => "SOLO ANTIGUOS","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "17" => Array ("NivelCurso" => "PRIMERO INICIAL","Para" => "NUEVOS o  ANTIGUOS","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "18" => Array ("NivelCurso" => "SEGUNDO INICIAL","Para" => "ANTIGUOS","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "19" => Array ("NivelCurso" => "CAPACITACION","Para" => "NUEVOS","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
             //PARA BELLAS ARTES ORURO..................
             "20" => Array ("NivelCurso" => "PRIMERO SUPERIOR","Para" => "NUEVOS o ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
             "21" => Array ("NivelCurso" => "SEGUNDO SUPERIOR","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
@@ -86,10 +86,10 @@ class ApisController extends Controller
             "0" => Array ("Area" => "CLASICA","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO","Malla"=>"ANTIGUA"),
             // // NUEVA MALLA....,"Malla"=>"NUEVA".,
             "1" => Array ("Area" => "ARTES ESCENICAS","Estado"=>"INHABILITADO","Ifa"=>"OTRO","Malla"=>"NUEVA"),
-            "2" => Array ("Area" => "ARTES MUSICALES","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO o FOLKLORE ORURO","Malla"=>"NUEVA"),
+            "2" => Array ("Area" => "ARTES MUSICALES","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO o DEL FOLKLORE ORURO","Malla"=>"NUEVA"),
             "3" => Array ("Area" => "ARTES VISUALES","Estado"=>"ACTIVO","Ifa"=>"BELLAS ARTES ORURO","Malla"=>"NUEVA"),
             "4" => Array ("Area" => "ARTES AUDIOVISUALES","Estado"=>"INHABILITADO","Ifa"=>"OTRO","Malla"=>"NUEVA"),
-            "5" => Array ("Area" => "BOLIVIANA","Estado"=>"ACTIVO","Ifa"=>"FOLKLORE ORURO","Malla"=>"ANTIGUA"),
+            "5" => Array ("Area" => "BOLIVIANA","Estado"=>"ACTIVO","Ifa"=>"DEL FOLKLORE ORURO","Malla"=>"ANTIGUA"),
             "6" => Array ("Area" => "ARTES PLASTICAS Y VISUALES","Estado"=>"ACTIVO","Ifa"=>"BELLAS ARTES ORURO","Malla"=>"ANTIGUA"),
         );
         return $data;
@@ -100,7 +100,7 @@ class ApisController extends Controller
             //NUEVA MALLA
             "0" => Array ("Programa" => "DANZA","Pertenece"=>"ARTES ESCENICAS","Ifa"=>"OTRO","Malla"=>"NUEVA"),
             "1" => Array ("Programa" => "TEATRO","Pertenece"=>"ARTES ESCENICAS","Ifa"=>"OTRO","Malla"=>"NUEVA"),
-            "2" => Array ("Programa" => "MUSICA","Pertenece"=>"ARTES MUSICALES","Ifa"=>"MARIA LUISA LUZIO o FOLKLORE ORURO","Malla"=>"NUEVA"),
+            "2" => Array ("Programa" => "MUSICA","Pertenece"=>"ARTES MUSICALES","Ifa"=>"MARIA LUISA LUZIO o DEL FOLKLORE ORURO","Malla"=>"NUEVA"),
             "3" => Array ("Programa" => "ARTES PLASTICAS Y VISUALES","Pertenece"=>"ARTES VISUALES","Ifa"=>"BELLAS ARTES ORURO","Malla"=>"NUEVA"),
             "4" => Array ("Programa" => "CINEMATOGRAFIA Y ARTES AUDIOVISUALES","Pertenece"=>"ARTES AUDIOVISUALES","Ifa"=>"OTRO","Malla"=>"NUEVA"),
             "5" => Array ("Programa" => "NINGUNA","Pertenece"=>"TODOS","Ifa"=>"TODOS","Malla"=>"ANTIGUA"),
@@ -111,12 +111,12 @@ class ApisController extends Controller
     {
         //EN VEZ DE AREA LE PONDREMOS Carrera
         $data = Array (
-            "0" => Array ("Carrera" => "MUSICA","Denominacion" => "NINGUNA","Malla"=>"ANTIGUA","Pertenece"=>"NINGUNA","Ifa"=>"MARIA LUISA LUZIO o FOLKLORE ORURO"),
+            "0" => Array ("Carrera" => "MUSICA","Denominacion" => "NINGUNA","Malla"=>"ANTIGUA","Pertenece"=>"NINGUNA","Ifa"=>"MARIA LUISA LUZIO o DEL FOLKLORE ORURO"),
             //NUEVA MALLA 2023.....,"Ifa"=>"MARIA LUISA LUZIO"..
             "1" => Array ("Carrera" => "MUSICA CLASICA/ACADEMICA","Denominacion" => " EN MÚSICA CLÁSICA/ACADÉMICA","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO","Estado"=>"ACTIVO"),
             "2" => Array ("Carrera" => "CANTO LIRICO","Denominacion" => "CANTO LÍRICO","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"OTRO","Estado"=>"ACTIVO"),
             "3" => Array ("Carrera" => "MÚSICA MODERNA","Denominacion" => " EN MÚSICA MODERNA","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"OTRO","Estado"=>"ACTIVO"),
-            "4" => Array ("Carrera" => "MUSICA BOLIVIANA","Denominacion" => " EN MÚSICA BOLIVIANA","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "4" => Array ("Carrera" => "MUSICA BOLIVIANA","Denominacion" => " EN MÚSICA BOLIVIANA","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
             "5" => Array ("Carrera" => "ARTES PLASTICAS Y VISUALES","Denominacion" => " ","Malla"=>"NUEVA o ANTIGUA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
             "6" => Array ("Carrera" => "REALIZACION DE CINEMATOGRAFIA Y ARTES AUDIOVISUALES","Denominacion" => " ","Malla"=>"NUEVA","Pertenece"=>"CINEMATOGRAFIA Y ARTES AUDIOVISUALES","Ifa"=>"OTRO","Estado"=>"ACTIVO"),
             "7" => Array ("Carrera" => "DANZA CLASICA","Denominacion" => " ","Malla"=>"NUEVA","Pertenece"=>"DANZA","Ifa"=>"OTRO","Estado"=>"ACTIVO"),
@@ -140,9 +140,9 @@ class ApisController extends Controller
             "1" => Array ("Mension" => "CANTO LIRICO","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO","Estado"=>"INHABILITADO"),
             "2" => Array ("Mension" => "DIRECCION","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO","Estado"=>"INHABILITADO"),
             "3" => Array ("Mension" => "COMPOSICION","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO","Estado"=>"INHABILITADO"),
-            "4" => Array ("Mension" => "INVESTIGACION MUSICAL","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE ORURO","Estado"=>"INHABILITADO"),
-            "5" => Array ("Mension" => "COMPOSICION MUSICAL","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE ORURO","Estado"=>"INHABILITADO"),
-            "6" => Array ("Mension" => "PRODUCCION MUSICAL","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE ORURO","Estado"=>"INHABILITADO"),
+            "4" => Array ("Mension" => "INVESTIGACION MUSICAL","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"INHABILITADO"),
+            "5" => Array ("Mension" => "COMPOSICION MUSICAL","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"INHABILITADO"),
+            "6" => Array ("Mension" => "PRODUCCION MUSICAL","Malla"=>"NUEVA","Nivel"=>"LICENCIATURA","Pertenece"=>"MUSICA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"INHABILITADO"),
             //BELLAS ARTES ORURO ANTIGUA.............................,"Estado"=>"ACTIVO"..
             "7" => Array ("Mension" => "PINTURA","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
             "8" => Array ("Mension" => "ESCULTURA","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
@@ -150,11 +150,11 @@ class ApisController extends Controller
             "10" => Array ("Mension" => "CERAMICA","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
             "11" => Array ("Mension" => "DIBUJO","Malla"=>"ANTIGUA","Nivel"=>"NINGUNA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
             "12" => Array ("Mension" => "NINGUNA","Malla"=>"NUEVA","Nivel"=>"NINGUNA","Pertenece"=>"TODOS","Ifa"=>"TODOS","Estado"=>"ACTIVO"),
-            //FOLKLORE ORURO ANTIGUA
-            "13" => Array ("Mension" => "CHARANGO","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
-            "14" => Array ("Mension" => "GUITARRA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
-            "15" => Array ("Mension" => "QUENA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
-            "16" => Array ("Mension" => "ZAMPOÑA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            //DEL FOLKLORE ORURO ANTIGUA
+            "13" => Array ("Mension" => "CHARANGO","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "14" => Array ("Mension" => "GUITARRA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "15" => Array ("Mension" => "QUENA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "16" => Array ("Mension" => "ZAMPOÑA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
         );
         return $data;
     }
@@ -173,10 +173,10 @@ class ApisController extends Controller
             "8" => Array ("InstEspecialidad" => "TROMPETA","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO"),
             "9" => Array ("InstEspecialidad" => "TROMBON","Estado"=>"INHABILITADO","Ifa"=>"MARIA LUISA LUZIO"),
            "10" => Array ("InstEspecialidad" => "ACORDEON","Estado"=>"INHABILITADO","Ifa"=>"MARIA LUISA LUZIO"),
-           "11" => Array ("InstEspecialidad" => "CHARANGO","Estado"=>"ACTIVO","Ifa"=>"FOLKLORE ORURO"),
-           "12" => Array ("InstEspecialidad" => "GUITARRA","Estado"=>"ACTIVO","Ifa"=>"FOLKLORE ORURO"),
-           "13" => Array ("InstEspecialidad" => "QUENA","Estado"=>"ACTIVO","Ifa"=>"FOLKLORE ORURO"),
-           "14" => Array ("InstEspecialidad" => "ZAMPOÑA","Estado"=>"ACTIVO","Ifa"=>"FOLKLORE ORURO"),
+           "11" => Array ("InstEspecialidad" => "CHARANGO","Estado"=>"ACTIVO","Ifa"=>"DEL FOLKLORE ORURO"),
+           "12" => Array ("InstEspecialidad" => "GUITARRA","Estado"=>"ACTIVO","Ifa"=>"DEL FOLKLORE ORURO"),
+           "13" => Array ("InstEspecialidad" => "QUENA","Estado"=>"ACTIVO","Ifa"=>"DEL FOLKLORE ORURO"),
+           "14" => Array ("InstEspecialidad" => "ZAMPOÑA","Estado"=>"ACTIVO","Ifa"=>"DEL FOLKLORE ORURO"),
         );
         return $data;
     }
@@ -187,12 +187,12 @@ class ApisController extends Controller
             "0" => Array ("Nivel" => "TECNICO MEDIO","Pertenece"=>"TODOS","Ifa"=>"TODOS","Estado"=>"ACTIVO"),
             "1" => Array ("Nivel" => "TECNICO SUPERIOR","Pertenece"=>"TODOS","Ifa"=>"MARIA LUISA LUZIO o BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
             "2" => Array ("Nivel" => "LICENCIATURA","Pertenece"=>"TODOS","Ifa"=>"TODOS","Estado"=>"INHABILITADO"),
-            "3" => Array ("Nivel" => "BASICO","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
-            "4" => Array ("Nivel" => "INICIAL","Pertenece"=>"MUSICA","Ifa"=>"FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "3" => Array ("Nivel" => "BASICO","Pertenece"=>"MUSICA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "4" => Array ("Nivel" => "INICIAL","Pertenece"=>"MUSICA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
             "5" => Array ("Nivel" => "INICIACION EN MUSICA CLASICA/ACADEMICA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO","Estado"=>"ACTIVO"),
             "6" => Array ("Nivel" => "BASICO EN MUSICA CLASICA/ACADEMICA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO","Estado"=>"ACTIVO"),
             "7" => Array ("Nivel" => "INTERMEDIO EN MUSICA CLASICA/ACADEMICA","Pertenece"=>"MUSICA","Ifa"=>"MARIA LUISA LUZIO","Estado"=>"ACTIVO"),
-            "8" => Array ("Nivel" => "CAPACITACION","Pertenece"=>"BELLAS ARTES ORURO MUSICA","Ifa"=>"BELLAS ARTES ORURO o FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "8" => Array ("Nivel" => "CAPACITACION","Pertenece"=>"BELLAS ARTES ORURO MUSICA","Ifa"=>"BELLAS ARTES ORURO o DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
         );
         return $data;
     }
