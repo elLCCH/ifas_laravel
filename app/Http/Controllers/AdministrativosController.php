@@ -87,9 +87,11 @@ class AdministrativosController extends Controller
      * @param  \App\Models\Administrativos  $administrativos
      * @return \Illuminate\Http\Response
      */
-    public function show(Administrativos $administrativos)
+    public function show($id)
     {
-        //
+
+        $data = Administrativos::where('id','=',$id)->firstOrFail();
+        return response()->json($data, 200);
     }
 
     /**

@@ -66,7 +66,7 @@ class EstudiantesController extends Controller
     //LISTAR ESTADISTICAS DE ASIG ESTS
     public function EstadisticasAsigEstudiantes($idAnio)
     {
-        $data = DB::select("SELECT cursos.NivelCurso,cursos.NombreCurso,cursos.Malla,anios.Anio,
+        $data = DB::select("SELECT cursos.Malla,cursos.NivelCurso,cursos.NombreCurso,anios.Anio,
         (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and calif2.Categoria = 'NUEVO' and est2.Sexo = 'MASCULINO') as Nuevos_M,
         (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and calif2.Categoria = 'NUEVO' and est2.Sexo = 'FEMENINO') as Nuevos_F,
         (select COUNT(calif1.estudiante_id) from calificaciones calif1, estudiantes est1 where calif1.estudiante_id=est1.id and calif1.curso_id=cursos.id and calif1.Categoria = 'NUEVO') as Total_Nuevos,
@@ -77,7 +77,7 @@ class EstudiantesController extends Controller
         (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and est2.Sexo = 'FEMENINO') as Total_F,
         (select COUNT(calif.estudiante_id) from calificaciones calif where calif.curso_id=cursos.id) as Total_Gral
         FROM `cursos`
-            LEFT JOIN `anios` ON `cursos`.`Anio_id` = `anios`.`id` WHERE anios.id=$idAnio");
+            LEFT JOIN `anios` ON `cursos`.`Anio_id` = `anios`.`id` WHERE anios.id=$idAnio order by cursos.Malla,cursos.NivelCurso,cursos.NombreCurso");
             return $data;
     }
     #region NEW GESTION
