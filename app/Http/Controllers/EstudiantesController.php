@@ -67,14 +67,14 @@ class EstudiantesController extends Controller
     public function EstadisticasAsigEstudiantes($idAnio)
     {
         $data = DB::select("SELECT cursos.Malla,cursos.NivelCurso,cursos.NombreCurso,anios.Anio,
-        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and calif2.Categoria = 'NUEVO' and est2.Sexo = 'MASCULINO') as Nuevos_M,
-        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and calif2.Categoria = 'NUEVO' and est2.Sexo = 'FEMENINO') as Nuevos_F,
-        (select COUNT(calif1.estudiante_id) from calificaciones calif1, estudiantes est1 where calif1.estudiante_id=est1.id and calif1.curso_id=cursos.id and calif1.Categoria = 'NUEVO') as Total_Nuevos,
-        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and calif2.Categoria = 'ANTIGUO' and est2.Sexo = 'MASCULINO') as Antiguos_M,
-        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and calif2.Categoria = 'ANTIGUO' and est2.Sexo = 'FEMENINO') as Antiguos_F,
-        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and calif2.Categoria = 'ANTIGUO') as Total_Antiguos,
-        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and est2.Sexo = 'MASCULINO') as Total_M,
-        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and est2.Sexo = 'FEMENINO') as Total_F,
+        (select COUNT(calif1.estudiante_id) from calificaciones calif1, estudiantes est1 where calif1.estudiante_id=est1.id and calif1.curso_id=cursos.id and est1.Categoria = 'NUEVO' and est1.Sexo = 'MASCULINO') as Nuevos_M,
+        (select COUNT(calif2.estudiante_id) from calificaciones calif2, estudiantes est2 where calif2.estudiante_id=est2.id and calif2.curso_id=cursos.id and est2.Categoria = 'NUEVO' and est2.Sexo = 'FEMENINO') as Nuevos_F,
+        (select COUNT(calif3.estudiante_id) from calificaciones calif3, estudiantes est3 where calif3.estudiante_id=est3.id and calif3.curso_id=cursos.id and est3.Categoria = 'NUEVO') as Total_Nuevos,
+        (select COUNT(calif4.estudiante_id) from calificaciones calif4, estudiantes est4 where calif4.estudiante_id=est4.id and calif4.curso_id=cursos.id and est4.Categoria = 'ANTIGUO' and est4.Sexo = 'MASCULINO') as Antiguos_M,
+        (select COUNT(calif5.estudiante_id) from calificaciones calif5, estudiantes est5 where calif5.estudiante_id=est5.id and calif5.curso_id=cursos.id and est5.Categoria = 'ANTIGUO' and est5.Sexo = 'FEMENINO') as Antiguos_F,
+        (select COUNT(calif6.estudiante_id) from calificaciones calif6, estudiantes est6 where calif6.estudiante_id=est6.id and calif6.curso_id=cursos.id and est6.Categoria = 'ANTIGUO') as Total_Antiguos,
+        (select COUNT(calif7.estudiante_id) from calificaciones calif7, estudiantes est7 where calif7.estudiante_id=est7.id and calif7.curso_id=cursos.id and est7.Sexo = 'MASCULINO') as Total_M,
+        (select COUNT(calif8.estudiante_id) from calificaciones calif8, estudiantes est8 where calif8.estudiante_id=est8.id and calif8.curso_id=cursos.id and est8.Sexo = 'FEMENINO') as Total_F,
         (select COUNT(calif.estudiante_id) from calificaciones calif where calif.curso_id=cursos.id) as Total_Gral
         FROM `cursos`
             LEFT JOIN `anios` ON `cursos`.`Anio_id` = `anios`.`id` WHERE anios.id=$idAnio order by cursos.Malla,cursos.NivelCurso,cursos.NombreCurso");
