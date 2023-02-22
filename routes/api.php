@@ -42,6 +42,7 @@ Route::get('CargarMalla', 'App\Http\Controllers\CursoController@CargarMalla');
 Route::post('ClonarGestion', 'App\Http\Controllers\CursoController@ClonarGestion');
 Route::post('RespaldarSiglas', 'App\Http\Controllers\CursoController@RespaldarSiglas');
 Route::delete('cursoYPrerreq/{idCurso}', 'App\Http\Controllers\CursoController@cursoYPrerreq');
+Route::get('EstadisticasInscripciones/{idGestion}', 'App\Http\Controllers\CursoController@EstadisticasInscripciones');
 /*CALIFICACIONES*/
 Route::resource('calificacion', 'App\Http\Controllers\CalificacionesController');
 Route::post('EncontrarNivelCurso/{idEst}', 'App\Http\Controllers\CalificacionesController@EncontrarNivelCurso');
@@ -66,6 +67,8 @@ Route::get('indexSelection/{idest}', 'App\Http\Controllers\EstudiantesController
 Route::post('DetectarCantidadEstudiantesInscritos', 'App\Http\Controllers\EstudiantesController@DetectarCantidadEstudiantesInscritos');
 Route::post('VerificarCursoParalelo', 'App\Http\Controllers\EstudiantesController@VerificarCursoParalelo');
 Route::get('EstadisticasAsigEstudiantes/{idAnio}', 'App\Http\Controllers\EstudiantesController@EstadisticasAsigEstudiantes');
+Route::get('EstudiantesAsignacionesInscritos/{idAnio}', 'App\Http\Controllers\EstudiantesController@EstudiantesAsignacionesInscritos');
+Route::get('EstudiantesAsignacionesNoInscritos/{idAnio}', 'App\Http\Controllers\EstudiantesController@EstudiantesAsignacionesNoInscritos');
 /*ADMINISTRATIVOS_CURSOS*/
 Route::resource('AdminCursos', 'App\Http\Controllers\AdministrativosCursosController');
 Route::post('EliminarAdminCursos', 'App\Http\Controllers\AdministrativosCursosController@EliminarAdminCursos');

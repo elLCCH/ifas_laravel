@@ -258,6 +258,119 @@ class CursoController extends Controller
         }
 
     }
+    public function EstadisticasInscripciones($idGestion)
+    {
+
+        // $Anio_id=$request->Anio_id; //ANIO DE GESTION DE
+        $Anio_id=$idGestion; //ANIO DE GESTION DE
+
+
+        // $cursosGestion = Curso::where('Anio_id',4)->get();
+        $dataXcurso= array();
+        $cursosGestion = Curso::where('Anio_id',$Anio_id)->distinct()->orderBy('NivelCurso','desc')->get(['NivelCurso']);
+        foreach ($cursosGestion as $s) {
+            $NivelCurso= $s->NivelCurso;
+            try {
+                //obtengo la fila del curso deseado pero solo por su Id  del curso
+                $CursoData = Curso::where('NivelCurso','=', $NivelCurso)->where('Anio_id','=',$Anio_id)->get();
+                //obtener la lista de los estudiantes pero solo por su estudiante_id ...
+                //DIGAMOS UN ESTUDIANTE ESTA EN SEGUNDO MEDIO ENTONCES HABRA 5 DEL MISMO YA Q EL CURSO TIENE 5 MATERIAS
+                $Lista = array();
+                foreach ($CursoData as $k ) {
+                    $CalificacionesData = Calificaciones::where('curso_id','=', $k->id)->where('Anio_id','=',$Anio_id)->get();
+                    $CalificacionesData = $CalificacionesData->unique('estudiante_id');
+
+                    foreach ($CalificacionesData as $C) {
+                        // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
+                        $EstudiantesData = DB::select("SELECT anios.Anio ,calificaciones.Arrastre, cursos.NivelCurso, `estudiantes`.CI, estudiantes.Carrera,estudiantes.Nivel,estudiantes.Categoria,estudiantes.Sexo, administrativos.Ap_Paterno as Ap_PAdmin,administrativos.Ap_Materno as Ap_MAdmin,administrativos.Nombre as NombreAdmin
+                        FROM `estudiantes`
+                            LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
+                            LEFT JOIN `cursos` ON `calificaciones`.`curso_id` = `cursos`.`id`
+                            LEFT JOIN `anios` ON `anios`.`id` = `cursos`.`Anio_id`
+                            LEFT JOIN `administrativos` ON `administrativos`.`id` = `estudiantes`.`Admin_id`
+                            WHERE estudiantes.id=$C->estudiante_id and calificaciones.anio_id=$Anio_id and cursos.NivelCurso='$NivelCurso'");
+
+                        $Lista[] = $EstudiantesData[0];
+                        //PARA PONER EN LISTA DEL COMPACT IDIVIDUALMENTE
+
+                    }
+                    //SELECCIONAR SU
+                    $SeConfirmoRegular=false;
+                    foreach ($Lista as $h ) {
+                        if ($SeConfirmoRegular==false) {
+                            //no se confirmo
+                            //HACER Q SE LLENE LOS CAMPOS
+                            $CarreraLista = $h->Carrera;
+                            $NivelLista=$h->Nivel;
+                            if(strpos($h->Anio, '/') !== false){
+                                $RegimenEstudio='SEMESTRALIZADO';
+                            }else{
+                                $RegimenEstudio='ANUALIZADO';
+                            }
+                            switch ($h->Nivel) {
+                                case 'TECNICO SUPERIOR':
+                                    $NivelLista = 'TECNICO SUPERIOR';
+                                    break;
+                                case 'TECNICO MEDIO':
+                                    $NivelLista = 'TECNICO MEDIO';
+                                    break;
+
+                                default:
+                                    $NivelLista = 'CAPACITACION';
+                                    break;
+                            }
+                            $ArrastreLista = $h->Arrastre;
+                            if ($h->Arrastre=='REGULAR') {
+                                $SeConfirmoRegular=true;
+                                break;
+                            }
+                        }else{
+                            break;
+                        }
+
+                    }
+
+
+                    $CursoNivelLista = $k->NivelCurso; //NIVEL DE CURSO PARA PONER EN LA LISTA DEL RETURN
+                }
+                //result.filter(a => (a.CI.indexOf(elemento.CI)) > -1).length==0
+
+                //ELIMINAR ESTUDIANTES REPETIDOS
+                $compact=array();
+                // $data=array();
+                foreach($Lista as $w){
+                    if(count(collect($compact)->where('CI', $w->CI)->all())==0){
+                        $compact[] = $w;
+                    }
+                }
+                $data=Array(
+                    // "Arrastre"=>$ArrastreLista,
+                    "Carrera"=>$CarreraLista,
+                    "Nivel"=>$NivelLista,
+                    "Regimen"=>$RegimenEstudio,
+                    "NivelCurso"=>$CursoNivelLista,
+                    "Nuevos_M"=>count(collect($compact)->where('Categoria', 'NUEVO')->where('Sexo', 'MASCULINO')->where('Arrastre','REGULAR')->all()),
+                    "Nuevos_F"=>count(collect($compact)->where('Categoria', 'NUEVO')->where('Sexo', 'FEMENINO')->where('Arrastre','REGULAR')->all()),
+                    "Total_Nuevos"=>count(collect($compact)->where('Categoria', 'NUEVO')->where('Arrastre','REGULAR')->all()),
+                    "Antiguos_M"=>count(collect($compact)->where('Categoria', 'ANTIGUO')->where('Sexo', 'MASCULINO')->where('Arrastre','REGULAR')->all()),
+                    "Antiguos_F"=>count(collect($compact)->where('Categoria', 'ANTIGUO')->where('Sexo', 'FEMENINO')->where('Arrastre','REGULAR')->all()),
+                    "Total_Antiguos"=>count(collect($compact)->where('Categoria', 'ANTIGUO')->where('Arrastre','REGULAR')->all()),
+                    "Arrastre_M"=>count(collect($compact)->where('Sexo', 'MASCULINO')->where('Arrastre','ARRASTRE')->all()),
+                    "Arrastre_F"=>count(collect($compact)->where('Sexo', 'FEMENINO')->where('Arrastre','ARRASTRE')->all()),
+                    "Total_Arrastres"=>count(collect($compact)->where('Arrastre', 'ARRASTRE')->all()),
+                    "Total_M"=>count(collect($compact)->where('Sexo', 'MASCULINO')->where('Arrastre', 'REGULAR')->all()),
+                    "Total_F"=>count(collect($compact)->where('Sexo', 'FEMENINO')->where('Arrastre', 'REGULAR')->all()),
+                    "Total_Gral_Regulares"=>count($compact), //CONTAR TODOS CON IRREGULARES
+                    "Total_Gral"=>count(collect($compact)->where('Arrastre', 'REGULAR')->all()),
+                );
+
+                $dataXcurso[]= $data;
+            } catch (Exception $e) {
+                return 'EL CURSO NO TIENE ESTUDIANTES';
+            }
+        }
+        return $dataXcurso;
+    }
     public function ListaEstudiantes(Request $request)
     {
         $NivelCurso= $request->NivelCurso;

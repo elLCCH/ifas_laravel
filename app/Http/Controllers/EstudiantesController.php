@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Calificaciones;
 use App\Models\Estudiantes;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -30,6 +31,32 @@ class EstudiantesController extends Controller
         FROM estudiantes e order by e.id desc");
         return $data;
 
+    }
+    public function EstudiantesAsignacionesInscritos($idGestion)
+    {
+        //LISTAR A TODOS LOS ESTUDIANTES INSCRITOS Y MOSTRAR CANTIDAD DE MATERIAS DESIGNADAS DETALLADAMENTE
+        $dataest=DB::select("select id, CI,Ap_Paterno,Ap_Materno,Nombre,Curso_Solicitado,Turno from estudiantes where Observacion not like '%NO INSCRITO%'");
+
+        // $fila=array();
+        $Lista=array();
+        foreach ($dataest as $k ) {
+            $dataCalif=Calificaciones::where('estudiante_id',$k->id)->where('anio_id',$idGestion)->get();
+            $Lista[]=Array("CI" => $k->CI,"Ap_Paterno"=>$k->Ap_Paterno,"Ap_Materno"=> $k->Ap_Materno,"Nombre"=>$k->Nombre,"Curso_Solicitado"=>$k->Curso_Solicitado,"Turno"=>$k->Turno,"Cantidad_Materias"=>count($dataCalif));
+        }
+        return $Lista;
+    }
+    public function EstudiantesAsignacionesNoInscritos($idGestion)
+    {
+        //LISTAR A TODOS LOS ESTUDIANTES INSCRITOS Y MOSTRAR CANTIDAD DE MATERIAS DESIGNADAS DETALLADAMENTE
+        $dataest=DB::select("select id, CI,Ap_Paterno,Ap_Materno,Nombre,Curso_Solicitado,Turno from estudiantes where Observacion like '%NO INSCRITO%'");
+
+        // $fila=array();
+        $Lista=array();
+        foreach ($dataest as $k ) {
+            $dataCalif=Calificaciones::where('estudiante_id',$k->id)->where('anio_id',$idGestion)->get();
+            $Lista[]=Array("CI" => $k->CI,"Ap_Paterno"=>$k->Ap_Paterno,"Ap_Materno"=> $k->Ap_Materno,"Nombre"=>$k->Nombre,"Curso_Solicitado"=>$k->Curso_Solicitado,"Turno"=>$k->Turno,"Cantidad_Materias"=>count($dataCalif));
+        }
+        return $Lista;
     }
     public function VerificarCursoParalelo(Request $request)
     {
@@ -75,6 +102,9 @@ class EstudiantesController extends Controller
         (select COUNT(calif6.estudiante_id) from calificaciones calif6, estudiantes est6 where calif6.estudiante_id=est6.id and calif6.curso_id=cursos.id and est6.Categoria = 'ANTIGUO') as Total_Antiguos,
         (select COUNT(calif7.estudiante_id) from calificaciones calif7, estudiantes est7 where calif7.estudiante_id=est7.id and calif7.curso_id=cursos.id and est7.Sexo = 'MASCULINO') as Total_M,
         (select COUNT(calif8.estudiante_id) from calificaciones calif8, estudiantes est8 where calif8.estudiante_id=est8.id and calif8.curso_id=cursos.id and est8.Sexo = 'FEMENINO') as Total_F,
+        (select COUNT(calif8.estudiante_id) from calificaciones calif8, estudiantes est8 where calif8.estudiante_id=est8.id and calif8.curso_id=cursos.id and est8.Sexo = 'MASCULINO' and calif8.Arrastre = 'ARRASTRE') as Arrastre_M,
+        (select COUNT(calif8.estudiante_id) from calificaciones calif8, estudiantes est8 where calif8.estudiante_id=est8.id and calif8.curso_id=cursos.id and est8.Sexo = 'FEMENINO' and calif8.Arrastre = 'ARRASTRE') as Arrastre_F,
+        (select COUNT(calif8.estudiante_id) from calificaciones calif8, estudiantes est8 where calif8.estudiante_id=est8.id and calif8.curso_id=cursos.id and calif8.Arrastre = 'ARRASTRE') as Total_Arrastres,
         (select COUNT(calif.estudiante_id) from calificaciones calif where calif.curso_id=cursos.id) as Total_Gral
         FROM `cursos`
             LEFT JOIN `anios` ON `cursos`.`Anio_id` = `anios`.`id` WHERE anios.id=$idAnio order by cursos.Malla,cursos.NivelCurso,cursos.NombreCurso");
