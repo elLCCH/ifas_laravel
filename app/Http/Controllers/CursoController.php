@@ -282,7 +282,9 @@ class CursoController extends Controller
 
                     foreach ($CalificacionesData as $C) {
                         // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-                        $EstudiantesData = DB::select("SELECT anios.Anio ,calificaciones.Arrastre, cursos.NivelCurso, `estudiantes`.CI, estudiantes.Carrera,estudiantes.Nivel,estudiantes.Categoria,estudiantes.Sexo, administrativos.Ap_Paterno as Ap_PAdmin,administrativos.Ap_Materno as Ap_MAdmin,administrativos.Nombre as NombreAdmin
+                        $EstudiantesData = DB::select("SELECT anios.Anio ,calificaciones.Arrastre, cursos.NivelCurso, `estudiantes`.CI, estudiantes.Carrera,estudiantes.Nivel,
+                        estudiantes.Categoria,estudiantes.Sexo, administrativos.Ap_Paterno as Ap_PAdmin,administrativos.Ap_Materno as Ap_MAdmin,
+                        administrativos.Nombre as NombreAdmin
                         FROM `estudiantes`
                             LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
                             LEFT JOIN `cursos` ON `calificaciones`.`curso_id` = `cursos`.`id`
