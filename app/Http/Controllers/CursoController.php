@@ -395,7 +395,7 @@ class CursoController extends Controller
                     $cont=0;
                     foreach ($CalificacionesData as $C) {
                         // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-                        $EstudiantesData = DB::select("SELECT  calificaciones.Arrastre, cursos.NivelCurso, `estudiantes`.*, administrativos.Ap_Paterno as Ap_PAdmin,administrativos.Ap_Materno as Ap_MAdmin,administrativos.Nombre as NombreAdmin
+                        $EstudiantesData = DB::select("SELECT  calificaciones.Arrastre, cursos.NivelCurso, `estudiantes`.*, administrativos.Ap_Paterno as Ap_PAdmin,administrativos.Ap_Materno as Ap_MAdmin,administrativos.Nombre as NombreAdmin, administrativos.CelularTrabajo
                         FROM `estudiantes`
                             LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
                             LEFT JOIN `cursos` ON `calificaciones`.`curso_id` = `cursos`.`id`
@@ -422,7 +422,7 @@ class CursoController extends Controller
                 $Lista = array();
                 foreach ($CalificacionesData as $C) {
                     // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-                    $EstudiantesData = DB::select("SELECT `estudiantes`.*, calificaciones.Arrastre,  administrativos.Ap_Paterno as Ap_PAdmin,administrativos.Ap_Materno as Ap_MAdmin,administrativos.Nombre as NombreAdmin
+                    $EstudiantesData = DB::select("SELECT `estudiantes`.*, calificaciones.Arrastre,  administrativos.Ap_Paterno as Ap_PAdmin,administrativos.Ap_Materno as Ap_MAdmin,administrativos.Nombre as NombreAdmin, administrativos.CelularTrabajo
                     FROM `estudiantes`
                         LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
                         LEFT JOIN `administrativos` ON `administrativos`.`id` = `estudiantes`.`Admin_id`

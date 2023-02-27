@@ -20,6 +20,9 @@ use Illuminate\Support\Facades\Route;
 /*HORARIO */
 Route::resource('Horario', 'App\Http\Controllers\HorariosController');
 Route::post('updateHorario/{id}', 'App\Http\Controllers\HorariosController@updateHorario');
+/*PLANES */
+Route::resource('Plan', 'App\Http\Controllers\PlanesController');
+Route::post('updatePlan/{id}', 'App\Http\Controllers\PlanesController@updatePlan');
 /*AÑO*/
 Route::get('DeterminarInstituto', 'App\Http\Controllers\AnioController@DeterminarInstituto');
 Route::get('ObtenerLogo', 'App\Http\Controllers\AnioController@ObtenerLogo');

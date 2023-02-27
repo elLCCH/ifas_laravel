@@ -803,6 +803,11 @@ class CalificacionesController extends Controller
      */
     public function store(Request $request)
     {
+
+        // $data = $request;
+        // foreach ($data as $k) {
+        //     Calificaciones::insert($k);
+        // }
         $data = $request->toArray();
         for ($i=0; $i < sizeof($data); $i++) {
             // $fila = $request[$i];

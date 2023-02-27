@@ -77,6 +77,8 @@ class AdministrativosController extends Controller
         $administrativo->Password= Hash::make($request->input('Password')) ;
         //$administrativo->curso_id= $request->input('curso_id');
         $administrativo->Estado= $request->input('Estado');
+        $administrativo->Celular= $request->input('Celular');
+        $administrativo->CelularTrabajo= $request->input('CelularTrabajo');
         $administrativo->save();
         return 'administrativo Guardado';
     }
