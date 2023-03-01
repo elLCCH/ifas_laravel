@@ -59,6 +59,7 @@ Route::get('ListarEstadisticasCentralizadorFinal', 'App\Http\Controllers\Calific
 
 /*ESTUDIANTES*/
 Route::resource('Estudiante', 'App\Http\Controllers\EstudiantesController');
+Route::post('ReiniciarContrasenias', 'App\Http\Controllers\EstudiantesController@ReiniciarContrasenias');
 Route::post('EstudianteUpdate/{admin}', 'App\Http\Controllers\EstudiantesController@actualizar');
 Route::get('EstudianteCuadro', 'App\Http\Controllers\EstudiantesController@EstudianteCuadro');
 Route::post('AbrirPDF', 'App\Http\Controllers\EstudiantesController@AbrirPDF');

@@ -31,6 +31,7 @@
       <link rel="stylesheet" href="/assets/Angular/assets/scripts_validation/estilos.min.css">
 
   <link rel="stylesheet" href="/assets/Angular/assets/styles.ef46db3751d8e999.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Trirong">
   </head>
   <body>
     <app-root></app-root>
@@ -46,7 +47,7 @@
     </script>
 
 
-    <script src="/assets/Angular/runtime.8acea97c940ea2f40e7e.js" defer=""></script><script src="/assets/Angular/polyfills.6e24aca16d400ed18e82.js" defer=""></script><script src="/assets/Angular/main.9c987a94410e6473ec2e.js" defer=""></script></body>
+    <script src="/assets/Angular/runtime.8acea97c940ea2f40e7e.js" defer=""></script><script src="/assets/Angular/polyfills.6e24aca16d400ed18e82.js" defer=""></script><script src="/assets/Angular/main.8a4a40fe878c377920e7.js" defer=""></script></body>
 
   <script src="/assets/Angular/assets/pdf-2.10.558.min.js" defer></script>
   <script src="/assets/Angular/assets/viewer-2.10.558.min.js" defer></script>

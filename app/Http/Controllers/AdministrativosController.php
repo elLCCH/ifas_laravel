@@ -184,16 +184,20 @@ class AdministrativosController extends Controller
         $pass = $request->input('Password');
         $admin = Administrativos::where('CI','=', $CI)->first();
 
-
-        if (Hash::check($pass, $admin->Password)) {
+        try {
+            if (Hash::check($pass, $admin->Password)) {
 
             return $admin;
-        }
-        else
-        {
-            // return $admin;
-            return 'NOLOG';
+            }
+            else
+            {
+                // return $admin;
+                return 'NOLOG';
 
+            }
+        } catch (\Throwable $th) {
+            return 'NOLOG';
         }
+
     }
 }

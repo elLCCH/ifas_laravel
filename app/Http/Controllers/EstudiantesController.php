@@ -638,6 +638,16 @@ class EstudiantesController extends Controller
         return 'Datos Estudiante Modificados';
         // return $request;
     }
+    public function ReiniciarContrasenias(Request $request)
+    {
+        //RESETEAR CONTRASEÑAS A TODOS LOS ESTUDIANTES
+        $passNew=$request->input('Password');
+
+        $PasswordHash = Hash::make($passNew);
+        DB::select("update estudiantes set Password='$PasswordHash'");
+        return 'SE CAMBIO LA CONTRASEÑA';
+
+    }
     /**
      * Remove the specified resource from storage.
      *
