@@ -86,7 +86,8 @@ class CalificacionesController extends Controller
     public function ListarForHeaderFinal(Request $request)
     {
         $course = $request->input('course');
-        $datasql = DB::select("SELECT *,SUBSTRING(Sigla,5,7) as SiglaNum from cursos where NivelCurso='$course' order by SiglaNum asc");
+        $id_gestion = $request->input('Anio_id');
+        $datasql = DB::select("SELECT *,SUBSTRING(Sigla,5,7) as SiglaNum from cursos where NivelCurso='$course' and Anio_id=$id_gestion order by SiglaNum asc");
 
 
         $ArrayMats = array();
@@ -126,7 +127,7 @@ class CalificacionesController extends Controller
             from prerrequisitos p LEFT JOIN
             cursos m ON m.id=p.id_materia_p LEFT JOIN
             cursos m2 ON m2.id=p.id_materia_s
-            WHERE m.Sigla='$materiaid'");
+            WHERE m.Anio_id=$id_gestion and m.Sigla='$materiaid'");
             foreach ($prerreqs as $p) {
                 $textMats=$p->materia_sec.'/'.$textMats;
                 $textSiglas=$p->cod_sec.'/'.$textSiglas;
@@ -527,10 +528,12 @@ class CalificacionesController extends Controller
     //    where cursos.NivelCurso='PRIMERO SUPERIOR A' ORDER BY estudiantes.Ap_Paterno,estudiantes.Ap_Materno,estudiantes.Nombre, estudiante_id, cursos.Sigla";
 
     // $data=DB::select("SELECT example(751,'PRIMERO SUPERIOR A');");   //para llamar a funciones
-
+    $TipoEsts = $request->input('Arrastre');
+    // $TipoEsts = 'ARRA1STREss';
     $curso = $request->input('NivelCurso');
+    $id_gestion= $request->input('Anio_id');
     //CONSEGUIR ID DE CURSO POR NIVEL DE CURSO
-    $Cursodata= DB::select("SELECT *,SUBSTRING(Sigla,5,7) as SiglaNum from cursos where NivelCurso='$curso' order by SiglaNum asc");
+    $Cursodata= DB::select("SELECT *,SUBSTRING(Sigla,5,7) as SiglaNum from cursos where NivelCurso='$curso' and anio_id=$id_gestion order by SiglaNum asc");
     //GUARDANDO ID DEL PRIMER CURSO DE LA PRIMERA FILA
     $idCurso = $Cursodata[0]->id;
 
@@ -550,7 +553,7 @@ class CalificacionesController extends Controller
     foreach ($Cursodata as $cdata) {
 
         $varCurso = $cdata->id;
-        $dataCurso = DB::select("select NombreCurso,Sigla from cursos where id=$varCurso");
+        $dataCurso = DB::select("select NombreCurso,Sigla from cursos where id=$varCurso and anio_id=$id_gestion");
         // dataVariable =  DB::select("delete from NombreTabla where PrimaryKey='Simbolo Dolarid'");
         $concatmat[] = $dataCurso[0]->NombreCurso;
     }
@@ -565,13 +568,104 @@ class CalificacionesController extends Controller
 
 
     //CONSEGUIR LISTAR TODOS LOS ESTUDIANTES DE UN CURSO POR SU ID DE CURSO (SELECCIONANDO SOLO SI ID del estudiante)
-    $dataEsts = DB::select("SELECT `calificaciones`.estudiante_id FROM `calificaciones` LEFT JOIN
-    `estudiantes` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id` LEFT JOIN
-    `administrativos` ON `estudiantes`.`Admin_id` = `administrativos`.`id`
-    WHERE calificaciones.curso_id = $idCurso ORDER BY estudiantes.Ap_Paterno , estudiantes.Ap_Materno, estudiantes.Nombre");
+    //2023 aumentamos para q se pueda listar a estudiantes DE
+    $dataEsts = array();
+    switch ($TipoEsts) {
+        case 'ARRASTRE':
+            //SOLO ESTUDIANTES REGULARES
+            $CursoData = Curso::where('NivelCurso','=', $curso)->where('Anio_id','=',$id_gestion)->get();
+            //obtener la lista de los estudiantes pero solo por su estudiante_id ...
+            //DIGAMOS UN ESTUDIANTE ESTA EN SEGUNDO MEDIO ENTONCES HABRA 5 DEL MISMO YA Q EL CURSO TIENE 5 MATERIAS
+            $dataEsts = array();
+            foreach ($CursoData as $k ) {
+                $CalificacionesData = Calificaciones::where('curso_id','=', $k->id)->where('Anio_id','=',$id_gestion)->get();
+                $CalificacionesData = $CalificacionesData->unique('estudiante_id');
+
+                $cont=0;
+                foreach ($CalificacionesData as $C) {
+                    // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
+                    $EstudiantesData = DB::select("SELECT `calificaciones`.estudiante_id
+                    FROM `estudiantes`
+                        LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
+                        LEFT JOIN `cursos` ON `calificaciones`.`curso_id` = `cursos`.`id`
+                        LEFT JOIN `administrativos` ON `administrativos`.`id` = `estudiantes`.`Admin_id`
+                        WHERE estudiantes.id=$C->estudiante_id and calificaciones.Arrastre='ARRASTRE' and calificaciones.anio_id=$id_gestion and cursos.NivelCurso='$curso'");
+
+                    if (Count($EstudiantesData)!=0) {
+                        $dataEsts[] = $EstudiantesData[0];
+                    }
+
+                }
+            }
+            break;
+        case 'REGULAR':
+            //SOLO ESTUDIANTES REGULARES
+            $CursoData = Curso::where('NivelCurso','=', $curso)->where('Anio_id','=',$id_gestion)->get();
+            //obtener la lista de los estudiantes pero solo por su estudiante_id ...
+            //DIGAMOS UN ESTUDIANTE ESTA EN SEGUNDO MEDIO ENTONCES HABRA 5 DEL MISMO YA Q EL CURSO TIENE 5 MATERIAS
+            $dataEsts = array();
+            foreach ($CursoData as $k ) {
+                $CalificacionesData = Calificaciones::where('curso_id','=', $k->id)->where('Anio_id','=',$id_gestion)->get();
+                $CalificacionesData = $CalificacionesData->unique('estudiante_id');
+
+                $cont=0;
+                foreach ($CalificacionesData as $C) {
+                    // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
+                    $EstudiantesData = DB::select("SELECT `calificaciones`.estudiante_id
+                    FROM `estudiantes`
+                        LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
+                        LEFT JOIN `cursos` ON `calificaciones`.`curso_id` = `cursos`.`id`
+                        LEFT JOIN `administrativos` ON `administrativos`.`id` = `estudiantes`.`Admin_id`
+                        WHERE estudiantes.id=$C->estudiante_id and calificaciones.Arrastre='REGULAR' and calificaciones.anio_id=$id_gestion and cursos.NivelCurso='$curso'");
+
+                        if (Count($EstudiantesData)!=0) {
+                            $dataEsts[] = $EstudiantesData[0];
+                        }
+                }
+            }
+            break;
+
+        default:
+            //TODOS
+            // $dataEsts = DB::select("SELECT `calificaciones`.estudiante_id FROM `calificaciones` LEFT JOIN
+            // `estudiantes` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id` LEFT JOIN
+            // `administrativos` ON `estudiantes`.`Admin_id` = `administrativos`.`id`
+            // WHERE calificaciones.curso_id = $idCurso and calificaciones.anio_id=$id_gestion ORDER BY estudiantes.Ap_Paterno , estudiantes.Ap_Materno, estudiantes.Nombre");
+
+            $CursoData = Curso::where('NivelCurso','=', $curso)->where('Anio_id','=',$id_gestion)->get();
+            //obtener la lista de los estudiantes pero solo por su estudiante_id ...
+            //DIGAMOS UN ESTUDIANTE ESTA EN SEGUNDO MEDIO ENTONCES HABRA 5 DEL MISMO YA Q EL CURSO TIENE 5 MATERIAS
+            $dataEsts = array();
+            foreach ($CursoData as $k ) {
+                $CalificacionesData = Calificaciones::where('curso_id','=', $k->id)->where('Anio_id','=',$id_gestion)->get();
+                $CalificacionesData = $CalificacionesData->unique('estudiante_id');
+
+                $cont=0;
+                foreach ($CalificacionesData as $C) {
+                    // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
+                    $EstudiantesData = DB::select("SELECT `calificaciones`.estudiante_id
+                    FROM `estudiantes`
+                        LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
+                        LEFT JOIN `cursos` ON `calificaciones`.`curso_id` = `cursos`.`id`
+                        LEFT JOIN `administrativos` ON `administrativos`.`id` = `estudiantes`.`Admin_id`
+                        WHERE estudiantes.id=$C->estudiante_id and calificaciones.anio_id=$id_gestion and cursos.NivelCurso='$curso'");
 
 
+                    if (Count($EstudiantesData)!=0) {
+                        $dataEsts[] = $EstudiantesData[0];
+                    }
+                }
+            }
 
+            break;
+    }
+    //ELIMINAR ESTUDIANTES REPETIDOS - FILTRAR ESTUDIANTES REPETIDOS - ELIMINADOR
+    $dataEstsNew=array();
+    foreach($dataEsts as $w){
+        if(count(collect($dataEstsNew)->where('estudiante_id', $w->estudiante_id)->all())==0){
+            $dataEstsNew[] = $w;
+        }
+    }
     //PROCEDER A CONSTRUIR LA DATA CENTRALIZADOR FINAL
     // $data=DB::select("SET numList = ARRAY[1,2,3,4,5,6]; CALL example1(751,'PRIMERO SUPERIOR A')"); // PARA LLAMAR PROCEDURES
     // $curso = $request->input('NivelCurso');
@@ -582,18 +676,20 @@ class CalificacionesController extends Controller
     //$data = "CALL getCentralizadorFinal('$txt',751,'$curso');";
 
     $data = array(); //ES CON SEXO
-            foreach ($dataEsts as $est) {
+            foreach ($dataEstsNew as $est) {
                 // $CentralizadorData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-                $CentralizadorData=DB::select("CALL getCentralizadorFinal('$materias',$est->estudiante_id,'$curso')"); // PARA LLAMAR PROCEDURES
+                $CentralizadorData=DB::select("CALL getCentralizadorFinal('$materias',$est->estudiante_id,'$curso',$id_gestion)"); // PARA LLAMAR PROCEDURES
                 $data[] = $CentralizadorData[0];
             }
-    $data2 = array(); //ES CON SEXO
-    foreach ($dataEsts as $est) {
+    $data2 = array(); //ES SIN SEXO
+    foreach ($dataEstsNew as $est) {
         // $CentralizadorData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-        $CentralizadorData=DB::select("CALL getCentralizadorFinalSinSexo('$materias',$est->estudiante_id,'$curso')"); // PARA LLAMAR PROCEDURES
+        $CentralizadorData=DB::select("CALL getCentralizadorFinalSinSexo('$materias',$est->estudiante_id,'$curso',$id_gestion)"); // PARA LLAMAR PROCEDURES
         $data2[] = $CentralizadorData[0];
     }
+
     return response()->json(["lista1" =>$data,"lista2" =>$data2,], 200);
+    // return response()->json(["lista1" =>$dataEstsNew,"lista2" =>$Cursodata,], 200);
 
 #region SE LOGRO GRACIAS A
 //ESTE FUE DE AYUDA PARA LOGRARLO
@@ -719,7 +815,7 @@ class CalificacionesController extends Controller
     // -- PROCEDURE FINALIZADO ESTE ES EL Q SE USA... ES CON DATOS DIANMICOS
     // DELIMITER ;
     // DELIMITER $$
-    // CREATE OR REPLACE PROCEDURE getCentralizadorFinal(dataArray VARCHAR(500),idEst INT, nombreCurso VARCHAR(100))
+    // CREATE OR REPLACE PROCEDURE getCentralizadorFinalSinSexo(dataArray VARCHAR(500),idEst INT, nombreCurso VARCHAR(100),idGestion INT)
     // BEGIN
 
     //   DECLARE _result varchar(10000) DEFAULT '';
@@ -727,7 +823,7 @@ class CalificacionesController extends Controller
     //   DECLARE _value varchar(50);
 
     //   SET @ini = 'SELECT estudiantes.Ap_Paterno, estudiantes.Ap_Materno, estudiantes.Nombre, estudiantes.CI,estudiantes.id,estudiantes.Especialidad,';
-    //   SET @fin = CONCAT('FROM estudiantes LEFT JOIN calificaciones ON estudiantes.id = calificaciones.estudiante_id LEFT JOIN cursos ON calificaciones.curso_id = cursos.id where cursos.NivelCurso="',nombreCurso,'" AND estudiantes.id="',idEst,'" ORDER BY estudiantes.Ap_Paterno,estudiantes.Ap_Materno,estudiantes.Nombre, estudiante_id, cursos.Sigla;');
+    //   SET @fin = CONCAT('FROM estudiantes LEFT JOIN calificaciones ON estudiantes.id = calificaciones.estudiante_id LEFT JOIN cursos ON calificaciones.curso_id = cursos.id where cursos.NivelCurso="',nombreCurso,'" AND estudiantes.id="',idEst,'" AND calificaciones.anio_id="',idGestion,'" ORDER BY estudiantes.Ap_Paterno,estudiantes.Ap_Materno,estudiantes.Nombre, estudiante_id, cursos.Sigla;');
 
     //   -- SET @myjson = '["APRECIACION MUSICAL","ARMONIA I","INSTRUMENTO COMPLEMENTARIO I","INSTRUMENTO DE ESPECIALIDAD I","LENGUAJES MUSICALES SUPERIOR", "PRACTICA DE CONJUNTOS I","TEORIA DEL SONIDO"]';
     //       SET @myjson = dataArray;
