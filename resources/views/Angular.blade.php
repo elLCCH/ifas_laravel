@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="/assets/Angular/assets/styles.ef46db3751d8e999.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Trirong">
   </head>
-  <bod>
+  <body>
     <app-root></app-root>
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
 
