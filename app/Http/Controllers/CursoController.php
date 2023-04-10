@@ -65,7 +65,7 @@ class CursoController extends Controller
             $curso->NivelCurso= $c->NivelCurso;
             $curso->Sigla= $c->Sigla;
             $curso->Tipo= $c->Tipo;
-            $curso->BiTriEstado= 'NINGUN BIMESTRE';
+            $curso->BiTriEstado= 'NINGUNA EVALUACION';
             $curso->Horas= $c->Horas;
             $curso->Malla= $c->Malla;
             $curso->Anio_id= $New_Anio_idinput;
@@ -472,7 +472,9 @@ class CursoController extends Controller
     {
         $Bimestre = $request->BiTriEstado;
         $Malla = $request->Malla;
-        DB::select("update cursos set BiTriEstado = '$Bimestre' where Malla='$Malla'");
+        $id_gestion = $request->id_gestion;
+
+        DB::select("update cursos set BiTriEstado = '$Bimestre' where Malla='$Malla' and Anio_id='$id_gestion'");
     }
     public function CargarSiglaUnique()
     {

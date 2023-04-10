@@ -549,20 +549,44 @@ class CalificacionesController extends Controller
     // //ESTO CORRIGE ERRORES PERO AL CORREGIR SE VUELVE COMO UN CONJUNTO DE DATOS NORMAL COMO SI FUESE JSON, SIRVE (1)
     // $concatmat = preg_replace('/""""""""",/m',"", $concatmat);
     // $materias=$concatmat;
+
+
+
     $concatmat = array();
     foreach ($Cursodata as $cdata) {
-
         $varCurso = $cdata->id;
         $dataCurso = DB::select("select NombreCurso,Sigla from cursos where id=$varCurso and anio_id=$id_gestion");
         // dataVariable =  DB::select("delete from NombreTabla where PrimaryKey='Simbolo Dolarid'");
         $concatmat[] = $dataCurso[0]->NombreCurso;
     }
-
-
     // $concatmat = collect($concatmat)->sortBy('Sigla')->reverse()->toArray();
     $concatmat=json_encode($concatmat); //CONVIRTIENDO EN JSON PARA QUE NO DE ERRORES
     $materias=$concatmat;
 
+    //AYUDITA GPT
+    // $concatmat = array();
+
+    // foreach ($Cursodata as $cdata) {
+    //     $varCurso = $cdata->id;
+    //     $dataCurso = DB::select("select NombreCurso,Sigla from cursos where id=$varCurso and anio_id=$id_gestion");
+
+    //     $curso = array(
+    //         "nameCurso" => $dataCurso[0]->NombreCurso
+    //     );
+    //     array_push($concatmat, $curso);
+    // }
+    // $materias=$concatmat;
+
+    // $concatmat = json_encode($concatmat);
+    // //$concatmat = json_decode($concatmat);
+    // // $new_string = "";
+    // // foreach ($concatmat as $item) {
+    // //     $new_string .= $item->nameCurso . ", ";
+    // // }
+    // // $new_string = rtrim($new_string, ", ");
+
+    // $materias = $concatmat;
+    //$materias = '{"nameCurso":"INSTRUMENTO DE ESPECIALIDAD II"},{"nameCurso":"PRACTICA DE CONJUNTOS II"},{"nameCurso":"MUSICA DE CAMARA I"},{"nameCurso":"ARMONIA II"},{"nameCurso":"FORMAS Y ANALISIS MUSICAL"},{"nameCurso":"HISTORIA DE LA MUSICA I"},{"nameCurso":"INSTRUMENTO COMPLEMENTARIO II"},{"nameCurso":"PRODUCCION MUSICAL Y GESTION CULTURAL"}';
 
     // return $materias;
 
@@ -676,15 +700,17 @@ class CalificacionesController extends Controller
     //$data = "CALL getCentralizadorFinal('$txt',751,'$curso');";
 
     $data = array(); //ES CON SEXO
-            foreach ($dataEstsNew as $est) {
-                // $CentralizadorData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-                $CentralizadorData=DB::select("CALL getCentralizadorFinal('$materias',$est->estudiante_id,'$curso',$id_gestion)"); // PARA LLAMAR PROCEDURES
-                $data[] = $CentralizadorData[0];
-            }
+    foreach ($dataEstsNew as $est) {
+        // $CentralizadorData = Estudiantes::where('id','=', $C->estudiante_id)->first();
+        $CentralizadorData=DB::select("CALL getCentralizadorFinalLCCH('$materias',$est->estudiante_id,'$curso',$id_gestion)"); // PARA LLAMAR PROCEDURES
+        // $CentralizadorData=DB::select("CALL getCentralizadorFinal(?,?,?,?), ['$materias',$est->estudiante_id,'$curso',$id_gestion,$materias]"); // PARA LLAMAR PROCEDURES
+        $data[] = $CentralizadorData[0];
+    }
     $data2 = array(); //ES SIN SEXO
     foreach ($dataEstsNew as $est) {
         // $CentralizadorData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-        $CentralizadorData=DB::select("CALL getCentralizadorFinalSinSexo('$materias',$est->estudiante_id,'$curso',$id_gestion)"); // PARA LLAMAR PROCEDURES
+        $CentralizadorData=DB::select("CALL getCentralizadorFinalLCCHSinSexo('$materias',$est->estudiante_id,'$curso',$id_gestion)"); // PARA LLAMAR PROCEDURES
+        // $CentralizadorData=DB::select("CALL getCentralizadorFinalSinSexo(?,?,?,?), ['$materias',$est->estudiante_id,'$curso',$id_gestion,$materias]"); // PARA LLAMAR PROCEDURES
         $data2[] = $CentralizadorData[0];
     }
 
@@ -695,123 +721,24 @@ class CalificacionesController extends Controller
 //ESTE FUE DE AYUDA PARA LOGRARLO
 // DELIMITER ;
 // DELIMITER $$
-// CREATE OR REPLACE PROCEDURE GetFruits(IN fruitArray VARCHAR(255), idEst INT, cursoname VARCHAR)
+// CREATE PROCEDURE ejemploProcedimiento(IN arreglo TEXT)
 // BEGIN
-//   SET @sql = CONCAT('SELECT * FROM Fruits WHERE Name IN (', fruitArray, ')');
-//   PREPARE stmt FROM @sql;
-//   EXECUTE stmt;
-//   DEALLOCATE PREPARE stmt;
+//     DECLARE i INT DEFAULT 0;
+//     DECLARE elemento VARCHAR(255);
+//     DECLARE numElementos INT;
+
+//     SET numElementos = JSON_LENGTH(arreglo);
+
+//     WHILE i < numElementos DO
+//         SET elemento = JSON_EXTRACT(arreglo, CONCAT('$[', i, ']'));
+//         // realizar alguna operación con cada elemento del arreglo
+//         SELECT elemento;
+//         SET i = i + 1;
+//     END WHILE;
 // END
 // $$
 
-// TAMBIEN ESTE
-// DELIMITER ;
-// DELIMITER $$
-// CREATE OR REPLACE PROCEDURE GetCentralizador(IN dataArray VARCHAR(255),idEst INT, nombreCurso VARCHAR(100))
-// BEGIN
-// 	SET @ini = 'SELECT estudiantes.Ap_Paterno, estudiantes.Ap_Materno, estudiantes.Nombre, estudiantes.CI,estudiantes.id,';
-//     SET @fin = CONCAT('FROM estudiantes LEFT JOIN calificaciones ON estudiantes.id = calificaciones.estudiante_id LEFT JOIN cursos ON calificaciones.curso_id = cursos.id where cursos.NivelCurso=',nombreCurso,' ORDER BY estudiantes.Ap_Paterno,estudiantes.Ap_Materno,estudiantes.Nombre, estudiante_id, cursos.Sigla;');
-
-//   SET @str='';
-//   SET @cont = 0;
-//   loop_label: LOOP
-//     IF @cont > 7 THEN
-//       LEAVE loop_label;
-//     END IF;
-//     SET @str = CONCAT(@str,'SUM(CASE WHEN cursos.NombreCurso=',dataArray(1),' AND estudiantes.id = ',idEst,' THEN calificaciones.Promedio ELSE 0 END) as "',dataArray,'",');
-//     SET @cont = @cont + 1;
-//     ITERATE loop_label;
-//   END LOOP;
-//   SET @sql = CONCAT(@ini,@str,@fin);
-//   PREPARE stmt FROM @sql;
-//   EXECUTE stmt;
-//   DEALLOCATE PREPARE stmt;
-// END
-// $$
-
-// CONSULTA DEL PROCEDURE FINAL FUCIONAL PERO CON DATOS FIJOS
-// DELIMITER ;
-// DELIMITER $$
-// CREATE OR REPLACE PROCEDURE getCentralizadorFinal(idEst INT, nombreCurso VARCHAR(100))
-// BEGIN
-
-//   DECLARE _result varchar(10000) DEFAULT '';
-//   DECLARE _counter INT DEFAULT 0;
-//   DECLARE _value varchar(50);
-
-//   SET @ini = 'SELECT estudiantes.Ap_Paterno, estudiantes.Ap_Materno, estudiantes.Nombre, estudiantes.CI,estudiantes.id,';
-//   SET @fin = CONCAT('FROM estudiantes LEFT JOIN calificaciones ON estudiantes.id = calificaciones.estudiante_id LEFT JOIN cursos ON calificaciones.curso_id = cursos.id where cursos.NivelCurso="',nombreCurso,'" ORDER BY estudiantes.Ap_Paterno,estudiantes.Ap_Materno,estudiantes.Nombre, estudiante_id, cursos.Sigla;');
-
-//   SET @myjson = '["APRECIACION MUSICAL","ARMONIA I","INSTRUMENTO COMPLEMENTARIO I","INSTRUMENTO DE ESPECIALIDAD I","LENGUAJES MUSICALES SUPERIOR",
-//                 "PRACTICA DE CONJUNTOS I","TEORIA DEL SONIDO"]';
-
-//   WHILE _counter < JSON_LENGTH(@myjson)-1 DO
-//     -- do whatever, e.g. add-up strings...
-//     -- SET _result = CONCAT(_result, _counter, '-', JSON_VALUE(@myjson, CONCAT('$[',_counter,']')), '#');
-// 	 SET _result = CONCAT(_result,'SUM(CASE WHEN cursos.NombreCurso="',JSON_VALUE(@myjson, CONCAT('$[',_counter,']')),'" AND estudiantes.id = ',idEst,' THEN calificaciones.Promedio ELSE 0 END) as "',JSON_VALUE(@myjson, CONCAT('$[',_counter,']')),'",');
-//     SET _counter = _counter + 1;
-//   END WHILE;
-
-//   -- ULTIMA ITERACION PARA EVITAR ERROR DEL FROM
-// 	SET _result = CONCAT(_result,'SUM(CASE WHEN cursos.NombreCurso="',JSON_VALUE(@myjson, CONCAT('$[',_counter,']')),'" AND estudiantes.id = ',idEst,' THEN calificaciones.Promedio ELSE 0 END) as "',JSON_VALUE(@myjson, CONCAT('$[',_counter,']')),'" ');
-//     -- SET @sql = CONCAT(@ini,_result,@fin);
-//     -- RETURN @sql;
-//     SET @sql = CONCAT(@ini,_result,@fin);
-//   PREPARE stmt FROM @sql;
-//   EXECUTE stmt;
-//   DEALLOCATE PREPARE stmt;
-// END
-// $$
-
-// CALL example1(751,'PRIMERO SUPERIOR A');
-
-
-#endregion SE LOGRO GRACIAS A
-
-    #region ESTO ES LO LOGRADO FINISH , SIRVE PERO ESTA SIN LA CORRECION DE 2DA INSTANCIA
-    // -- PROCEDURE FINALIZADO ESTE ES EL Q SE USA... ES CON DATOS DIANMICOS
-    // DELIMITER ;
-    // DELIMITER $$
-    // CREATE OR REPLACE PROCEDURE getCentralizadorFinal(dataArray VARCHAR(500),idEst INT, nombreCurso VARCHAR(100))
-    // BEGIN
-
-    //   DECLARE _result varchar(10000) DEFAULT '';
-    //   DECLARE _counter INT DEFAULT 0;
-    //   DECLARE _value varchar(50);
-
-    //   SET @ini = 'SELECT estudiantes.Ap_Paterno, estudiantes.Ap_Materno, estudiantes.Nombre, estudiantes.CI,estudiantes.id,estudiantes.Especialidad,';
-    //   SET @fin = CONCAT('FROM estudiantes LEFT JOIN calificaciones ON estudiantes.id = calificaciones.estudiante_id LEFT JOIN cursos ON calificaciones.curso_id = cursos.id where cursos.NivelCurso="',nombreCurso,'" AND estudiantes.id="',idEst,'" ORDER BY estudiantes.Ap_Paterno,estudiantes.Ap_Materno,estudiantes.Nombre, estudiante_id, cursos.Sigla;');
-
-    //   -- SET @myjson = '["APRECIACION MUSICAL","ARMONIA I","INSTRUMENTO COMPLEMENTARIO I","INSTRUMENTO DE ESPECIALIDAD I","LENGUAJES MUSICALES SUPERIOR", "PRACTICA DE CONJUNTOS I","TEORIA DEL SONIDO"]';
-    //       SET @myjson = dataArray;
-
-    //   WHILE _counter < JSON_LENGTH(@myjson)-1 DO
-    //     -- do whatever, e.g. add-up strings...
-    //     -- SET _result = CONCAT(_result, _counter, '-', JSON_VALUE(@myjson, CONCAT('$[',_counter,']')), '#');
-    // 	 SET _result = CONCAT(_result,'SUM(CASE WHEN cursos.NombreCurso="',JSON_VALUE(@myjson, CONCAT('$[',_counter,']')),'" AND estudiantes.id = ',idEst,' THEN calificaciones.Promedio ELSE 0 END) as "',JSON_VALUE(@myjson, CONCAT('$[',_counter,']')),'",');
-    //     SET _counter = _counter + 1;
-    //   END WHILE;
-
-    //   -- ULTIMA ITERACION PARA EVITAR ERROR DEL FROM
-    // 	SET _result = CONCAT(_result,'SUM(CASE WHEN cursos.NombreCurso="',JSON_VALUE(@myjson, CONCAT('$[',_counter,']')),'" AND estudiantes.id = ',idEst,' THEN calificaciones.Promedio ELSE 0 END) as "',JSON_VALUE(@myjson, CONCAT('$[',_counter,']')),'" ');
-    //     -- SET @sql = CONCAT(@ini,_result,@fin);
-    //     -- RETURN @sql;
-    //     SET @sql = CONCAT(@ini,_result,@fin);
-    //   PREPARE stmt FROM @sql;
-    //   EXECUTE stmt;
-    //   DEALLOCATE PREPARE stmt;
-    // END
-    // $$
-
-    // ACA ESTA PARA EJECUTAR
-    // SET @data = '["APRECIACION MUSICAL","ARMONIA I","INSTRUMENTO COMPLEMENTARIO I","INSTRUMENTO DE ESPECIALIDAD I","LENGUAJES MUSICALES SUPERIOR",
-    //                 "PRACTICA DE CONJUNTOS I","TEORIA DEL SONIDO"]';
-    // CALL getCentralizadorFinal(@data,751,'PRIMERO SUPERIOR A');
-    #endregion esto es lo logrado
-
-
-
-    //ESTE ES EL FINISH ORIGINAL 100 POR CIENTO NO FAKE //SE CORRIGIO LA PARTE Q EN EL CENTRALIZADOR FINAL NO HACIA CASO A LAS 2das INSTANCIAS
+    //ESTE ES EL PERO DEL PASADO FINISH ORIGINAL 100 POR CIENTO NO FAKE //SE CORRIGIO LA PARTE Q EN EL CENTRALIZADOR FINAL NO HACIA CASO A LAS 2das INSTANCIAS
     // -- PROCEDURE FINALIZADO ESTE ES EL Q SE USA... ES CON DATOS DIANMICOS
     // DELIMITER ;
     // DELIMITER $$
@@ -851,6 +778,55 @@ class CalificacionesController extends Controller
     // END
     // $$
 
+
+    //----------------------ESTE ES EL YA OFICIAL FINISH
+//     -- PROCEDURE FINALIZADO ESTE ES EL Q SE USA... ES CON DATOS DIANMICOS SE CAMBIO EL NAME
+//  -- drop PROCEDURE getCentralizadorFinal;
+//     DELIMITER ;
+//     DELIMITER $$
+//     CREATE OR REPLACE PROCEDURE getCentralizadorFinalLCCH(IN arreglo TEXT,IN idEst INT, IN nombreCurso VARCHAR(255),IN idGestion INT)
+// BEGIN
+
+//       DECLARE _result varchar(10000) DEFAULT '';
+//       -- DECLARE _value varchar(50);
+//     DECLARE i INT DEFAULT 0;
+//     DECLARE elemento VARCHAR(255);
+//     DECLARE numElementos INT;
+//     SET numElementos = JSON_LENGTH(arreglo);
+
+
+//     SET @ini = 'SELECT estudiantes.Ap_Paterno, estudiantes.Ap_Materno, estudiantes.Nombre, estudiantes.CI,estudiantes.id,estudiantes.Especialidad,estudiantes.Sexo,';
+//     SET @fin = CONCAT('FROM estudiantes LEFT JOIN calificaciones ON estudiantes.id = calificaciones.estudiante_id LEFT JOIN cursos ON calificaciones.curso_id = cursos.id where cursos.NivelCurso="',nombreCurso,'" AND estudiantes.id="',idEst,'" AND calificaciones.anio_id="',idGestion,'" ORDER BY estudiantes.Ap_Paterno,estudiantes.Ap_Materno,estudiantes.Nombre, estudiante_id, cursos.Sigla;');
+
+//     WHILE i < numElementos-1 DO
+//         SET elemento = JSON_EXTRACT(arreglo, CONCAT('$[', i, ']'));
+//         -- realizar alguna operación con cada elemento del arreglo
+// 		SET _result = CONCAT(_result,'SUM(CASE WHEN cursos.NombreCurso=',elemento,' AND estudiantes.id = ',idEst,' THEN
+//                           	(IF (calificaciones.PruebaRecuperacion IS NULL,calificaciones.Promedio ,calificaciones.PruebaRecuperacion ))
+//                              ELSE 0 END) as ',elemento,',');
+
+//         -- SELECT elemento;
+//         SET i = i + 1;
+//     END WHILE;
+
+//     -- ULTIMA ITERACION PARA EVITAR ERROR DEL FROM
+//         SET elemento = JSON_EXTRACT(arreglo, CONCAT('$[', i, ']'));
+//         -- realizar alguna operación con cada elemento del arreglo
+//     	SET _result = CONCAT(_result,'SUM(CASE WHEN cursos.NombreCurso=',elemento,' AND estudiantes.id = ',idEst,' THEN
+//                              (IF (calificaciones.PruebaRecuperacion IS NULL,calificaciones.Promedio ,calificaciones.PruebaRecuperacion ))
+//                              ELSE 0 END) as ',elemento,' ');
+//         SET @sql = CONCAT(@ini,_result,@fin);
+//       PREPARE stmt FROM @sql;
+//       EXECUTE stmt;
+//       DEALLOCATE PREPARE stmt;
+// END;
+
+//     $$
+
+
+// -- PARA HACER FUNCIONAR
+// SET @data = '[\"INSTRUMENTO DE ESPECIALIDAD II\",\"PRACTICA DE CONJUNTOS II\",\"MUSICA DE CAMARA I\",\"ARMONIA II\",\"FORMAS Y ANALISIS MUSICAL\",\"HISTORIA DE LA MUSICA I\",\"INSTRUMENTO COMPLEMENTARIO II\",\"PRODUCCION MUSICAL Y GESTION CULTURAL\"]';
+//     CALL getCentralizadorFinalLCCH(@data,751,'SEGUNDO SUPERIOR A',4);
     }
     public function EncontrarNivelCurso(Request $request,$id)
     {
