@@ -33,7 +33,6 @@
   <link rel="stylesheet" href="/assets/Angular/assets/styles.ef46db3751d8e999.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Trirong">
   </head>
-  <>
     <app-root></app-root>
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
 
@@ -47,7 +46,7 @@
     </script>
 
 
-    <script src="/assets/Angular/runtime.8acea97c940ea2f40e7e.js" defer=""></script><script src="/assets/Angular/polyfills.6e24aca16d400ed18e82.js" defer=""></script><script src="/assets/Angular/main.75d3f97777ec7c12eee8.js" defer=""></script>
+    <script src="/assets/Angular/runtime.8acea97c940ea2f40e7e.js" defer=""></script><script src="/assets/Angular/polyfills.6e24aca16d400ed18e82.js" defer=""></script><script src="/assets/Angular/main.c1d33b9562dab745c0ec.js" defer=""></script>
 
   <script src="/assets/Angular/assets/pdf-2.10.558.min.js" defer></script>
   <script src="/assets/Angular/assets/viewer-2.10.558.min.js" defer></script>
