@@ -57,6 +57,7 @@ Route::post('ListarForHeaderFinal', 'App\Http\Controllers\CalificacionesControll
 Route::post('ObtenerFechaRetiro', 'App\Http\Controllers\CalificacionesController@ObtenerFechaRetiro');
 Route::post('VerificarSegundaInstancia', 'App\Http\Controllers\CalificacionesController@VerificarSegundaInstancia');
 Route::get('ListarEstadisticasCentralizadorFinal', 'App\Http\Controllers\CalificacionesController@ListarEstadisticasCentralizadorFinal');
+Route::post('ActualizarCalificacionesCurso', 'App\Http\Controllers\CalificacionesController@ActualizarCalificacionesCurso');
 
 /*ESTUDIANTES*/
 Route::resource('Estudiante', 'App\Http\Controllers\EstudiantesController');
