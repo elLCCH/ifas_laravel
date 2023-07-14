@@ -117,12 +117,14 @@ class ApisController extends Controller
             "2" => Array ("Carrera" => "CANTO LIRICO","Denominacion" => "CANTO LÍRICO","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"OTRO","Estado"=>"ACTIVO"),
             "3" => Array ("Carrera" => "MÚSICA MODERNA","Denominacion" => " EN MÚSICA MODERNA","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"OTRO","Estado"=>"ACTIVO"),
             "4" => Array ("Carrera" => "MUSICA BOLIVIANA","Denominacion" => " EN MÚSICA BOLIVIANA","Malla"=>"NUEVA","Pertenece"=>"MUSICA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
-            "5" => Array ("Carrera" => "ARTES PLASTICAS Y VISUALES","Denominacion" => " ","Malla"=>"NUEVA o ANTIGUA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
+            "5" => Array ("Carrera" => "ARTES PLASTICAS Y VISUALES","Denominacion" => " ANUALIZADA","Malla"=>"NUEVA o ANTIGUA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
             "6" => Array ("Carrera" => "REALIZACION DE CINEMATOGRAFIA Y ARTES AUDIOVISUALES","Denominacion" => " ","Malla"=>"NUEVA","Pertenece"=>"CINEMATOGRAFIA Y ARTES AUDIOVISUALES","Ifa"=>"OTRO","Estado"=>"ACTIVO"),
             "7" => Array ("Carrera" => "DANZA CLASICA","Denominacion" => " ","Malla"=>"NUEVA","Pertenece"=>"DANZA","Ifa"=>"OTRO","Estado"=>"ACTIVO"),
             "8" => Array ("Carrera" => "DANZA CONTEMPORANEA","Denominacion" => " ","Malla"=>"NUEVA","Pertenece"=>"DANZA","Ifa"=>"OTRO","Estado"=>"ACTIVO"),
             "9" => Array ("Carrera" => "DANZAS BOLIVIANAS","Denominacion" => " ","Malla"=>"NUEVA","Pertenece"=>"DANZA","Ifa"=>"OTRO","Estado"=>"ACTIVO"),
             "10" => Array ("Carrera" => "TEATRO","Denominacion" => " ","Malla"=>"NUEVA","Pertenece"=>"TEATRO","Ifa"=>"OTRO","Estado"=>"ACTIVO"),
+
+            "11" => Array ("Carrera" => "ARTES VISUALES","Denominacion" => " SEMESTRALIZADA","Malla"=>"NUEVA o ANTIGUA","Pertenece"=>"ARTES PLASTICAS Y VISUALES","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO")
             // //para capacitacion NUEVA MALLA
             // "5" => Array ("Carrera" => "INICIACIÓN EN MÚSICA CLÁSICA/ACADÉMICA","Denominacion" => "NINGUNA","Malla"=>"NUEVA - CAPACITACION"),
             // "6" => Array ("Carrera" => "BÁSICO EN MÚSICA CLÁSICA/ACADÉMICA","Denominacion" => "NINGUNA","Malla"=>"NUEVA - CAPACITACION"),
