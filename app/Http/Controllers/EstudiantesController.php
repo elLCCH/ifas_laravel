@@ -621,6 +621,14 @@ class EstudiantesController extends Controller
         {
             $requestData['Password'] = Hash::make($request->Password);
         }
+        //SI NO EXISTE O NO SE ENVIO EL PARAMETRO Password hacer
+        if ($request->has('Password')) {
+            //SI EXISTE
+        } else {
+            //NO EXISTE
+            $requestData['Password'] = $estudiante->Password;
+        }
+
         if ($request->Admin_id == 'null') {
             $requestData['Admin_id']=null;
         }
@@ -635,7 +643,7 @@ class EstudiantesController extends Controller
             //USAREMOS EL CREATED PARA EL CUADRO DE ESTUDIANTES
         }
         Estudiantes::where('id','=',$id)->update($requestData);
-        return 'Datos Estudiante Modificados';
+        return $request;
         // return $request;
     }
     public function ReiniciarContrasenias(Request $request)

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 use App\Models\Administrativos;
 use App\Models\Administrativos_Cursos;
+use App\Models\Estudiantes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use PhpParser\Node\Stmt\Else_;
 
 class ApisController extends Controller
@@ -282,9 +284,40 @@ class ApisController extends Controller
         );
         return $data;
     }
+
     public function ConsultarApi(Request $request)
     {
-        $data = DB::select($request->consultasql);
+
+        if (str_contains($request->consultasql, 'encriptar')) {
+            //CONSULTA QUE SITVE PARA ENCRIPTAR CONTRASEÑAS
+            //INSTRUCCIONES:
+            // paso 1: cambiar a los estudiantes su contraseña en grupo si desea
+            // UPDATE estudiantes SET Password = 'gg123' WHERE CI = '12345';
+            // paso 2: ver algunos datos del estudiante ( no olvidar id)
+            // select * from estudiantes where CI = '12345'
+            // paso 3: encriptar la contraseña de ese grupo
+            // "select * from estudiantes where CI = '12345' -- encriptar"
+            // Acciones a realizar si la palabra "contrasenia" está presente en el texto
+            $data = DB::select($request->consultasql);
+            foreach ($data as $row) {
+                // Asegúrate de que el atributo "password" esté presente en la fila
+                if (isset($row->Password)) {
+                    // Obtén el ID del usuario y el hash de la nueva contraseña
+                    $userId = $row->id;
+                    $hashedPassword = Hash::make($row->Password);
+
+                    // Actualiza la contraseña en la base de datos utilizando el modelo User
+                    Estudiantes::where('id', $userId)->update(['Password' => $hashedPassword]);
+                }
+            }
+            $data = DB::select($request->consultasql);
+        } else {
+            // Acciones a realizar si la palabra "contrasenia" NO está presente en el texto
+            //CONSULTA NORMAL
+            $data = DB::select($request->consultasql);
+        }
+
+
         return $data;
     }
     public function ConsultarApiCursosEst(Request $request)
