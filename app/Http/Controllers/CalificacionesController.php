@@ -87,7 +87,8 @@ class CalificacionesController extends Controller
     {
         $course = $request->input('course');
         $id_gestion = $request->input('Anio_id');
-        $datasql = DB::select("SELECT *,SUBSTRING(Sigla,5,7) as SiglaNum from cursos where NivelCurso='$course' and Anio_id=$id_gestion order by SiglaNum asc");
+        // $datasql = DB::select("SELECT *,SUBSTRING(Sigla,5,7) as SiglaNum from cursos where NivelCurso='$course' and Anio_id=$id_gestion order by SiglaNum asc"); //ANTES ORDENABAMOS POR SUBSTRING
+        $datasql = DB::select("SELECT * from cursos where NivelCurso='$course' and Anio_id=$id_gestion order by Rango asc"); //AHORA POR RANGO
 
 
         $ArrayMats = array();
@@ -533,7 +534,8 @@ class CalificacionesController extends Controller
     $curso = $request->input('NivelCurso');
     $id_gestion= $request->input('Anio_id');
     //CONSEGUIR ID DE CURSO POR NIVEL DE CURSO
-    $Cursodata= DB::select("SELECT *,SUBSTRING(Sigla,5,7) as SiglaNum from cursos where NivelCurso='$curso' and anio_id=$id_gestion order by SiglaNum asc");
+    // $Cursodata= DB::select("SELECT *,SUBSTRING(Sigla,5,7) as SiglaNum from cursos where NivelCurso='$curso' and anio_id=$id_gestion order by SiglaNum asc"); //ANTES POR LOS NUMEROS
+    $Cursodata= DB::select("SELECT * from cursos where NivelCurso='$curso' and anio_id=$id_gestion order by Rango asc"); //AHORA ORDENAMOS POR RANGO
     //GUARDANDO ID DEL PRIMER CURSO DE LA PRIMERA FILA
     $idCurso = $Cursodata[0]->id;
 
@@ -560,7 +562,7 @@ class CalificacionesController extends Controller
         $concatmat[] = $dataCurso[0]->NombreCurso;
     }
     // $concatmat = collect($concatmat)->sortBy('Sigla')->reverse()->toArray();
-    $concatmat=json_encode($concatmat); //CONVIRTIENDO EN JSON PARA QUE NO DE ERRORES
+    $concatmat=json_encode($concatmat, JSON_UNESCAPED_UNICODE); //CONVIRTIENDO EN JSON PARA QUE NO DE ERRORES....... URGENTO SE PONE JSON_UNESCAPED_UNICODE PARA Q LAS TILDES NO SE PIERDAN
     $materias=$concatmat;
 
     //AYUDITA GPT

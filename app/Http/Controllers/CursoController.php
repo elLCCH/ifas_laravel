@@ -27,9 +27,9 @@ class CursoController extends Controller
         $Malla = $request->query('Malla');
         $Anio_id = $request->query('Anio_id');
         if ($Malla =='nulo') {
-            $data = Curso::whereRaw('Anio_id=?',$Anio_id)->orderBy('NivelCurso','desc')->get();
+            $data = Curso::whereRaw('Anio_id=?',$Anio_id)->orderBy('NivelCurso','desc')->orderBy('Rango','asc')->get();
         }else{
-            $data = Curso::whereRaw('Anio_id=?',$Anio_id)->whereRaw('Malla=?',$Malla)->orderBy('NivelCurso','desc')->get();
+            $data = Curso::whereRaw('Anio_id=?',$Anio_id)->whereRaw('Malla=?',$Malla)->orderBy('NivelCurso','desc')->orderBy('Rango','asc')->get();
         }
 
         return $data;
@@ -68,6 +68,7 @@ class CursoController extends Controller
             $curso->BiTriEstado= 'NINGUNA EVALUACION';
             $curso->Horas= $c->Horas;
             $curso->Malla= $c->Malla;
+            $curso->Rango= $c->Rango;
             $curso->Anio_id= $New_Anio_idinput;
             $curso->save();
         }
