@@ -79,6 +79,8 @@ class AdministrativosController extends Controller
         $administrativo->Estado= $request->input('Estado');
         $administrativo->Celular= $request->input('Celular');
         $administrativo->CelularTrabajo= $request->input('CelularTrabajo');
+        $administrativo->Cargo= $request->input('Cargo');
+        $administrativo->Biografia= $request->input('Biografia');
         $administrativo->save();
         return 'administrativo Guardado';
     }
@@ -145,11 +147,20 @@ class AdministrativosController extends Controller
         {//SINO TIENE FOTO Y AUN ASI QUIERE ACTUALIZAR
             $requestData['Foto'] = $administrativo->Foto;
         }
-        //SI NO ES TIPO HASH CREAR NUEVO HASH
-        if (Hash::needsRehash($request->Password))
-        {
-            $requestData['Password'] = Hash::make($request->Password);
+
+        //SINO SE ENVIO EL PARAMETRO Password hacer
+        if ($request->has('Password')) {
+            //SI SE ENVIO
+            //SI NO ES TIPO HASH CREAR NUEVO HASH
+            if (Hash::needsRehash($request->Password))
+            {
+                $requestData['Password'] = Hash::make($request->Password);
+            }
+        } else {
+            //NO SE ENVIO
+            $requestData['Password'] = $administrativo->Password;
         }
+
         Administrativos::where('id','=',$id)->update($requestData);
         return 'Datos administrativo Modificados';
         // return $request;
