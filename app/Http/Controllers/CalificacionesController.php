@@ -396,6 +396,7 @@ class CalificacionesController extends Controller
     {
         $dataRequest = $request->all();
         $idCurso= $dataRequest['curso_id'];
+        $anioid= $dataRequest['anio_id'];
         // OBTENER DATOS DE CURSO MEDIANTE ID
         $cursoData= DB::select("SELECT * from cursos where id='$idCurso'");
         // $curso = 'PRIMERO SUPERIOR A';
@@ -413,7 +414,8 @@ class CalificacionesController extends Controller
         // $CentralizadorFinalData = $_calif->ListarForCentralizadorFinal($NivelCurso);
 
         //CONSEGUIR ID DE CURSO POR NIVEL DE CURSO
-        $Cursodata= DB::select("SELECT *,SUBSTRING(Sigla,5,7) as SiglaNum from cursos where NivelCurso='$curso' order by SiglaNum asc");
+        // $Cursodata= DB::select("SELECT *,SUBSTRING(Sigla,5,7) as SiglaNum from cursos where NivelCurso='$curso' order by SiglaNum asc");// ANTES ERA POR NUMERO EL ORDEN
+        $Cursodata= DB::select("SELECT * from cursos where NivelCurso='$curso' and anio_id=$anioid order by Rango asc"); //AHORA ORDENAMOS POR RANGO
         //GUARDANDO ID DEL PRIMER CURSO DE LA PRIMERA FILA
         $idCurso = $Cursodata[0]->id;
 
@@ -431,7 +433,7 @@ class CalificacionesController extends Controller
         $materias=$materiasEncontradas;
 
         //OBTENER INFO DE ESTUDIANTE DE SUS CALIFICACIONES DE TODAS SUS MATERIAS
-        $dataCentralizador = DB::select("CALL getCentralizadorFinal('$materias',$request->estudiante_id,'$curso')"); // PARA LLAMAR PROCEDURES
+        $dataCentralizador = DB::select("CALL getCentralizadorFinalLCCH('$materias',$request->estudiante_id,'$curso',$anioid)"); // PARA LLAMAR PROCEDURES
 
         //VERIFICAR CALIFICACIONES
         $contadorReprobados=0;
@@ -461,47 +463,47 @@ class CalificacionesController extends Controller
                 }
             }
         }
-        $RealizaraSegundaInstancia=true;
-        if ($contadorReprobados>3) { //SI SON MAS DE 3 MATERIAS REPROBADAS NO PUEDE DAR 2DA INSTANCIA
-            $RealizaraSegundaInstancia=false;
-        }
-        else{
+        // $RealizaraSegundaInstancia=true;
+        // if ($contadorReprobados>3) { //SI SON MAS DE 3 MATERIAS REPROBADAS NO PUEDE DAR 2DA INSTANCIA
+        //     $RealizaraSegundaInstancia=false;
+        // }
+        // else{
 
-            //$contadorSegundaInstancia //CANTIDAD DE MATERIAS VALIDAS PARA SEGUNDA INSTANCIA
-
-
-            switch ($Nivel) {
-                case 'TECNICO SUPERIOR':
-                    if ($contadorSegundaInstancia<4) { //SOLO SE ADMITEN HASTA 3 MATERIAS COMO 2DA INSTANCIA
-                            $RealizaraSegundaInstancia=true;
-                    }
-                    break;
-                case 'CAPACITACION':
-                    if($contadorRetirados!=0){
-                        $RealizaraSegundaInstancia=false;
-                    }else if ($contadorInvalidos!=0) {
-                        $RealizaraSegundaInstancia=false;
-                    }else{
-                        $RealizaraSegundaInstancia=true;
-                    }
-                    break;
-                default:
-                    # code...
-                    break;
-            }
+        //     //$contadorSegundaInstancia //CANTIDAD DE MATERIAS VALIDAS PARA SEGUNDA INSTANCIA
 
 
-        }
+        //     switch ($Nivel) {
+        //         case 'TECNICO SUPERIOR':
+        //             if ($contadorSegundaInstancia<4) { //SOLO SE ADMITEN HASTA 3 MATERIAS COMO 2DA INSTANCIA
+        //                     $RealizaraSegundaInstancia=true;
+        //             }
+        //             break;
+        //         case 'CAPACITACION':
+        //             if($contadorRetirados!=0){
+        //                 $RealizaraSegundaInstancia=false;
+        //             }else if ($contadorInvalidos!=0) {
+        //                 $RealizaraSegundaInstancia=false;
+        //             }else{
+        //                 $RealizaraSegundaInstancia=true;
+        //             }
+        //             break;
+        //         default:
+        //             # code...
+        //             break;
+        //     }
 
-        //VERIFICACION EXTRA - SI LA MATERIA ACTUAL COINCIDE CON LA MATERIA INVALIDA POR LO TANTO FALSEAR
-        for ($i=0; $i < $contadorInvalidos; $i++) {
-            if ($CursosInvalidos[$i]==$MateriaActual) {
-                $RealizaraSegundaInstancia=false;
-            }
-        }
 
+        // }
 
-        return $RealizaraSegundaInstancia;
+        // //VERIFICACION EXTRA - SI LA MATERIA ACTUAL COINCIDE CON LA MATERIA INVALIDA POR LO TANTO FALSEAR
+        // for ($i=0; $i < $contadorInvalidos; $i++) {
+        //     if ($CursosInvalidos[$i]==$MateriaActual) {
+        //         $RealizaraSegundaInstancia=false;
+        //     }
+        // }
+
+        return true;
+        // return $RealizaraSegundaInstancia;
         // return $contadorSegundaInstancia;
 
     }

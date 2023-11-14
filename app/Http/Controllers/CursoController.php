@@ -498,6 +498,22 @@ class CursoController extends Controller
 
         return $data;
     }
+    public function HistorialAcademico(Request $request)
+    {
+        //CARGAR MATERIAS DE UN ESTUDIANTE DE UNA GESTION
+        // $Nivel="SUPERIORRRR";
+        $Estudiante_id = $request->input('Estudiante_id');
+        $Anio_id = $request->input('Anio_id');
+        $data = DB::select("SELECT `calificaciones`.`id`,calificaciones.anio_id,calificaciones.curso_id,calificaciones.Arrastre,calificaciones.estudiante_id,calificaciones.Promedio,calificaciones.PruebaRecuperacion, anios.Anio, cursos.NombreCurso,cursos.NivelCurso,cursos.Sigla,cursos.SiglaRespaldo,cursos.Malla
+        FROM `calificaciones`
+            LEFT JOIN `estudiantes` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
+            LEFT JOIN `cursos` ON calificaciones.curso_id = `cursos`.`id`
+            LEFT JOIN `anios` ON `calificaciones`.`anio_id` = `anios`.`id` where estudiantes.id=$Estudiante_id");
+        // $curso = Curso::where('NivelCurso','=',$Nivel)->get();
+                //  Curso::where('id','=',$id)->update($requestData);
+
+        return $data;
+    }
     /**
      * Show the form for creating a new resource.
      *
