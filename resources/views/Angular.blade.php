@@ -46,7 +46,7 @@
     </script>
 
 
-    <script src="/assets/Angular/runtime.8acea97c940ea2f40e7e.js" defer=""></script><script src="/assets/Angular/polyfills.6e24aca16d400ed18e82.js" defer=""></script><script src="/assets/Angular/main.6521dbabf4d5f0642202.js" defer=""></script>
+    <script src="/assets/Angular/runtime.8acea97c940ea2f40e7e.js" defer=""></script><script src="/assets/Angular/polyfills.6e24aca16d400ed18e82.js" defer=""></script><script src="/assets/Angular/main.67746238ca4734f6feab.js" defer=""></script>
 
   <script src="/assets/Angular/assets/pdf-2.10.558.min.js" defer></script>
   <script src="/assets/Angular/assets/viewer-2.10.558.min.js" defer></script>
@@ -77,4 +77,122 @@
   <script src="/assets/Angular/assets/dist/js/adminlte.min.js"></script>
 
 
+  <!-- NIEVE -->
+  <style>
+    body {
+      margin: 0;
+      /* overflow: hidden; */
+    }
+
+    #snowfall-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .flake {
+      position: absolute;
+      color: #fff;
+      pointer-events: none;
+      display: block;
+    }
+  </style>
+
+  <script>
+    (function ($) {
+      $.snowfall = {
+        intervals: [],
+        $wrapper: null,
+        start: function (options, $wrapper) {
+          var options = $.extend({}, {
+            size: {
+              min: 10,
+              max: 20
+            },
+            interval: 500,
+            color: '#fff',
+            content: '&#10052;',
+            disappear: 'linear'
+          }, options);
+
+          if ($wrapper == undefined) {
+            $('body').append('<div id="snowfall-wrapper" />');
+            $wrapper = $('#snowfall-wrapper');
+
+            $wrapper.css({
+              'overflow': 'hidden',
+              'height': '100%',
+              'width': '100%',
+              'position': 'fixed',
+              'top': '0',
+              'left': '0'
+            });
+          }
+
+          var $snowfall = $('<div class="flake" />').css({ 'position': 'fixed', 'top': '-50px' }).html(options.content);
+
+          $.snowfall.$wrapper = $wrapper;
+          $.snowfall.$wrapper.show();
+
+          $.snowfall.intervals.push(setInterval(function () {
+            var wrapperWidth = $wrapper.width(),
+              wrapperHeight = $wrapper.height(),
+              flakeSize = options.size.min + (Math.random() * options.size.max),
+              duration = (wrapperHeight * 10) + (Math.random() * 2000),
+              startPosition = (Math.random() * wrapperWidth) - 100;
+
+            $snowfall.clone().appendTo($wrapper).css({
+              'left': startPosition,
+              'opacity': 0.5 + Math.random(),
+              'font-size': flakeSize,
+              'color': options.color
+            }).animate({
+              top: wrapperHeight - 40,
+              left: (startPosition - 100) + (Math.random() * 200),
+              opacity: 0.2
+            }, duration, options.disappear, function () {
+              $(this).remove();
+            });
+          }, options.interval));
+        },
+        stop: function () {
+          $.snowfall.intervals.forEach(function (interval) {
+            $.snowfall.$wrapper.hide();
+            $.snowfall.$wrapper.children('div').each(function () {
+              $(this).remove();
+            });
+            clearInterval(interval);
+          });
+        }
+      };
+    })(jQuery);
+
+    // Iniciar la nieve
+    $.snowfall.start({
+      content: '<i class="fa fa-snowflake-o"></i>',
+      size: {
+        min: 20,
+        max: 50
+      }
+    });
+  </script>
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36251023-1']);
+    _gaq.push(['_setDomainName', 'jqueryscript.net']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+      var ga = document.createElement('script');
+      ga.type = 'text/javascript';
+      ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') +
+        '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
   </body></html>

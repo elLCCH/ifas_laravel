@@ -503,16 +503,80 @@ class CursoController extends Controller
         //CARGAR MATERIAS DE UN ESTUDIANTE DE UNA GESTION
         // $Nivel="SUPERIORRRR";
         $Estudiante_id = $request->input('Estudiante_id');
-        $Anio_id = $request->input('Anio_id');
-        $data = DB::select("SELECT `calificaciones`.`id`,calificaciones.anio_id,calificaciones.curso_id,calificaciones.Arrastre,calificaciones.estudiante_id,calificaciones.Promedio,calificaciones.PruebaRecuperacion, anios.Anio, cursos.NombreCurso,cursos.NivelCurso,cursos.Sigla,cursos.SiglaRespaldo,cursos.Malla
+        // $Anio_id = $request->input('Anio_id');
+        $datasql = DB::select("SELECT `calificaciones`.`id`,calificaciones.anio_id,calificaciones.curso_id,calificaciones.Arrastre,calificaciones.estudiante_id,calificaciones.Promedio,calificaciones.PruebaRecuperacion, anios.Anio,cursos.Rango, cursos.NombreCurso,cursos.NivelCurso,cursos.Sigla,cursos.SiglaRespaldo,cursos.Malla
         FROM `calificaciones`
             LEFT JOIN `estudiantes` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
             LEFT JOIN `cursos` ON calificaciones.curso_id = `cursos`.`id`
-            LEFT JOIN `anios` ON `calificaciones`.`anio_id` = `anios`.`id` where estudiantes.id=$Estudiante_id");
+            LEFT JOIN `anios` ON `calificaciones`.`anio_id` = `anios`.`id` where estudiantes.id=$Estudiante_id order by anios.Anio,cursos.Rango");
         // $curso = Curso::where('NivelCurso','=',$Nivel)->get();
                 //  Curso::where('id','=',$id)->update($requestData);
 
-        return $data;
+            foreach ($datasql as $cdata) {
+
+                // $materiaid = $cdata->id; //SI FUNCIONABA; PERO CUANDO SE TRATABA DE PARALELO B, NO DETECTABA PRERREQUISITO A CAUSA DE LOS PK
+                $materiaid = $cdata->Sigla;
+                // $ArrayMats[] = $cdata->NombreCurso;
+                // $ArraySiglaP[] = $cdata->Sigla;
+                // $ArrayHoras[] = $cdata->Horas;
+                $textMats='';
+                $textSiglas='';
+                //SACANDO PRERREQUISITOS DE MATERIAS POR SIGLA
+                $prerreqs = DB::select("select p.id,p.id_materia_p,p.id_materia_s,
+                m.NombreCurso as 'mat_prin',m.Sigla as 'cod_prin', m.Horas,m.NombreCurso,m.NivelCurso,
+                m2.NombreCurso as 'materia_sec',m2.Sigla as 'cod_sec'
+                from prerrequisitos p LEFT JOIN
+                cursos m ON m.id=p.id_materia_p LEFT JOIN
+                cursos m2 ON m2.id=p.id_materia_s
+                WHERE m.Sigla='$materiaid'");
+
+                //ELIMINAR REPETIDOS BASANDOME EN SIGLA
+                $codSecUnicos = array_unique(array_column($prerreqs, 'cod_sec'));
+                $datosFiltrados = [];
+                foreach ($prerreqs as $fila) {
+                    if (in_array($fila->cod_sec, $codSecUnicos)) {
+                        $datosFiltrados[] = $fila;
+                        $codSecUnicos = array_diff($codSecUnicos, [$fila->cod_sec]);
+                    }
+                }
+
+                $prerreqs = $datosFiltrados;
+                foreach ($prerreqs as $p) {
+                    $textMats=$p->materia_sec.'/'.$textMats;
+                    // $textMats=$p->cod_sec.'/'.$textSiglas;
+                }
+
+                //  QUITAR EL ULTIMO SIMBOLO "/"
+                if (!empty($textMats)) {
+                    // Quita la última letra de la cadena
+                    $textMats = substr($textMats, 0, -1);
+
+                    // Asigna el valor modificado a la propiedad Prerrequisitos de $cdata
+                    $cdata->Prerrequisitos = $textMats;
+                } else {
+                    // Haz algo si la cadena está vacía, si es necesario
+                    if (strpos($cdata->NivelCurso, "PRIMERO") !== false) {
+                        // La palabra "PRIMERO" está presente en la cadena
+                        $cdata->Prerrequisitos = 'PRUEBA DE ADMISIÓN';
+
+                        // Puedes realizar acciones adicionales aquí si es necesario
+                    } else {
+                        // La palabra "PRIMERO" no está presente en la cadena
+                        $cdata->Prerrequisitos = 'NINGUNA';
+
+                        // Puedes realizar acciones adicionales aquí si es necesario
+                    }
+                }
+                if ($cdata->Promedio < 61) {
+                    $cdata->AprobReprob = 'REPROBADO';
+                    $cdata->Obs = 'NO';
+                }else{
+                    $cdata->AprobReprob = 'APROBADO';
+                    $cdata->Obs = 'SI';
+                }
+            }
+
+        return $datasql;
     }
     /**
      * Show the form for creating a new resource.
