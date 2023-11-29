@@ -991,6 +991,16 @@ class CalificacionesController extends Controller
                             'curso_id' => $c['curso_id']
                         ];
                         break;
+                    case 'SEGUNDA INSTANCIA':
+                        $updateData = [
+                            'PromEvP' => $c['PromEvP'],
+                            'PromEvT' => $c['PromEvT'],
+                            'Promedio' => $c['Promedio'],
+                            'PruebaRecuperacion' => $c['PruebaRecuperacion'],
+                            'anio_id' => intval($c['anio_id']),
+                            'curso_id' => $c['curso_id']
+                        ];
+                        break;
                     case 'SEMESTRALIZADO':
                         $updateData = [
 
