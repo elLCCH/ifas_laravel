@@ -433,7 +433,7 @@ class CalificacionesController extends Controller
         $materias=$materiasEncontradas;
 
         //OBTENER INFO DE ESTUDIANTE DE SUS CALIFICACIONES DE TODAS SUS MATERIAS
-        $dataCentralizador = DB::select("CALL getCentralizadorFinalLCCH('$materias',$request->estudiante_id,'$curso',$anioid)"); // PARA LLAMAR PROCEDURES
+        $dataCentralizador = DB::select("CALL getCentralizadorFinalLCCHFin('$materias',$request->estudiante_id,'$curso',$anioid)"); // PARA LLAMAR PROCEDURES
 
         //VERIFICAR CALIFICACIONES
         $contadorReprobados=0;
@@ -706,14 +706,14 @@ class CalificacionesController extends Controller
     $data = array(); //ES CON SEXO
     foreach ($dataEstsNew as $est) {
         // $CentralizadorData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-        $CentralizadorData=DB::select("CALL getCentralizadorFinalLCCH('$materias',$est->estudiante_id,'$curso',$id_gestion)"); // PARA LLAMAR PROCEDURES
+        $CentralizadorData=DB::select("CALL getCentralizadorFinalLCCHFin('$materias',$est->estudiante_id,'$curso',$id_gestion)"); // PARA LLAMAR PROCEDURES
         // $CentralizadorData=DB::select("CALL getCentralizadorFinal(?,?,?,?), ['$materias',$est->estudiante_id,'$curso',$id_gestion,$materias]"); // PARA LLAMAR PROCEDURES
         $data[] = $CentralizadorData[0];
     }
     $data2 = array(); //ES SIN SEXO
     foreach ($dataEstsNew as $est) {
         // $CentralizadorData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-        $CentralizadorData=DB::select("CALL getCentralizadorFinalLCCHSinSexo('$materias',$est->estudiante_id,'$curso',$id_gestion)"); // PARA LLAMAR PROCEDURES
+        $CentralizadorData=DB::select("CALL getCentralizadorFinalLCCHFinSinSexo('$materias',$est->estudiante_id,'$curso',$id_gestion)"); // PARA LLAMAR PROCEDURES
         // $CentralizadorData=DB::select("CALL getCentralizadorFinalSinSexo(?,?,?,?), ['$materias',$est->estudiante_id,'$curso',$id_gestion,$materias]"); // PARA LLAMAR PROCEDURES
         $data2[] = $CentralizadorData[0];
     }
@@ -788,7 +788,7 @@ class CalificacionesController extends Controller
 //  -- drop PROCEDURE getCentralizadorFinal;
 //     DELIMITER ;
 //     DELIMITER $$
-//     CREATE OR REPLACE PROCEDURE getCentralizadorFinalLCCH(IN arreglo TEXT,IN idEst INT, IN nombreCurso VARCHAR(255),IN idGestion INT)
+//     CREATE OR REPLACE PROCEDURE getCentralizadorFinalLCCHFin(IN arreglo TEXT,IN idEst INT, IN nombreCurso VARCHAR(255),IN idGestion INT)
 // BEGIN
 
 //       DECLARE _result varchar(10000) DEFAULT '';
@@ -828,9 +828,55 @@ class CalificacionesController extends Controller
 //     $$
 
 
-// -- PARA HACER FUNCIONAR
+// -- PARA HACER FUNCIONAR - SIRVE ES TODO
 // SET @data = '[\"INSTRUMENTO DE ESPECIALIDAD II\",\"PRACTICA DE CONJUNTOS II\",\"MUSICA DE CAMARA I\",\"ARMONIA II\",\"FORMAS Y ANALISIS MUSICAL\",\"HISTORIA DE LA MUSICA I\",\"INSTRUMENTO COMPLEMENTARIO II\",\"PRODUCCION MUSICAL Y GESTION CULTURAL\"]';
-//     CALL getCentralizadorFinalLCCH(@data,751,'SEGUNDO SUPERIOR A',4);
+//     CALL getCentralizadorFinalLCCHFin(@data,751,'SEGUNDO SUPERIOR A',4);
+// SET @data = '[\"INSTRUMENTO DE ESPECIALIDAD III\",\"PRACTICA DE CONJUNTOS III\",\"MUSICA DE CAMARA II\",\"INFORMATICA MUSICAL\",\"FORMAS Y ANALISIS MUSICAL II\",\"HISTORIA DE LA MUSICA II\",\"PRACTICA CORAL/METODOLOGIA DE LA INVESTIGACION\"]';
+//     CALL getCentralizadorFinalLCCHFin(@data,525,'TERCERO SUPERIOR A',4);
+
+
+//----------------------- ACA PRESENTO A LA FINALISSIMA QUE TOMA EN CUENTA MATERIAS QUE NO PERTENECEN O NO REGISTRADOS "recuerda el NULL"
+// -- drop PROCEDURE getCentralizadorFinal;
+//     DELIMITER ;
+//     DELIMITER $$
+//     CREATE OR REPLACE PROCEDURE getCentralizadorFinalLCCHFin(IN arreglo TEXT,IN idEst INT, IN nombreCurso VARCHAR(255),IN idGestion INT)
+// BEGIN
+
+//       DECLARE _result varchar(10000) DEFAULT '';
+//       -- DECLARE _value varchar(50);
+//     DECLARE i INT DEFAULT 0;
+//     DECLARE elemento VARCHAR(255);
+//     DECLARE numElementos INT;
+//     SET numElementos = JSON_LENGTH(arreglo);
+
+
+//     SET @ini = 'SELECT estudiantes.Ap_Paterno, estudiantes.Ap_Materno, estudiantes.Nombre, estudiantes.CI,estudiantes.id,estudiantes.Especialidad,estudiantes.Sexo,';
+//     SET @fin = CONCAT('FROM estudiantes LEFT JOIN calificaciones ON estudiantes.id = calificaciones.estudiante_id LEFT JOIN cursos ON calificaciones.curso_id = cursos.id where cursos.NivelCurso="',nombreCurso,'" AND estudiantes.id="',idEst,'" AND calificaciones.anio_id="',idGestion,'" ORDER BY estudiantes.Ap_Paterno,estudiantes.Ap_Materno,estudiantes.Nombre, estudiante_id, cursos.Sigla;');
+
+//     WHILE i < numElementos-1 DO
+//         SET elemento = JSON_EXTRACT(arreglo, CONCAT('$[', i, ']'));
+//         -- realizar alguna operación con cada elemento del arreglo
+// 		SET _result = CONCAT(_result,'SUM(CASE WHEN cursos.NombreCurso=',elemento,' AND estudiantes.id = ',idEst,' AND calificaciones.anio_id = ',idGestion,'  THEN
+//                           	(IF (calificaciones.PruebaRecuperacion IS NULL,calificaciones.Promedio ,calificaciones.PruebaRecuperacion ))
+//                              ELSE NULL END) as ',elemento,',');
+
+//         -- SELECT elemento;
+//         SET i = i + 1;
+//     END WHILE;
+
+//     -- ULTIMA ITERACION PARA EVITAR ERROR DEL FROM
+//         SET elemento = JSON_EXTRACT(arreglo, CONCAT('$[', i, ']'));
+//         -- realizar alguna operación con cada elemento del arreglo
+//     	SET _result = CONCAT(_result,'SUM(CASE WHEN cursos.NombreCurso=',elemento,' AND estudiantes.id = ',idEst,' AND calificaciones.anio_id = ',idGestion,'  THEN
+//                              (IF (calificaciones.PruebaRecuperacion IS NULL,calificaciones.Promedio ,calificaciones.PruebaRecuperacion ))
+//                              ELSE NULL END) as ',elemento,' ');
+//         SET @sql = CONCAT(@ini,_result,@fin);
+//       PREPARE stmt FROM @sql;
+//       EXECUTE stmt;
+//       DEALLOCATE PREPARE stmt;
+// END;
+
+//     $$
     }
     public function EncontrarNivelCurso(Request $request,$id)
     {
