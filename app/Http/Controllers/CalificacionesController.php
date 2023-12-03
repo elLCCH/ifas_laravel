@@ -442,68 +442,96 @@ class CalificacionesController extends Controller
         $contadorSegundaInstancia=0;
         $contadorInvalidos=0; //CANTIDAD DE MATERIAS Q NO CUMPLEN CON LA NOTA DE 40
         $CursosInvalidos = array();
+        // foreach ($Cursodata as $a) {
+        //     $nomMateria= $a->NombreCurso;
+        //     if ($dataCentralizador[0]->$nomMateria != null) {//aca debemos verificar si es null la calificacion, sino da error
+        //         $calif=(int)($dataCentralizador[0]->$nomMateria);
+        //         if ($calif == 0) {
+        //             $contadorRetirados++;
+        //         }
+        //         else
+        //         {
+        //             if ($calif<61) {
+        //                 $contadorReprobados++;
+        //                 if ($calif>39) {
+        //                     $contadorSegundaInstancia++;
+        //                 }else if($calif<40){
+        //                     $contadorInvalidos++;
+        //                     $CursosInvalidos[]=$nomMateria;
+        //                 }
+        //             }else{
+        //                 $contadorAprobados++;
+        //             }
+        //         }
+        //     }
+
+        // }
         foreach ($Cursodata as $a) {
-            $nomMateria= $a->NombreCurso;
-            $calif=(int)($dataCentralizador[0]->$nomMateria);
-            if ($calif == 0) {
-                $contadorRetirados++;
-            }
-            else
-            {
-                if ($calif<61) {
-                    $contadorReprobados++;
-                    if ($calif>39) {
-                        $contadorSegundaInstancia++;
-                    }else if($calif<40){
-                        $contadorInvalidos++;
-                        $CursosInvalidos[]=$nomMateria;
+            $nomMateria = $a->NombreCurso;
+
+            // Verificar si la propiedad existe y no es nula
+            if (isset($dataCentralizador[0]->$nomMateria) && $dataCentralizador[0]->$nomMateria !== null) {
+                $calif = (int)($dataCentralizador[0]->$nomMateria);
+
+                if ($calif == 0) {
+                    $contadorRetirados++;
+                } else {
+                    if ($calif < 61) {
+                        $contadorReprobados++;
+                        if ($calif > 39) {
+                            $contadorSegundaInstancia++;
+                        } else if ($calif < 40) {
+                            $contadorInvalidos++;
+                            $CursosInvalidos[] = $nomMateria;
+                        }
+                    } else {
+                        $contadorAprobados++;
                     }
-                }else{
-                    $contadorAprobados++;
                 }
             }
         }
-        // $RealizaraSegundaInstancia=true;
-        // if ($contadorReprobados>3) { //SI SON MAS DE 3 MATERIAS REPROBADAS NO PUEDE DAR 2DA INSTANCIA
-        //     $RealizaraSegundaInstancia=false;
-        // }
-        // else{
 
-        //     //$contadorSegundaInstancia //CANTIDAD DE MATERIAS VALIDAS PARA SEGUNDA INSTANCIA
+        $RealizaraSegundaInstancia=true;
+        if ($contadorReprobados>3) { //SI SON MAS DE 3 MATERIAS REPROBADAS NO PUEDE DAR 2DA INSTANCIA
+            $RealizaraSegundaInstancia=false;
+        }
+        else{
 
-
-        //     switch ($Nivel) {
-        //         case 'TECNICO SUPERIOR':
-        //             if ($contadorSegundaInstancia<4) { //SOLO SE ADMITEN HASTA 3 MATERIAS COMO 2DA INSTANCIA
-        //                     $RealizaraSegundaInstancia=true;
-        //             }
-        //             break;
-        //         case 'CAPACITACION':
-        //             if($contadorRetirados!=0){
-        //                 $RealizaraSegundaInstancia=false;
-        //             }else if ($contadorInvalidos!=0) {
-        //                 $RealizaraSegundaInstancia=false;
-        //             }else{
-        //                 $RealizaraSegundaInstancia=true;
-        //             }
-        //             break;
-        //         default:
-        //             # code...
-        //             break;
-        //     }
+            //$contadorSegundaInstancia //CANTIDAD DE MATERIAS VALIDAS PARA SEGUNDA INSTANCIA
 
 
-        // }
+            switch ($Nivel) {
+                case 'TECNICO SUPERIOR':
+                    if ($contadorSegundaInstancia<4) { //SOLO SE ADMITEN HASTA 3 MATERIAS COMO 2DA INSTANCIA
+                            $RealizaraSegundaInstancia=true;
+                    }
+                    break;
+                case 'CAPACITACION':
+                    if($contadorRetirados!=0){
+                        $RealizaraSegundaInstancia=false;
+                    }else if ($contadorInvalidos!=0) {
+                        $RealizaraSegundaInstancia=false;
+                    }else{
+                        $RealizaraSegundaInstancia=true;
+                    }
+                    break;
+                default:
+                    # code...
+                    break;
+            }
 
-        // //VERIFICACION EXTRA - SI LA MATERIA ACTUAL COINCIDE CON LA MATERIA INVALIDA POR LO TANTO FALSEAR
-        // for ($i=0; $i < $contadorInvalidos; $i++) {
-        //     if ($CursosInvalidos[$i]==$MateriaActual) {
-        //         $RealizaraSegundaInstancia=false;
-        //     }
-        // }
 
-        return true;
-        // return $RealizaraSegundaInstancia;
+        }
+
+        //VERIFICACION EXTRA - SI LA MATERIA ACTUAL COINCIDE CON LA MATERIA INVALIDA POR LO TANTO FALSEAR
+        for ($i=0; $i < $contadorInvalidos; $i++) {
+            if ($CursosInvalidos[$i]==$MateriaActual) {
+                $RealizaraSegundaInstancia=false;
+            }
+        }
+
+        // return true;
+        return $RealizaraSegundaInstancia;
         // return $contadorSegundaInstancia;
 
     }
