@@ -48,37 +48,57 @@ class CalificacionesController extends Controller
             cursos ON calificaciones.curso_id = cursos.id  LEFT JOIN administrativos__cursos ON cursos.id = administrativos__cursos.Curso_id LEFT JOIN
              administrativos ON administrativos__cursos.Admin_id= administrativos.id where estudiante_id = $idEst");
 
-            $forSegundo=0;
-            $forTercero=0;
-            $forCuarto=0;
+            $idCursoTemporal=$datasql[0]->Curso_id;
+            $dataCTemporal=DB::select("SELECT anio_id from cursos where id = $idCursoTemporal");
+            $anioidTemporal=$dataCTemporal[0]->anio_id;
+            $consultarCurso=DB::select("SELECT Anio from anios where id = $anioidTemporal");
+            $varAnioTxt = $consultarCurso[0]->Anio;
+            if (str_contains($varAnioTxt, '/')) {
+                //ES SEMESTRALIZADO
+                if (str_contains($varAnioTxt, '/1')){
+                    $fecha = '02/03/2023';
+                    $data[] = (string)$fecha;
+                }else{
+                    $fecha = '08/08/2023';
+                    $data[] = (string)$fecha;
+                }
+            }else{
+                //ES ANUALIZADO
+                $forSegundo=0;
+                $forTercero=0;
+                $forCuarto=0;
 
-            foreach ($datasql as $matEstsCalif) {
-                if ($matEstsCalif->Promedio==0) {
-                    if (($matEstsCalif->Teorica2+$matEstsCalif->Practica2)==0) {
-                        $forSegundo++;
-                    }
-                    if(($matEstsCalif->Teorica3+$matEstsCalif->Practica3)==0){
-                        $forTercero++;
-                    }
-                    if(($matEstsCalif->Teorica4+$matEstsCalif->Practica4)==0){
-                        $forCuarto++;
+                foreach ($datasql as $matEstsCalif) {
+                    if ($matEstsCalif->Promedio==0) {
+                        if (($matEstsCalif->Teorica2+$matEstsCalif->Practica2)==0) {
+                            $forSegundo++;
+                        }
+                        if(($matEstsCalif->Teorica3+$matEstsCalif->Practica3)==0){
+                            $forTercero++;
+                        }
+                        if(($matEstsCalif->Teorica4+$matEstsCalif->Practica4)==0){
+                            $forCuarto++;
+                        }
                     }
                 }
-            }
-            $fecha = '';
-            if ($forSegundo!=0) {
-                $fecha = '02/06/2023';
-            } else {
-                if ($forTercero!=0) {
-                    $fecha = '01/08/2023';
+                $fecha = '';
+                if ($forSegundo!=0) {
+                    $fecha = '02/06/2023';
                 } else {
-                    if ($forCuarto!=0) {
-                        $fecha = '03/10/2023';
+                    if ($forTercero!=0) {
+                        $fecha = '01/08/2023';
+                    } else {
+                        if ($forCuarto!=0) {
+                            $fecha = '03/10/2023';
+                        }
                     }
                 }
+
+                $data[] = (string)$fecha;
             }
 
-            $data[] = (string)$fecha;
+
+
         }
         $data=json_encode($data); //CONVIRTIENDO EN JSON PARA QUE NO DE ERRORES
         return $data;    //TAMBN SE PUEDE SUMANDO $RequestData[n]['id']
