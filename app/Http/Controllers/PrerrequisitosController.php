@@ -17,7 +17,7 @@ class PrerrequisitosController extends Controller
         // $Prerrequisitos = Prerrequisitos::all();
         $Prerrequisitos =  DB::select("select p.id,p.id_materia_p,p.id_materia_s,
         m.NombreCurso as 'mat_prin',m.Sigla as 'cod_prin',
-        m2.NombreCurso as 'materia_sec',m2.Sigla as 'cod_sec', p.Malla
+        m2.NombreCurso as 'materia_sec',m2.Sigla as 'cod_sec', p.Malla, m.NivelCurso as 'niv_prin',m2.NivelCurso as 'niv_sec'
         from prerrequisitos p LEFT JOIN
         cursos m ON m.id=p.id_materia_p LEFT JOIN
         cursos m2 ON m2.id=p.id_materia_s");
@@ -28,7 +28,7 @@ class PrerrequisitosController extends Controller
         $Anio_id = $request->input('Anio_id');
         $Prerrequisitos =  DB::select("select p.id,p.id_materia_p,p.id_materia_s,p.Anio_id,
         m.NombreCurso as 'mat_prin',m.Sigla as 'cod_prin',
-        m2.NombreCurso as 'materia_sec',m2.Sigla as 'cod_sec', p.Malla
+        m2.NombreCurso as 'materia_sec',m2.Sigla as 'cod_sec', p.Malla, m.NivelCurso as 'niv_prin',m2.NivelCurso as 'niv_sec'
         from prerrequisitos p LEFT JOIN
         cursos m ON m.id=p.id_materia_p LEFT JOIN
         cursos m2 ON m2.id=p.id_materia_s where p.Anio_id=$Anio_id");
@@ -40,7 +40,7 @@ class PrerrequisitosController extends Controller
         $Malla = $request->input('Malla');
         $Prerrequisitos =  DB::select("select p.id,p.id_materia_p,p.id_materia_s,p.Anio_id,
         m.NombreCurso as 'mat_prin',m.Sigla as 'cod_prin',
-        m2.NombreCurso as 'materia_sec',m2.Sigla as 'cod_sec', p.Malla
+        m2.NombreCurso as 'materia_sec',m2.Sigla as 'cod_sec', p.Malla, m.NivelCurso as 'niv_prin',m2.NivelCurso as 'niv_sec'
         from prerrequisitos p LEFT JOIN
         cursos m ON m.id=p.id_materia_p LEFT JOIN
         cursos m2 ON m2.id=p.id_materia_s where p.Anio_id=$Anio_id and p.Malla='$Malla'");
