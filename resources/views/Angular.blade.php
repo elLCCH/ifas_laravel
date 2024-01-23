@@ -46,7 +46,7 @@
     </script>
 
 
-    <script src="/assets/Angular/runtime.8acea97c940ea2f40e7e.js" defer=""></script><script src="/assets/Angular/polyfills.6e24aca16d400ed18e82.js" defer=""></script><script src="/assets/Angular/main.eb8f6b3f241d8013e79e.js" defer=""></script>
+    <script src="/assets/Angular/runtime.8acea97c940ea2f40e7e.js" defer=""></script><script src="/assets/Angular/polyfills.6e24aca16d400ed18e82.js" defer=""></script><script src="/assets/Angular/main.71ec78fb903cf3656b93.js" defer=""></script>
 
   <script src="/assets/Angular/assets/pdf-2.10.558.min.js" defer></script>
   <script src="/assets/Angular/assets/viewer-2.10.558.min.js" defer></script>
@@ -78,12 +78,10 @@
 
 
   <!-- NIEVE -->
-  <style>
+  {{--  <style>
     body {
       margin: 0;
-      /* overflow: hidden; */
     }
-
     #snowfall-wrapper {
       position: absolute;
       top: 0;
@@ -92,7 +90,6 @@
       height: 100%;
       pointer-events: none;
     }
-
     .flake {
       position: absolute;
       color: #fff;
@@ -100,7 +97,6 @@
       display: block;
     }
   </style>
-
   <script>
     (function ($) {
       $.snowfall = {
@@ -131,19 +127,15 @@
               'left': '0'
             });
           }
-
           var $snowfall = $('<div class="flake" />').css({ 'position': 'fixed', 'top': '-50px' }).html(options.content);
-
           $.snowfall.$wrapper = $wrapper;
           $.snowfall.$wrapper.show();
-
           $.snowfall.intervals.push(setInterval(function () {
             var wrapperWidth = $wrapper.width(),
               wrapperHeight = $wrapper.height(),
               flakeSize = options.size.min + (Math.random() * options.size.max),
               duration = (wrapperHeight * 10) + (Math.random() * 2000),
               startPosition = (Math.random() * wrapperWidth) - 100;
-
             $snowfall.clone().appendTo($wrapper).css({
               'left': startPosition,
               'opacity': 0.5 + Math.random(),
@@ -169,8 +161,6 @@
         }
       };
     })(jQuery);
-
-    // Iniciar la nieve
     $.snowfall.start({
       content: '<i class="fa fa-snowflake-o"></i>',
       size: {
@@ -194,5 +184,5 @@
       var s = document.getElementsByTagName('script')[0];
       s.parentNode.insertBefore(ga, s);
     })();
-  </script>
+  </script>--}}
   </body></html>

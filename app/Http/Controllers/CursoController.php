@@ -122,7 +122,7 @@ class CursoController extends Controller
         $NivelCurso = $request->input('NivelCurso');
 
         $materias = DB::select("SELECT cursos.id,`cursos`.`Sigla` as 'cod_prin',cursos.Anio_id,cursos.NivelCurso as 'CursoP',cursos.Malla,cursos.NombreCurso as 'mat_prin',
-        cursos.id as 'id_materia_p',prerrequisitos.id_materia_s,(select c.Sigla from cursos c where c.id=prerrequisitos.id_materia_s) as 'cod_sec',(select cc.SiglaRespaldo from cursos cc where cc.id=prerrequisitos.id_materia_s) as 'cod_secRespaldo'
+        cursos.id as 'id_materia_p',prerrequisitos.id_materia_s,(select c.Sigla from cursos c where c.id=prerrequisitos.id_materia_s and prerrequisitos.Malla='$Malla' and prerrequisitos.Anio_id='$Anio_id') as 'cod_sec',(select cc.SiglaRespaldo from cursos cc where cc.id=prerrequisitos.id_materia_s) as 'cod_secRespaldo'
                 FROM `cursos`
                     LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.Malla='$Malla' and cursos.NivelCurso = '$NivelCurso'");
         $SiTienePrerreq = true;
@@ -132,11 +132,75 @@ class CursoController extends Controller
             }
         }
         if ($SiTienePrerreq ==false) {
-            $materias = DB::select("SELECT cursos.id,`cursos`.`Sigla` as 'cod_prin',cursos.Anio_id,cursos.NivelCurso as 'CursoP',cursos.Malla,cursos.NombreCurso as 'mat_prin',
-            cursos.id as 'id_materia_p',(SELECT p.id_materia_s as 'id_materia_s2' from prerrequisitos p where p.id_materia_p =  (select c.id from cursos c where c.Sigla=cursos.Sigla and c.NivelCurso NOT LIKE 'SEGUNDO BASICO B' and c.Anio_id=$Anio_id LIMIT 1)LIMIT 1) AS 'id_materia_sec',(select c.Sigla from cursos c where c.id=id_materia_sec) as 'cod_sec',(select cc.SiglaRespaldo from cursos cc where cc.id=id_materia_sec) as 'cod_secRespaldo'
-                    FROM `cursos`
-                        LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.Malla='$Malla' and cursos.NivelCurso = '$NivelCurso';
+            // $materias = DB::select("SELECT cursos.id,`cursos`.`Sigla` as 'cod_prin',cursos.Anio_id,cursos.NivelCurso as 'CursoP',cursos.Malla,cursos.NombreCurso as 'mat_prin',
+            // cursos.id as 'id_materia_p',(SELECT p.id_materia_s as 'id_materia_s2' from prerrequisitos p where p.id_materia_p =  (select c.id from cursos c where c.Sigla=cursos.Sigla and c.Anio_id=$Anio_id LIMIT 1)LIMIT 1) AS 'id_materia_sec',
+            //  (select c.Sigla from cursos c where c.id=id_materia_sec and prerrequisitos.Malla='$Malla' and prerrequisitos.Anio_id='$Anio_id') as 'cod_sec',(select cc.SiglaRespaldo from cursos cc where cc.id=id_materia_sec) as 'cod_secRespaldo'
+            //         FROM `cursos`
+            //             LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.Malla='$Malla' and cursos.NivelCurso = '$NivelCurso';
+            // ");
+            $materias = DB::select("SELECT
+                cursos.id,
+                `cursos`.`Sigla` as 'cod_prin',
+                cursos.Anio_id,
+                cursos.NivelCurso as 'CursoP',
+                cursos.Malla,
+                cursos.NombreCurso as 'mat_prin',
+                cursos.id as 'id_materia_p',
+                (
+                    SELECT
+                        GROUP_CONCAT(p.id_materia_s) as 'id_materia_s2'
+                    FROM
+                        prerrequisitos p
+                    WHERE
+                        p.id_materia_p = (
+                            SELECT
+                                c.id
+                            FROM
+                                cursos c
+                            WHERE
+                                c.Sigla = cursos.Sigla
+                                AND c.Anio_id = $Anio_id
+                            LIMIT 1
+                        )
+                    LIMIT 1
+                ) AS 'id_materia_sec',
+                (
+                    SELECT
+                        GROUP_CONCAT(c.Sigla)
+                    FROM
+                        cursos c
+                    WHERE
+                        c.id IN (
+                            SELECT p.id_materia_s
+                            FROM prerrequisitos p
+                            WHERE p.id_materia_p = cursos.id
+                                AND prerrequisitos.Malla = '$Malla'
+                                AND prerrequisitos.Anio_id = '$Anio_id'
+                        )
+                ) as 'cod_sec',
+                (
+                    SELECT
+                        GROUP_CONCAT(cc.SiglaRespaldo)
+                    FROM
+                        cursos cc
+                    WHERE
+                        cc.id IN (
+                            SELECT p.id_materia_s
+                            FROM prerrequisitos p
+                            WHERE p.id_materia_p = cursos.id
+                                AND prerrequisitos.Malla = '$Malla'
+                                AND prerrequisitos.Anio_id = '$Anio_id'
+                        )
+                ) as 'cod_secRespaldo'
+            FROM
+                `cursos`
+            LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id`
+            WHERE
+                cursos.Anio_id = $Anio_id
+                AND cursos.Malla = '$Malla'
+                AND cursos.NivelCurso = '$NivelCurso';
             ");
+
         }
         return $materias;
     }

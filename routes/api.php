@@ -28,6 +28,7 @@ Route::get('DeterminarInstituto', 'App\Http\Controllers\AnioController@Determina
 Route::get('ObtenerLogo', 'App\Http\Controllers\AnioController@ObtenerLogo');
 Route::get('ObtenerMinisterio', 'App\Http\Controllers\AnioController@ObtenerMinisterio');
 Route::get('indexAll', 'App\Http\Controllers\AnioController@indexAll');
+Route::get('ObtenerGestionPredeterminada', 'App\Http\Controllers\AnioController@ObtenerGestionPredeterminada');
 Route::resource('Anio', 'App\Http\Controllers\AnioController');
 /*CURSO*/
 Route::resource('curso', 'App\Http\Controllers\CursoController');
@@ -95,6 +96,7 @@ Route::resource('AreaEventos', 'App\Http\Controllers\AreaeventosController');
 /*PRERREQUISITOS*/
 Route::resource('Prerrequisito', 'App\Http\Controllers\PrerrequisitosController');
 Route::post('indexListarxGestion', 'App\Http\Controllers\PrerrequisitosController@indexListarxGestion');
+Route::post('ObtenerPrerrequisitoxGestionyMalla', 'App\Http\Controllers\PrerrequisitosController@ObtenerPrerrequisitoxGestionyMalla');
 /*EVENTOS*/
 Route::resource('Evento', 'App\Http\Controllers\EventosController');
 Route::get('EventoActivo', 'App\Http\Controllers\EventosController@EventoActivo');
