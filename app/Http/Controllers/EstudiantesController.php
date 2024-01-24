@@ -27,7 +27,7 @@ class EstudiantesController extends Controller
         // return $data;
 
         // $estudiante = Estudiantes::orderBy('id', 'DESC')->get();
-        $data = DB::select("SELECT e.id, e.Ap_Paterno,e.Ap_Materno,e.Nombre,e.Turno,e.CI,e.Matricula,e.Categoria,e.Observacion,e.Estado, e.Curso_Solicitado,e.Edad,e.FechNac
+        $data = DB::select("SELECT e.id, e.Ap_Paterno,e.Ap_Materno,e.Nombre,e.Turno,e.CI,e.Matricula,e.Categoria,e.Observacion,e.Estado, e.Curso_Solicitado,e.Edad,e.FechNac,e.Nivel
         FROM estudiantes e order by e.id desc");
         return $data;
 
