@@ -133,6 +133,7 @@ Route::get('ListarAbreviacionDptosApi', 'App\Http\Controllers\ApisController@Lis
 Route::get('ListarTipoMateriaApi', 'App\Http\Controllers\ApisController@ListarTipoMateriaApi');
 Route::get('ListarCursosApi', 'App\Http\Controllers\ApisController@ListarCursosApi');
 Route::get('ListarAreasApi', 'App\Http\Controllers\ApisController@ListarAreasApi');
+Route::get('ListaAntiguaNuevaAutoCompletar', 'App\Http\Controllers\ApisController@ListaAntiguaNuevaAutoCompletar');
 Route::get('ListarProgramasApi', 'App\Http\Controllers\ApisController@ListarProgramasApi');
 Route::get('ListarCarrerasApi', 'App\Http\Controllers\ApisController@ListarCarrerasApi');
 Route::get('ListarMensionesApi', 'App\Http\Controllers\ApisController@ListarMensionesApi');

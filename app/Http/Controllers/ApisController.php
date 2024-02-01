@@ -82,6 +82,20 @@ class ApisController extends Controller
         return $data;
         // return ' ';
     }
+    public function ListaAntiguaNuevaAutoCompletar() {
+        $data = Array (
+
+            // NUEVA MALLA
+            "1" => Array ("Area" => "ARTES MUSICALES","Programa" => "MUSICA","Carrera" => "MUSICA CLASICA/ACADEMICA","Mension" => "NINGUNA","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO","Malla"=>"NUEVA"),
+            "2" => Array ("Area" => "ARTES MUSICALES","Programa" => "MUSICA","Carrera" => "MUSICA BOLIVIANA","Mension" => "NINGUNA","Estado"=>"ACTIVO","Ifa"=>"DEL FOLKLORE ORURO","Malla"=>"NUEVA"),
+            "3" => Array ("Area" => "ARTES VISUALES","Programa" => "ARTES PLASTICAS Y VISUALES","Carrera" => "ARTES PLASTICAS Y VISUALES","Mension" => "NINGUNA","Estado"=>"ACTIVO","Ifa"=>"BELLAS ARTES ORURO","Malla"=>"NUEVA"),
+            //MALLA ANTIGUA
+            "4" => Array ("Area" => "CLASICA","Programa" => "NINGUNA","Estado"=>"ACTIVO","Carrera" => "MUSICA","Mension" => "INSTRUMENTISTA","Ifa"=>"MARIA LUISA LUZIO","Malla"=>"ANTIGUA"),
+            "5" => Array ("Area" => "BOLIVIANA","Programa" => "NINGUNA","Estado"=>"ACTIVO","Carrera" => "MUSICA","Mension" => "GUITARRA","Ifa"=>"DEL FOLKLORE ORURO","Malla"=>"ANTIGUA"),
+            "6" => Array ("Area" => "ARTES PLASTICAS Y VISUALES","Programa" => "NINGUNA","Estado"=>"ACTIVO","Carrera" => "ARTES PLASTICAS Y VISUALES","Mension" => "PINTURA","Ifa"=>"BELLAS ARTES ORURO","Malla"=>"ANTIGUA"),
+        );
+        return $data;
+    }
     public function ListarAreasApi() //USADO EN ESTUDIANTES, LISTA LAS MENCIONES
     {
         $data = Array (
