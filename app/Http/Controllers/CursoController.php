@@ -121,21 +121,22 @@ class CursoController extends Controller
         $Anio_id = $request->input('Anio_id');
         $NivelCurso = $request->input('NivelCurso');
         // $NivelCurso = 'TERCERO BASICO B';
-        $NivelCursoPeroEnA = substr($NivelCurso, 0, -1) . 'A';
+
+        $VerificarPorParalelo = $request->input('VerificarPorParalelo'); //SI ES TRUE ENTONCES VERIFICAREMOS POR PARALELO, DIGAMOS SI el B sus prerrequisitos los tiene con el C que asi sea, si es false entonces si o si con A
+        if ($VerificarPorParalelo == false) {
+            $NivelCursoPeroEnA = substr($NivelCurso, 0, -1) . 'A'; //ENTONCES HACER LA VERIFICACION CON EL PARALELO A por defecto
+        }else{
+            $NivelCursoPeroEnA = $NivelCurso; //ENTONCES VERIFICAR PRERREQUISITOS CON EL PARALELO ASIGNADO B con B sino B con C etc
+        }
         $EsPrimerAnio = $request->input('EsPrimerAnio'); //PARA SABER SI SON MATERIAS DE PRIMER AÑO QUE NO TIENEN PRERREQUISITO
 
+        //OBTENCION DE MATERIAS DE UN CURSO EJEM: MATERIAS DE PRIMERO BASICO A, PRIMERO BASICO B, PRIMERO SUPERIOR B ETC
         $materias = DB::select("SELECT cursos.id,`cursos`.`Sigla` as 'cod_prin',cursos.Anio_id,cursos.NivelCurso as 'CursoP',cursos.Malla,cursos.NombreCurso as 'mat_prin',
         cursos.id as 'id_materia_p',prerrequisitos.id_materia_s,(select c.Sigla from cursos c where c.id=prerrequisitos.id_materia_s and prerrequisitos.Malla='$Malla' and prerrequisitos.Anio_id='$Anio_id') as 'cod_sec',(select cc.SiglaRespaldo from cursos cc where cc.id=prerrequisitos.id_materia_s) as 'cod_secRespaldo'
                 FROM `cursos`
                     LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.Malla='$Malla' and cursos.NivelCurso = '$NivelCurso'");
-        $SiTienePrerreq = true;
-        foreach ($materias as $k) {
-            if ($k->cod_sec==null) {
-                $SiTienePrerreq = false;
-            }
-        }
-        if ($SiTienePrerreq ==false) {
 
+            //OBTENIENDO PRERREQUISITOS RESPECTO A NIVEL CURSO PRIMERO BASICO A, PRIMERO BASICO B, PRIMERO SUPERIOR B ETC
             $materias = DB::select("SELECT
                 cursos.id,
                 `cursos`.`Sigla` as 'cod_prin',
@@ -206,8 +207,16 @@ class CursoController extends Controller
                     return $materia->cod_sec !== null;
                 }));
 
+                if ($VerificarPorParalelo == false) {
+                    //OBLIGANDO A QUE SEA EMPTY ---- SI OBLIGAMOS A QUE SEA NULL ESTMOS HACIENDO QUE SI O SI SUS PRERREQ SEAN TOMADOS DEL PARALELO A
+                    $materiasSinNulos = null;
+                }
+
+
+
                 //VERIFICAR SI $materiasSinNulos ESTA VACIO
-                //Si ESTA VACIO el $materiasSinNulos podemos recorrer con un foreach las filas de $materias, al recorrer fila por fila debemos reemplazar los cod_sec que eran nulos por los prerrequisitos del mismo Nivel pero en paralelo A
+                //Si ESTA VACIO el $materiasSinNulos podemos recorrer con un foreach las filas de $materias,
+                //al recorrer fila por fila debemos reemplazar los cod_sec que eran nulos por los prerrequisitos del mismo Nivel pero en paralelo A
                 //ahora recorriendo fila a fila obviamente mantenemos los cursos del $NivelCurso original, pero estaria con los prerrequisitos cod_sec como si fuera paralelo A
                 if (empty($materiasSinNulos)) {
                     // Obtener prerrequisitos del mismo nivel pero en paralelo A
@@ -303,8 +312,6 @@ class CursoController extends Controller
             }
 
 
-
-        }
         return $materias;
     }
 

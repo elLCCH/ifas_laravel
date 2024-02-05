@@ -162,8 +162,9 @@ class AdministrativosController extends Controller
         }
 
         Administrativos::where('id','=',$id)->update($requestData);
-        return 'Datos administrativo Modificados';
+        // return 'Datos administrativo Modificados';
         // return $request;
+        return $requestData;
     }
     /**
      * Remove the specified resource from storage.

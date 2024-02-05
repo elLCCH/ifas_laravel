@@ -495,8 +495,8 @@ class EstudiantesController extends Controller
         }
         Estudiantes::where('id','=',$id)->update($requestData);
 
-        return 'Datos Estudiante Modificados';
-        // return $requestData;
+        // return 'Datos Estudiante Modificados';
+        return $requestData;
     }
     public function AbrirPDF(Request $request)
     {
