@@ -45,65 +45,54 @@ class CursoController extends Controller
 
     public function ClonarGestion(Request $request)
     {
+        $Anio_idinput = $request->input('Anio_id'); // GESTION A CLONAR
+        $New_Anio_idinput = $request->input('New_Anio_id'); // NUEVA GESTION
 
-        // $Malla = $request->input('Malla'); //MALLA A CLONAR
-        $Anio_id = $request->query('Anio_id'); //GESTION A CLONAR
-        $New_Anio_id = $request->query('New_Anio_id'); //NUEVA GESTION //4
+        // CLONANDO MATERIAS PARA NUEVA GESTION
+        $dataMateriass = curso::where('Anio_id', '=', $Anio_idinput)->get();
 
-        $Anio_idinput = $request->input('Anio_id'); //GESTION A CLONAR
-        $New_Anio_idinput = $request->input('New_Anio_id'); //NUEVA GESTION //4
-
-        //CLONANDO MATERIAS PARA NUEVA GESTION
-        // DB::select("INSERT INTO `cursos` SELECT 0, NombreCurso ,NivelCurso, Sigla, Tipo,BiTriEstado,Horas,Malla,created_at,updated_at,$New_Anio_idinput FROM cursos WHERE Anio_id=$Anio_idinput");
-        // SELECT * from cursos where Anio_id=
-        $dataMateriass= curso::where('Anio_id','=',$Anio_idinput)->get();
-        // $dataMateriass = DB::select("select * from cursos where Anio_id=$Anio_idinput");
-
-        foreach ($dataMateriass as $c ) {
+        foreach ($dataMateriass as $c) {
             $curso = new curso();
-            $curso->NombreCurso= $c->NombreCurso;
-            $curso->NivelCurso= $c->NivelCurso;
-            $curso->Sigla= $c->Sigla;
-            $curso->Tipo= $c->Tipo;
-            $curso->BiTriEstado= 'NINGUNA EVALUACION';
-            $curso->Horas= $c->Horas;
-            $curso->Malla= $c->Malla;
-            $curso->Rango= $c->Rango;
-            $curso->Anio_id= $New_Anio_idinput;
+            $curso->NombreCurso = $c->NombreCurso;
+            $curso->NivelCurso = $c->NivelCurso;
+            $curso->Sigla = $c->Sigla;
+            $curso->Tipo = $c->Tipo;
+            $curso->BiTriEstado = 'NINGUNA EVALUACION';
+            $curso->Horas = $c->Horas;
+            $curso->Malla = $c->Malla;
+            $curso->Rango = $c->Rango;
+            $curso->Anio_id = $New_Anio_idinput;
             $curso->save();
+
+            // Mapear los nuevos IDs de las materias clonadas
+            $materiasClonadas[$c->id] = $curso->id;
         }
 
+        // Clonar prerrequisitos
+        $PrerreqAnteriorGestion = Prerrequisitos::where('Anio_id', '=', $Anio_idinput)->get();
 
-        //clonar prerrequisitos
-        $PrerreqAnteriorGestion = Prerrequisitos::where('Anio_id','=',$Anio_idinput)->get();
-        // $Lista[]=array();
         foreach ($PrerreqAnteriorGestion as $r) {
-            $ObtenerMateriaPrimariaAntes = DB::select("select * from cursos where id=$r->id_materia_p");
-            $ObtenerMateriasSecundariasAntes = DB::select("select * from cursos where id=$r->id_materia_s");
+            // Obtener el nuevo ID de la materia primaria
+            $id_materia_p_new = $materiasClonadas[$r->id_materia_p];
 
-            $Primaria = $ObtenerMateriaPrimariaAntes[0]->Sigla;
-            $Secundaria = $ObtenerMateriasSecundariasAntes[0]->Sigla;
+            // Obtener el nuevo ID de la materia secundaria
+            $id_materia_s_new = $materiasClonadas[$r->id_materia_s];
 
-            $ObtenerMateriaPrimaria = DB::select("select * from cursos where Sigla='$Primaria' and Anio_id=$New_Anio_idinput");
-            $ObtenerMateriasSecundarias = DB::select("select * from cursos where Sigla='$Secundaria' and Anio_id=$New_Anio_idinput");
-
-            // $Lista[]=$ObtenerMateriaPrimaria;
-            $PrimariaNew = $ObtenerMateriaPrimaria[0]->id;
-            $SecundariaNew = $ObtenerMateriasSecundarias[0]->id;
-
+            // Obtener la malla de la materia primaria clonada
+            $malla_primaria_new = $r->Malla;
 
             $Prerreq = new Prerrequisitos();
-            $Prerreq->id_materia_p= $PrimariaNew;
-            $Prerreq->id_materia_s= $SecundariaNew;
-            $Prerreq->Anio_id= $New_Anio_idinput;
+            $Prerreq->id_materia_p = $id_materia_p_new;
+            $Prerreq->id_materia_s = $id_materia_s_new;
+            $Prerreq->Malla = $malla_primaria_new; // Asignar la malla
+            $Prerreq->Anio_id = $New_Anio_idinput;
             $Prerreq->save();
-        //     // DB::select("INSERT INTO `prerrequisitos` value (0, $PrimariaNew,$SecundariaNew,null,null,4)");
         }
 
         // return 'CLONACION EXITOSA';
-        return $ObtenerMateriasSecundarias;
-
+        return $dataMateriass; // O cualquier otro dato que desees devolver
     }
+
     public function CursosUniqueSigla()
     {
         $dataUnique=DB::select("SELECT DISTINCT Sigla, NombreCurso FROM cursos ORDER BY Sigla");
@@ -135,6 +124,7 @@ class CursoController extends Controller
         cursos.id as 'id_materia_p',prerrequisitos.id_materia_s,(select c.Sigla from cursos c where c.id=prerrequisitos.id_materia_s and prerrequisitos.Malla='$Malla' and prerrequisitos.Anio_id='$Anio_id') as 'cod_sec',(select cc.SiglaRespaldo from cursos cc where cc.id=prerrequisitos.id_materia_s) as 'cod_secRespaldo'
                 FROM `cursos`
                     LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.Malla='$Malla' and cursos.NivelCurso = '$NivelCurso'");
+        $materiasRespaldo = $materias;
 
             //OBTENIENDO PRERREQUISITOS RESPECTO A NIVEL CURSO PRIMERO BASICO A, PRIMERO BASICO B, PRIMERO SUPERIOR B ETC
             $materias = DB::select("SELECT
@@ -201,6 +191,70 @@ class CursoController extends Controller
             ");
             if ($EsPrimerAnio == 'PRIMER ANIO') { //SI ES PRIMER AÑO ENTONCES NO EXCLUIR NULOS NI NADA //NOTA: ESTA PALABRA PRIMER ANIO ES GENERAL PARA TODOS LOS INSTITUTOS
 
+                //SI ES PRIMER AÑO ENTONCES HACER VERIFICACION CON PARALELO A
+                $materiasRespaldo = DB::select("SELECT
+                cursos.id,
+                `cursos`.`Sigla` as 'cod_prin',
+                cursos.Anio_id,
+                cursos.NivelCurso as 'CursoP',
+                cursos.Malla,
+                cursos.NombreCurso as 'mat_prin',
+                cursos.id as 'id_materia_p',
+                (
+                    SELECT
+                        GROUP_CONCAT(p.id_materia_s) as 'id_materia_s2'
+                    FROM
+                        prerrequisitos p
+                    WHERE
+                        p.id_materia_p = (
+                            SELECT
+                                c.id
+                            FROM
+                                cursos c
+                            WHERE
+                                c.Sigla = cursos.Sigla
+                                AND c.Anio_id = $Anio_id
+                            LIMIT 1
+                        )
+                    LIMIT 1
+                ) AS 'id_materia_sec',
+                (
+                    SELECT
+                        GROUP_CONCAT(c.Sigla)
+                    FROM
+                        cursos c
+                    WHERE
+                        c.id IN (
+                            SELECT p.id_materia_s
+                            FROM prerrequisitos p
+                            WHERE p.id_materia_p = cursos.id
+                                AND prerrequisitos.Malla = '$Malla'
+                                AND prerrequisitos.Anio_id = '$Anio_id'
+                        )
+                ) as 'cod_sec',
+                (
+                    SELECT
+                        GROUP_CONCAT(cc.SiglaRespaldo)
+                    FROM
+                        cursos cc
+                    WHERE
+                        cc.id IN (
+                            SELECT p.id_materia_s
+                            FROM prerrequisitos p
+                            WHERE p.id_materia_p = cursos.id
+                                AND prerrequisitos.Malla = '$Malla'
+                                AND prerrequisitos.Anio_id = '$Anio_id'
+                        )
+                ) as 'cod_secRespaldo'
+            FROM
+                `cursos`
+            LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id`
+            WHERE
+                cursos.Anio_id = $Anio_id
+                AND cursos.Malla = '$Malla'
+                AND cursos.NivelCurso = '$NivelCursoPeroEnA';
+            ");
+            $materias = $materiasRespaldo;
             }else{
                 //EXCLUCION DE NULL EN cod_sec
                 $materiasSinNulos = array_values(array_filter($materias, function ($materia) {
