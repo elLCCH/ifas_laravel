@@ -125,74 +125,11 @@ class CursoController extends Controller
                 FROM `cursos`
                     LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id` where cursos.Anio_id=$Anio_id and cursos.Malla='$Malla' and cursos.NivelCurso = '$NivelCurso'");
         $materiasRespaldo = $materias;
+        $materiasRespaldo2 = $materias;
 
-            //OBTENIENDO PRERREQUISITOS RESPECTO A NIVEL CURSO PRIMERO BASICO A, PRIMERO BASICO B, PRIMERO SUPERIOR B ETC
-            $materias = DB::select("SELECT
-                cursos.id,
-                `cursos`.`Sigla` as 'cod_prin',
-                cursos.Anio_id,
-                cursos.NivelCurso as 'CursoP',
-                cursos.Malla,
-                cursos.NombreCurso as 'mat_prin',
-                cursos.id as 'id_materia_p',
-                (
-                    SELECT
-                        GROUP_CONCAT(p.id_materia_s) as 'id_materia_s2'
-                    FROM
-                        prerrequisitos p
-                    WHERE
-                        p.id_materia_p = (
-                            SELECT
-                                c.id
-                            FROM
-                                cursos c
-                            WHERE
-                                c.Sigla = cursos.Sigla
-                                AND c.Anio_id = $Anio_id
-                            LIMIT 1
-                        )
-                    LIMIT 1
-                ) AS 'id_materia_sec',
-                (
-                    SELECT
-                        GROUP_CONCAT(c.Sigla)
-                    FROM
-                        cursos c
-                    WHERE
-                        c.id IN (
-                            SELECT p.id_materia_s
-                            FROM prerrequisitos p
-                            WHERE p.id_materia_p = cursos.id
-                                AND prerrequisitos.Malla = '$Malla'
-                                AND prerrequisitos.Anio_id = '$Anio_id'
-                        )
-                ) as 'cod_sec',
-                (
-                    SELECT
-                        GROUP_CONCAT(cc.SiglaRespaldo)
-                    FROM
-                        cursos cc
-                    WHERE
-                        cc.id IN (
-                            SELECT p.id_materia_s
-                            FROM prerrequisitos p
-                            WHERE p.id_materia_p = cursos.id
-                                AND prerrequisitos.Malla = '$Malla'
-                                AND prerrequisitos.Anio_id = '$Anio_id'
-                        )
-                ) as 'cod_secRespaldo'
-            FROM
-                `cursos`
-            LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id`
-            WHERE
-                cursos.Anio_id = $Anio_id
-                AND cursos.Malla = '$Malla'
-                AND cursos.NivelCurso = '$NivelCurso';
-            ");
-            if ($EsPrimerAnio == 'PRIMER ANIO') { //SI ES PRIMER AÑO ENTONCES NO EXCLUIR NULOS NI NADA //NOTA: ESTA PALABRA PRIMER ANIO ES GENERAL PARA TODOS LOS INSTITUTOS
 
-                //SI ES PRIMER AÑO ENTONCES HACER VERIFICACION CON PARALELO A
-                $materiasRespaldo = DB::select("SELECT
+        if ($VerificarPorParalelo == false) { //SI "VERIFICAR PRERREQUISITOS POR PARALELO" ES FALSE, ENTONCES VERIFICAMOS CON PARALELO A
+            $materiasRespaldo = DB::select("SELECT
                 cursos.id,
                 `cursos`.`Sigla` as 'cod_prin',
                 cursos.Anio_id,
@@ -254,116 +191,404 @@ class CursoController extends Controller
                 AND cursos.Malla = '$Malla'
                 AND cursos.NivelCurso = '$NivelCursoPeroEnA';
             ");
-            $materias = $materiasRespaldo;
-            }else{
+            if ($EsPrimerAnio != 'PRIMER ANIO'){
                 //EXCLUCION DE NULL EN cod_sec
-                $materiasSinNulos = array_values(array_filter($materias, function ($materia) {
+                $materiasSinNulos = array_values(array_filter($materiasRespaldo, function ($materia) {
                     return $materia->cod_sec !== null;
                 }));
+            }else{
+                //SI ES SU PRIMER ANIO APLICAR su MISMO PARALELO
+                $materiasRespaldo1 = DB::select("SELECT
+                cursos.id,
+                `cursos`.`Sigla` as 'cod_prin',
+                cursos.Anio_id,
+                cursos.NivelCurso as 'CursoP',
+                cursos.Malla,
+                cursos.NombreCurso as 'mat_prin',
+                cursos.id as 'id_materia_p',
+                (
+                    SELECT
+                        GROUP_CONCAT(p.id_materia_s) as 'id_materia_s2'
+                    FROM
+                        prerrequisitos p
+                    WHERE
+                        p.id_materia_p = (
+                            SELECT
+                                c.id
+                            FROM
+                                cursos c
+                            WHERE
+                                c.Sigla = cursos.Sigla
+                                AND c.Anio_id = $Anio_id
+                            LIMIT 1
+                        )
+                    LIMIT 1
+                ) AS 'id_materia_sec',
+                (
+                    SELECT
+                        GROUP_CONCAT(c.Sigla)
+                    FROM
+                        cursos c
+                    WHERE
+                        c.id IN (
+                            SELECT p.id_materia_s
+                            FROM prerrequisitos p
+                            WHERE p.id_materia_p = cursos.id
+                                AND prerrequisitos.Malla = '$Malla'
+                                AND prerrequisitos.Anio_id = '$Anio_id'
+                        )
+                ) as 'cod_sec',
+                (
+                    SELECT
+                        GROUP_CONCAT(cc.SiglaRespaldo)
+                    FROM
+                        cursos cc
+                    WHERE
+                        cc.id IN (
+                            SELECT p.id_materia_s
+                            FROM prerrequisitos p
+                            WHERE p.id_materia_p = cursos.id
+                                AND prerrequisitos.Malla = '$Malla'
+                                AND prerrequisitos.Anio_id = '$Anio_id'
+                        )
+                ) as 'cod_secRespaldo'
+                FROM
+                    `cursos`
+                LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id`
+                WHERE
+                    cursos.Anio_id = $Anio_id
+                    AND cursos.Malla = '$Malla'
+                    AND cursos.NivelCurso = '$NivelCurso';
+                ");
+                $materiasRespaldo= $materiasRespaldo1;
+            }
+            // EXCLUSIÓN DE FILAS CON PRIMERA LETRA DE cod_sec COMO COMA
+            $materias = array_values(array_filter($materiasRespaldo, function ($materia) {
+                return $materia->cod_sec !== null && substr($materia->cod_sec, 0, 1) !== ',';
+            }));
 
-                if ($VerificarPorParalelo == false) {
-                    //OBLIGANDO A QUE SEA EMPTY ---- SI OBLIGAMOS A QUE SEA NULL ESTMOS HACIENDO QUE SI O SI SUS PRERREQ SEAN TOMADOS DEL PARALELO A
-                    $materiasSinNulos = null;
-                }
+        }else{
+            //PASA POR AQUI SI "VERIFICAR PRERREQUISITOS POR PARALELO" ES TRUE, ENTONCES HACER LA VERIFICACION CON B a B, B a C, B a A ... EN SI LA CONFIGURACION MANUAL
 
-
-
-                //VERIFICAR SI $materiasSinNulos ESTA VACIO
-                //Si ESTA VACIO el $materiasSinNulos podemos recorrer con un foreach las filas de $materias,
-                //al recorrer fila por fila debemos reemplazar los cod_sec que eran nulos por los prerrequisitos del mismo Nivel pero en paralelo A
-                //ahora recorriendo fila a fila obviamente mantenemos los cursos del $NivelCurso original, pero estaria con los prerrequisitos cod_sec como si fuera paralelo A
-                if (empty($materiasSinNulos)) {
-                    // Obtener prerrequisitos del mismo nivel pero en paralelo A
-                    $materias2 = DB::select("SELECT
-                    cursos.id,
-                    `cursos`.`Sigla` as 'cod_prin',
-                    cursos.Anio_id,
-                    cursos.NivelCurso as 'CursoP',
-                    cursos.Malla,
-                    cursos.NombreCurso as 'mat_prin',
-                    cursos.id as 'id_materia_p',
-                    (
+            $materiasRespaldo = DB::select("SELECT
+            cursos.id,
+            `cursos`.`Sigla` as 'cod_prin',
+            cursos.Anio_id,
+            cursos.NivelCurso as 'CursoP',
+            cursos.Malla,
+            cursos.NombreCurso as 'mat_prin',
+            cursos.id as 'id_materia_p',
+            (
+                SELECT
+                    GROUP_CONCAT(p.id_materia_s) as 'id_materia_s2'
+                FROM
+                    prerrequisitos p
+                WHERE
+                    p.id_materia_p = (
                         SELECT
-                            GROUP_CONCAT(p.id_materia_s) as 'id_materia_s2'
-                        FROM
-                            prerrequisitos p
-                        WHERE
-                            p.id_materia_p = (
-                                SELECT
-                                    c.id
-                                FROM
-                                    cursos c
-                                WHERE
-                                    c.Sigla = cursos.Sigla
-                                    AND c.Anio_id = $Anio_id
-                                LIMIT 1
-                            )
-                        LIMIT 1
-                    ) AS 'id_materia_sec',
-                    (
-                        SELECT
-                            GROUP_CONCAT(c.Sigla)
+                            c.id
                         FROM
                             cursos c
                         WHERE
-                            c.id IN (
-                                SELECT p.id_materia_s
-                                FROM prerrequisitos p
-                                WHERE p.id_materia_p = cursos.id
-                                    AND prerrequisitos.Malla = '$Malla'
-                                    AND prerrequisitos.Anio_id = '$Anio_id'
-                            )
-                    ) as 'cod_sec',
-                    (
-                        SELECT
-                            GROUP_CONCAT(cc.SiglaRespaldo)
-                        FROM
-                            cursos cc
-                        WHERE
-                            cc.id IN (
-                                SELECT p.id_materia_s
-                                FROM prerrequisitos p
-                                WHERE p.id_materia_p = cursos.id
-                                    AND prerrequisitos.Malla = '$Malla'
-                                    AND prerrequisitos.Anio_id = '$Anio_id'
-                            )
-                    ) as 'cod_secRespaldo'
-                    FROM
-                        `cursos`
-                    LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id`
-                    WHERE
-                        cursos.Anio_id = $Anio_id
-                        AND cursos.Malla = '$Malla'
-                        AND cursos.NivelCurso = '$NivelCursoPeroEnA';
-                    ");
-                    //CODIGO QUE HACE Q SE DETECTEN MATERIAS DE OTROS PARALELOS
-                    // Crear un mapa basado en el código principal para $materias2
-                    $materias2Map = [];
-                    foreach ($materias2 as $mat2) {
-                        $materias2Map[$mat2->cod_prin] = $mat2->cod_sec;
-                    }
-
-                    // Actualizar $materias con los prerrequisitos correspondientes de $materias2
-                    foreach ($materias as &$mat1) {
-                        // Verificar si el código principal existe en $materias2Map
-                        if (isset($materias2Map[$mat1->cod_prin])) {
-                            // Asignar prerrequisitos del paralelo A a $prerrequisitosParaleloA
-                            $prerrequisitosParaleloA = $materias2Map[$mat1->cod_prin];
-
-                            // Actualizar el atributo cod_sec con los prerrequisitos del paralelo A
-                            $mat1->cod_sec = $prerrequisitosParaleloA;
-                        }
-                    }
-
-
-                }
-
-                // EXCLUSIÓN DE FILAS CON PRIMERA LETRA DE cod_sec COMO COMA
-                $materias = array_values(array_filter($materias, function ($materia) {
-                    return $materia->cod_sec !== null && substr($materia->cod_sec, 0, 1) !== ',';
+                            c.Sigla = cursos.Sigla
+                            AND c.Anio_id = $Anio_id
+                        LIMIT 1
+                    )
+                LIMIT 1
+            ) AS 'id_materia_sec',
+            (
+                SELECT
+                    GROUP_CONCAT(c.Sigla)
+                FROM
+                    cursos c
+                WHERE
+                    c.id IN (
+                        SELECT p.id_materia_s
+                        FROM prerrequisitos p
+                        WHERE p.id_materia_p = cursos.id
+                            AND prerrequisitos.Malla = '$Malla'
+                            AND prerrequisitos.Anio_id = '$Anio_id'
+                    )
+            ) as 'cod_sec',
+            (
+                SELECT
+                    GROUP_CONCAT(cc.SiglaRespaldo)
+                FROM
+                    cursos cc
+                WHERE
+                    cc.id IN (
+                        SELECT p.id_materia_s
+                        FROM prerrequisitos p
+                        WHERE p.id_materia_p = cursos.id
+                            AND prerrequisitos.Malla = '$Malla'
+                            AND prerrequisitos.Anio_id = '$Anio_id'
+                    )
+            ) as 'cod_secRespaldo'
+            FROM
+                `cursos`
+            LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id`
+            WHERE
+                cursos.Anio_id = $Anio_id
+                AND cursos.Malla = '$Malla'
+                AND cursos.NivelCurso = '$NivelCurso';
+            ");
+            if ($EsPrimerAnio != 'PRIMER ANIO'){
+                //EXCLUCION DE NULL EN cod_sec
+                $materiasSinNulos = array_values(array_filter($materiasRespaldo, function ($materia) {
+                    return $materia->cod_sec !== null;
                 }));
-
             }
+            // EXCLUSIÓN DE FILAS CON PRIMERA LETRA DE cod_sec COMO COMA
+            $materias = array_values(array_filter($materiasRespaldo, function ($materia) {
+                return $materia->cod_sec !== null && substr($materia->cod_sec, 0, 1) !== ',';
+            }));
+        }
+        $materias = $materiasRespaldo;
+
+
+
+
+
+
+
+            // //OBTENIENDO PRERREQUISITOS RESPECTO A NIVEL CURSO PRIMERO BASICO A, PRIMERO BASICO B, PRIMERO SUPERIOR B ETC
+            // $materias = DB::select("SELECT
+            //     cursos.id,
+            //     `cursos`.`Sigla` as 'cod_prin',
+            //     cursos.Anio_id,
+            //     cursos.NivelCurso as 'CursoP',
+            //     cursos.Malla,
+            //     cursos.NombreCurso as 'mat_prin',
+            //     cursos.id as 'id_materia_p',
+            //     (
+            //         SELECT
+            //             GROUP_CONCAT(p.id_materia_s) as 'id_materia_s2'
+            //         FROM
+            //             prerrequisitos p
+            //         WHERE
+            //             p.id_materia_p = (
+            //                 SELECT
+            //                     c.id
+            //                 FROM
+            //                     cursos c
+            //                 WHERE
+            //                     c.Sigla = cursos.Sigla
+            //                     AND c.Anio_id = $Anio_id
+            //                 LIMIT 1
+            //             )
+            //         LIMIT 1
+            //     ) AS 'id_materia_sec',
+            //     (
+            //         SELECT
+            //             GROUP_CONCAT(c.Sigla)
+            //         FROM
+            //             cursos c
+            //         WHERE
+            //             c.id IN (
+            //                 SELECT p.id_materia_s
+            //                 FROM prerrequisitos p
+            //                 WHERE p.id_materia_p = cursos.id
+            //                     AND prerrequisitos.Malla = '$Malla'
+            //                     AND prerrequisitos.Anio_id = '$Anio_id'
+            //             )
+            //     ) as 'cod_sec',
+            //     (
+            //         SELECT
+            //             GROUP_CONCAT(cc.SiglaRespaldo)
+            //         FROM
+            //             cursos cc
+            //         WHERE
+            //             cc.id IN (
+            //                 SELECT p.id_materia_s
+            //                 FROM prerrequisitos p
+            //                 WHERE p.id_materia_p = cursos.id
+            //                     AND prerrequisitos.Malla = '$Malla'
+            //                     AND prerrequisitos.Anio_id = '$Anio_id'
+            //             )
+            //     ) as 'cod_secRespaldo'
+            // FROM
+            //     `cursos`
+            // LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id`
+            // WHERE
+            //     cursos.Anio_id = $Anio_id
+            //     AND cursos.Malla = '$Malla'
+            //     AND cursos.NivelCurso = '$NivelCurso';
+            // ");
+            // if ($EsPrimerAnio == 'PRIMER ANIO') { //SI ES PRIMER AÑO ENTONCES NO EXCLUIR NULOS NI NADA //NOTA: ESTA PALABRA PRIMER ANIO ES GENERAL PARA TODOS LOS INSTITUTOS
+
+            //     //SI ES PRIMER AÑO ENTONCES HACER VERIFICACION CON PARALELO A
+            //     $materiasRespaldo = DB::select("SELECT
+            //     cursos.id,
+            //     `cursos`.`Sigla` as 'cod_prin',
+            //     cursos.Anio_id,
+            //     cursos.NivelCurso as 'CursoP',
+            //     cursos.Malla,
+            //     cursos.NombreCurso as 'mat_prin',
+            //     cursos.id as 'id_materia_p',
+            //     (
+            //         SELECT
+            //             GROUP_CONCAT(p.id_materia_s) as 'id_materia_s2'
+            //         FROM
+            //             prerrequisitos p
+            //         WHERE
+            //             p.id_materia_p = (
+            //                 SELECT
+            //                     c.id
+            //                 FROM
+            //                     cursos c
+            //                 WHERE
+            //                     c.Sigla = cursos.Sigla
+            //                     AND c.Anio_id = $Anio_id
+            //                 LIMIT 1
+            //             )
+            //         LIMIT 1
+            //     ) AS 'id_materia_sec',
+            //     (
+            //         SELECT
+            //             GROUP_CONCAT(c.Sigla)
+            //         FROM
+            //             cursos c
+            //         WHERE
+            //             c.id IN (
+            //                 SELECT p.id_materia_s
+            //                 FROM prerrequisitos p
+            //                 WHERE p.id_materia_p = cursos.id
+            //                     AND prerrequisitos.Malla = '$Malla'
+            //                     AND prerrequisitos.Anio_id = '$Anio_id'
+            //             )
+            //     ) as 'cod_sec',
+            //     (
+            //         SELECT
+            //             GROUP_CONCAT(cc.SiglaRespaldo)
+            //         FROM
+            //             cursos cc
+            //         WHERE
+            //             cc.id IN (
+            //                 SELECT p.id_materia_s
+            //                 FROM prerrequisitos p
+            //                 WHERE p.id_materia_p = cursos.id
+            //                     AND prerrequisitos.Malla = '$Malla'
+            //                     AND prerrequisitos.Anio_id = '$Anio_id'
+            //             )
+            //     ) as 'cod_secRespaldo'
+            // FROM
+            //     `cursos`
+            // LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id`
+            // WHERE
+            //     cursos.Anio_id = $Anio_id
+            //     AND cursos.Malla = '$Malla'
+            //     AND cursos.NivelCurso = '$NivelCursoPeroEnA';
+            // ");
+            // $materias = $materiasRespaldo;
+            // }else{
+            //     //EXCLUCION DE NULL EN cod_sec
+            //     $materiasSinNulos = array_values(array_filter($materias, function ($materia) {
+            //         return $materia->cod_sec !== null;
+            //     }));
+
+            //     if ($VerificarPorParalelo == false) {
+            //         //OBLIGANDO A QUE SEA EMPTY ---- SI OBLIGAMOS A QUE SEA NULL ESTMOS HACIENDO QUE SI O SI SUS PRERREQ SEAN TOMADOS DEL PARALELO A
+            //         $materiasSinNulos = null;
+            //     }
+
+
+
+            //     //VERIFICAR SI $materiasSinNulos ESTA VACIO
+            //     //Si ESTA VACIO el $materiasSinNulos podemos recorrer con un foreach las filas de $materias,
+            //     //al recorrer fila por fila debemos reemplazar los cod_sec que eran nulos por los prerrequisitos del mismo Nivel pero en paralelo A
+            //     //ahora recorriendo fila a fila obviamente mantenemos los cursos del $NivelCurso original, pero estaria con los prerrequisitos cod_sec como si fuera paralelo A
+            //     if (empty($materiasSinNulos)) {
+            //         // Obtener prerrequisitos del mismo nivel pero en paralelo A
+            //         $materias2 = DB::select("SELECT
+            //         cursos.id,
+            //         `cursos`.`Sigla` as 'cod_prin',
+            //         cursos.Anio_id,
+            //         cursos.NivelCurso as 'CursoP',
+            //         cursos.Malla,
+            //         cursos.NombreCurso as 'mat_prin',
+            //         cursos.id as 'id_materia_p',
+            //         (
+            //             SELECT
+            //                 GROUP_CONCAT(p.id_materia_s) as 'id_materia_s2'
+            //             FROM
+            //                 prerrequisitos p
+            //             WHERE
+            //                 p.id_materia_p = (
+            //                     SELECT
+            //                         c.id
+            //                     FROM
+            //                         cursos c
+            //                     WHERE
+            //                         c.Sigla = cursos.Sigla
+            //                         AND c.Anio_id = $Anio_id
+            //                     LIMIT 1
+            //                 )
+            //             LIMIT 1
+            //         ) AS 'id_materia_sec',
+            //         (
+            //             SELECT
+            //                 GROUP_CONCAT(c.Sigla)
+            //             FROM
+            //                 cursos c
+            //             WHERE
+            //                 c.id IN (
+            //                     SELECT p.id_materia_s
+            //                     FROM prerrequisitos p
+            //                     WHERE p.id_materia_p = cursos.id
+            //                         AND prerrequisitos.Malla = '$Malla'
+            //                         AND prerrequisitos.Anio_id = '$Anio_id'
+            //                 )
+            //         ) as 'cod_sec',
+            //         (
+            //             SELECT
+            //                 GROUP_CONCAT(cc.SiglaRespaldo)
+            //             FROM
+            //                 cursos cc
+            //             WHERE
+            //                 cc.id IN (
+            //                     SELECT p.id_materia_s
+            //                     FROM prerrequisitos p
+            //                     WHERE p.id_materia_p = cursos.id
+            //                         AND prerrequisitos.Malla = '$Malla'
+            //                         AND prerrequisitos.Anio_id = '$Anio_id'
+            //                 )
+            //         ) as 'cod_secRespaldo'
+            //         FROM
+            //             `cursos`
+            //         LEFT JOIN `prerrequisitos` ON `prerrequisitos`.`id_materia_p` = `cursos`.`id`
+            //         WHERE
+            //             cursos.Anio_id = $Anio_id
+            //             AND cursos.Malla = '$Malla'
+            //             AND cursos.NivelCurso = '$NivelCursoPeroEnA';
+            //         ");
+            //         //CODIGO QUE HACE Q SE DETECTEN MATERIAS DE OTROS PARALELOS
+            //         // Crear un mapa basado en el código principal para $materias2
+            //         $materias2Map = [];
+            //         foreach ($materias2 as $mat2) {
+            //             $materias2Map[$mat2->cod_prin] = $mat2->cod_sec;
+            //         }
+
+            //         // Actualizar $materias con los prerrequisitos correspondientes de $materias2
+            //         foreach ($materias as &$mat1) {
+            //             // Verificar si el código principal existe en $materias2Map
+            //             if (isset($materias2Map[$mat1->cod_prin])) {
+            //                 // Asignar prerrequisitos del paralelo A a $prerrequisitosParaleloA
+            //                 $prerrequisitosParaleloA = $materias2Map[$mat1->cod_prin];
+
+            //                 // Actualizar el atributo cod_sec con los prerrequisitos del paralelo A
+            //                 $mat1->cod_sec = $prerrequisitosParaleloA;
+            //             }
+            //         }
+
+
+            //     }
+
+            //     // EXCLUSIÓN DE FILAS CON PRIMERA LETRA DE cod_sec COMO COMA
+            //     $materias = array_values(array_filter($materias, function ($materia) {
+            //         return $materia->cod_sec !== null && substr($materia->cod_sec, 0, 1) !== ',';
+            //     }));
+
+            // }
 
 
         return $materias;
