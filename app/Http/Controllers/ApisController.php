@@ -78,6 +78,13 @@ class ApisController extends Controller
             "29" => Array ("NivelCurso" => "CAPACITACION I TEEN","Para" => "NUEVOS o ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
             "30" => Array ("NivelCurso" => "CAPACITACION II TEEN","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
             "31" => Array ("NivelCurso" => "CAPACITACION III TEEN","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
+
+            "32" => Array ("NivelCurso" => "MODULO I","Para" => "NUEVOS o ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
+            "33" => Array ("NivelCurso" => "MODULO II","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
+            "34" => Array ("NivelCurso" => "MODULO III","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
+            "35" => Array ("NivelCurso" => "MODULO I TEEN","Para" => "NUEVOS o ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
+            "36" => Array ("NivelCurso" => "MODULO II TEEN","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
+            "37" => Array ("NivelCurso" => "MODULO III TEEN","Para" => "ANTIGUOS","Ifa"=>"BELLAS ARTES ORURO","Estado"=>"ACTIVO"),
         );
         return $data;
         // return ' ';
