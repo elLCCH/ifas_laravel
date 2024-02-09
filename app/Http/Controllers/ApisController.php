@@ -114,6 +114,7 @@ class ApisController extends Controller
             "4" => Array ("Area" => "ARTES AUDIOVISUALES","Estado"=>"INHABILITADO","Ifa"=>"OTRO","Malla"=>"NUEVA"),
             "5" => Array ("Area" => "BOLIVIANA","Estado"=>"ACTIVO","Ifa"=>"DEL FOLKLORE ORURO","Malla"=>"ANTIGUA"),
             "6" => Array ("Area" => "ARTES PLASTICAS Y VISUALES","Estado"=>"ACTIVO","Ifa"=>"BELLAS ARTES ORURO","Malla"=>"ANTIGUA"),
+            "7" => Array ("Area" => "ACADÉMICA CLASICA","Estado"=>"ACTIVO","Ifa"=>"MARIA LUISA LUZIO","Malla"=>"ANTIGUA"),
         );
         return $data;
     }

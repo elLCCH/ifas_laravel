@@ -191,13 +191,11 @@ class CalificacionesController extends Controller
         $Anio_id = $request->input('Anio_id');
         DB::select("UPDATE calificaciones AS c
         INNER JOIN estudiantes AS e ON c.Estudiante_id = e.id
-        LEFT JOIN Administrativos AS d ON e.Admin_id = d.id
-        LEFT JOIN Administrativos AS d2 ON e.Admin_idPC = d2.id
+        LEFT JOIN administrativos AS d ON e.Admin_id = d.id
+        LEFT JOIN administrativos AS d2 ON e.Admin_idPC = d2.id
         SET c.Docente_Especialidad = CONCAT(COALESCE(d.Ap_Paterno, ''), ' ', COALESCE(d.Ap_Materno, ''), ' ', COALESCE(d.Nombre, '')),
             c.Docente_Practica = CONCAT(COALESCE(d2.Ap_Paterno, ''), ' ', COALESCE(d2.Ap_Materno, ''), ' ', COALESCE(d2.Nombre, ''))
-        WHERE c.Anio_id = $Anio_id;
-        ;
-
+        WHERE c.Anio_id = $Anio_id
         ");
         return 'SE CULMINO LA GESTION';
     }
