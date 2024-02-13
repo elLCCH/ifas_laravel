@@ -1269,11 +1269,12 @@ class CursoController extends Controller
                     $cont=0;
                     foreach ($CalificacionesData as $C) {
                         // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-                        $EstudiantesData = DB::select("SELECT  calificaciones.Arrastre, cursos.NivelCurso, `estudiantes`.*, administrativos.Ap_Paterno as Ap_PAdmin,administrativos.Ap_Materno as Ap_MAdmin,administrativos.Nombre as NombreAdmin, administrativos.CelularTrabajo
+                        $EstudiantesData = DB::select("SELECT calificaciones.Docente_Especialidad, calificaciones.Docente_Practica, calificaciones.Especialidad_Estudiante,calificaciones.Categoria as Categoria_Estudiante, calificaciones.Observacion_Estudiante, calificaciones.Arrastre, cursos.NivelCurso, `estudiantes`.*, a.Ap_Paterno as Ap_PAdmin,a.Ap_Materno as Ap_MAdmin,a.Nombre as NombreAdmin, a.CelularTrabajo, a2.Ap_Paterno as Ap_PAdminPC, a2.Ap_Materno as Ap_MAdminPC, a2.Nombre as NombreAdminPC, a2.CelularTrabajo as CelularTrabajoPC
                         FROM `estudiantes`
                             LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
                             LEFT JOIN `cursos` ON `calificaciones`.`curso_id` = `cursos`.`id`
-                            LEFT JOIN `administrativos` ON `administrativos`.`id` = `estudiantes`.`Admin_id`
+                            LEFT JOIN `administrativos` AS a ON a.id = estudiantes.Admin_id
+                            LEFT JOIN `administrativos` AS a2 ON a2.id = estudiantes.Admin_idPC
                             WHERE estudiantes.id=$C->estudiante_id and calificaciones.anio_id=$Anio_id and cursos.NivelCurso='$NivelCurso'");
 
                         $Lista[] = $EstudiantesData[0];
@@ -1296,10 +1297,11 @@ class CursoController extends Controller
                 $Lista = array();
                 foreach ($CalificacionesData as $C) {
                     // $EstudiantesData = Estudiantes::where('id','=', $C->estudiante_id)->first();
-                    $EstudiantesData = DB::select("SELECT `estudiantes`.*, calificaciones.Arrastre,  administrativos.Ap_Paterno as Ap_PAdmin,administrativos.Ap_Materno as Ap_MAdmin,administrativos.Nombre as NombreAdmin, administrativos.CelularTrabajo
+                    $EstudiantesData = DB::select("SELECT calificaciones.Docente_Especialidad, calificaciones.Docente_Practica, calificaciones.Especialidad_Estudiante, calificaciones.Categoria as Categoria_Estudiante, calificaciones.Observacion_Estudiante, `estudiantes`.*, calificaciones.Arrastre, a.Ap_Paterno as Ap_PAdmin,a.Ap_Materno as Ap_MAdmin,a.Nombre as NombreAdmin, a.CelularTrabajo, a2.Ap_Paterno as Ap_PAdminPC, a2.Ap_Materno as Ap_MAdminPC, a2.Nombre as NombreAdminPC, a2.CelularTrabajo as CelularTrabajoPC
                     FROM `estudiantes`
                         LEFT JOIN `calificaciones` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
-                        LEFT JOIN `administrativos` ON `administrativos`.`id` = `estudiantes`.`Admin_id`
+                        LEFT JOIN `administrativos` AS a ON a.id = estudiantes.Admin_id
+                        LEFT JOIN `administrativos` AS a2 ON a2.id = estudiantes.Admin_idPC
                         WHERE estudiantes.id=$C->estudiante_id and calificaciones.anio_id=$Anio_id and calificaciones.curso_id=$idMateria");
                     $Lista[] = $EstudiantesData[0];
                 }
@@ -1377,7 +1379,7 @@ class CursoController extends Controller
         // $Nivel="SUPERIORRRR";
         $Estudiante_id = $request->input('Estudiante_id');
         // $Anio_id = $request->input('Anio_id');
-        $datasql = DB::select("SELECT `calificaciones`.`id`,calificaciones.anio_id,calificaciones.curso_id,calificaciones.Arrastre,calificaciones.estudiante_id,calificaciones.Promedio,calificaciones.PruebaRecuperacion, anios.Anio,cursos.Rango, cursos.NombreCurso,cursos.NivelCurso,cursos.Sigla,cursos.SiglaRespaldo,cursos.Malla
+        $datasql = DB::select("SELECT calificaciones.*, anios.Anio,cursos.Rango, cursos.NombreCurso,cursos.NivelCurso,cursos.Sigla,cursos.SiglaRespaldo,cursos.Malla
         FROM `calificaciones`
             LEFT JOIN `estudiantes` ON `calificaciones`.`estudiante_id` = `estudiantes`.`id`
             LEFT JOIN `cursos` ON calificaciones.curso_id = `cursos`.`id`

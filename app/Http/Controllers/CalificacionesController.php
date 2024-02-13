@@ -194,7 +194,10 @@ class CalificacionesController extends Controller
         LEFT JOIN administrativos AS d ON e.Admin_id = d.id
         LEFT JOIN administrativos AS d2 ON e.Admin_idPC = d2.id
         SET c.Docente_Especialidad = CONCAT(COALESCE(d.Ap_Paterno, ''), ' ', COALESCE(d.Ap_Materno, ''), ' ', COALESCE(d.Nombre, '')),
-            c.Docente_Practica = CONCAT(COALESCE(d2.Ap_Paterno, ''), ' ', COALESCE(d2.Ap_Materno, ''), ' ', COALESCE(d2.Nombre, ''))
+            c.Docente_Practica = CONCAT(COALESCE(d2.Ap_Paterno, ''), ' ', COALESCE(d2.Ap_Materno, ''), ' ', COALESCE(d2.Nombre, '')),
+            c.Especialidad_Estudiante = COALESCE(e.Especialidad, ''),
+            c.Observacion_Estudiante = COALESCE(e.Observacion, ''),
+            c.Malla_Estudiante = COALESCE(e.Malla, '')
         WHERE c.Anio_id = $Anio_id
         ");
         return 'SE CULMINO LA GESTION';
