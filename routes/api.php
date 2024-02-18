@@ -65,6 +65,7 @@ Route::post('VerificarSegundaInstancia', 'App\Http\Controllers\CalificacionesCon
 Route::get('ListarEstadisticasCentralizadorFinal', 'App\Http\Controllers\CalificacionesController@ListarEstadisticasCentralizadorFinal');
 Route::post('ActualizarCalificacionesCurso', 'App\Http\Controllers\CalificacionesController@ActualizarCalificacionesCurso');
 Route::post('CulminarInscripciones', 'App\Http\Controllers\CalificacionesController@CulminarInscripciones');
+Route::post('DeshacerCulminarInscripciones', 'App\Http\Controllers\CalificacionesController@DeshacerCulminarInscripciones');
 
 /*ESTUDIANTES*/
 Route::resource('Estudiante', 'App\Http\Controllers\EstudiantesController');

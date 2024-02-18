@@ -202,6 +202,21 @@ class CalificacionesController extends Controller
         ");
         return 'SE CULMINO LA GESTION';
     }
+    public function DeshacerCulminarInscripciones(Request $request){
+        $Anio_id = $request->input('Anio_id');
+        DB::select("UPDATE calificaciones AS c
+        INNER JOIN estudiantes AS e ON c.Estudiante_id = e.id
+        LEFT JOIN administrativos AS d ON e.Admin_id = d.id
+        LEFT JOIN administrativos AS d2 ON e.Admin_idPC = d2.id
+        SET c.Docente_Especialidad = null,
+            c.Docente_Practica = null,
+            c.Especialidad_Estudiante = null,
+            c.Observacion_Estudiante = null,
+            c.Malla_Estudiante = null
+        WHERE c.Anio_id = $Anio_id
+        ");
+        return 'SE CULMINO LA GESTION';
+    }
     public function ListarForHeaderFinal1(Request $request)
     {
         //FUNCIONA PERO SOLO CUANDO ES 1 SIGLA NOMAS COMO PRERREQUISITO
