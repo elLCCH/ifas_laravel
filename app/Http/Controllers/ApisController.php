@@ -181,6 +181,7 @@ class ApisController extends Controller
             "14" => Array ("Mension" => "GUITARRA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
             "15" => Array ("Mension" => "QUENA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
             "16" => Array ("Mension" => "ZAMPOÑA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
+            "16" => Array ("Mension" => "QUENA - ZAMPOÑA","Pertenece"=>"MUSICA","Malla"=>"ANTIGUA","Ifa"=>"DEL FOLKLORE ORURO","Estado"=>"ACTIVO"),
         );
         return $data;
     }
@@ -203,6 +204,7 @@ class ApisController extends Controller
            "12" => Array ("InstEspecialidad" => "GUITARRA","Estado"=>"ACTIVO","Ifa"=>"DEL FOLKLORE ORURO"),
            "13" => Array ("InstEspecialidad" => "QUENA","Estado"=>"ACTIVO","Ifa"=>"DEL FOLKLORE ORURO"),
            "14" => Array ("InstEspecialidad" => "ZAMPOÑA","Estado"=>"ACTIVO","Ifa"=>"DEL FOLKLORE ORURO"),
+           "15" => Array ("InstEspecialidad" => "QUENA - ZAMPOÑA","Estado"=>"ACTIVO","Ifa"=>"DEL FOLKLORE ORURO"),
         );
         return $data;
     }
