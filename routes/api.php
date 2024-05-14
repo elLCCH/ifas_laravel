@@ -102,13 +102,13 @@ Route::resource('AreaEventos', 'App\Http\Controllers\AreaeventosController');
 /*materias_materiales*/
 Route::resource('materias_materiales', 'App\Http\Controllers\MateriasMaterialesController');
 /*MATERIALES*/
-Route::resource('materiales', 'App\Http\Controllers\materialesController');
-Route::get('CargarMaterialesCurso/{idCurso}', 'App\Http\Controllers\materialesController@CargarMaterialesCurso');
-Route::post('ListaAgrupacionForVisibility/{idMaterial}', 'App\Http\Controllers\materialesController@ListaAgrupacionForVisibility');
-Route::post('EliminarVisibilityMaterial', 'App\Http\Controllers\materialesController@EliminarVisibilityMaterial');
-Route::post('updatemateriales/{idMaterial}', 'App\Http\Controllers\materialesController@updatemateriales');
+Route::resource('materiales', 'App\Http\Controllers\MaterialesController');
+Route::get('CargarMaterialesCurso/{idCurso}', 'App\Http\Controllers\MaterialesController@CargarMaterialesCurso');
+Route::post('ListaAgrupacionForVisibility/{idMaterial}', 'App\Http\Controllers\MaterialesController@ListaAgrupacionForVisibility');
+Route::post('EliminarVisibilityMaterial', 'App\Http\Controllers\MaterialesController@EliminarVisibilityMaterial');
+Route::post('updatemateriales/{idMaterial}', 'App\Http\Controllers\MaterialesController@updatemateriales');
 /*ARCHIVOS*/
-Route::resource('archivos', 'App\Http\Controllers\archivosController');
+Route::resource('archivos', 'App\Http\Controllers\ArchivosController');
 
 /*PRERREQUISITOS*/
 Route::resource('Prerrequisito', 'App\Http\Controllers\PrerrequisitosController');
