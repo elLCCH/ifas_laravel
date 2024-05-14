@@ -1132,6 +1132,7 @@ class CursoController extends Controller
         }
 
     }
+
     public function EstadisticasInscripciones($idGestion)
     {
 

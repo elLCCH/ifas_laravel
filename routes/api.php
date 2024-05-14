@@ -97,8 +97,19 @@ Route::post('AdministrativoUpdate/{admin}', 'App\Http\Controllers\Administrativo
 Route::resource('Publicacion', 'App\Http\Controllers\PublicacionesController');
 Route::post('PublicacionUpdate/{admin}', 'App\Http\Controllers\PublicacionesController@actualizar');
 
-/*AREA EVENTOS*/
+/*EVENTOS*/
 Route::resource('AreaEventos', 'App\Http\Controllers\AreaeventosController');
+/*materias_materiales*/
+Route::resource('materias_materiales', 'App\Http\Controllers\MateriasMaterialesController');
+/*MATERIALES*/
+Route::resource('materiales', 'App\Http\Controllers\materialesController');
+Route::get('CargarMaterialesCurso/{idCurso}', 'App\Http\Controllers\materialesController@CargarMaterialesCurso');
+Route::post('ListaAgrupacionForVisibility/{idMaterial}', 'App\Http\Controllers\materialesController@ListaAgrupacionForVisibility');
+Route::post('EliminarVisibilityMaterial', 'App\Http\Controllers\materialesController@EliminarVisibilityMaterial');
+Route::post('updatemateriales/{idMaterial}', 'App\Http\Controllers\materialesController@updatemateriales');
+/*ARCHIVOS*/
+Route::resource('archivos', 'App\Http\Controllers\archivosController');
+
 /*PRERREQUISITOS*/
 Route::resource('Prerrequisito', 'App\Http\Controllers\PrerrequisitosController');
 Route::post('indexListarxGestion', 'App\Http\Controllers\PrerrequisitosController@indexListarxGestion');
