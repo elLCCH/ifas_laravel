@@ -107,8 +107,9 @@ class CalificacionesController extends Controller
     {
         $course = $request->input('course');
         $id_gestion = $request->input('Anio_id');
+        $Malla = $request->input('Malla');
         // $datasql = DB::select("SELECT *,SUBSTRING(Sigla,5,7) as SiglaNum from cursos where NivelCurso='$course' and Anio_id=$id_gestion order by SiglaNum asc"); //ANTES ORDENABAMOS POR SUBSTRING
-        $datasql = DB::select("SELECT * from cursos where NivelCurso='$course' and Anio_id=$id_gestion order by Rango asc"); //AHORA POR RANGO
+        $datasql = DB::select("SELECT * from cursos where NivelCurso='$course' and Anio_id=$id_gestion and Malla='$Malla' order by Rango asc"); //AHORA POR RANGO
 
 
         $ArrayMats = array();
@@ -148,7 +149,7 @@ class CalificacionesController extends Controller
             from prerrequisitos p LEFT JOIN
             cursos m ON m.id=p.id_materia_p LEFT JOIN
             cursos m2 ON m2.id=p.id_materia_s
-            WHERE m.Anio_id=$id_gestion and m.Sigla='$materiaid'");
+            WHERE m.Anio_id=$id_gestion and m.Sigla='$materiaid' and m.Malla='$Malla' and p.Anio_id=$id_gestion and p.Malla='$Malla'");
             foreach ($prerreqs as $p) {
                 $textMats=$p->materia_sec.'/'.$textMats;
                 $textSiglas=$p->cod_sec.'/'.$textSiglas;
