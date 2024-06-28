@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\FileUploadController;
 
 // use App\Mail\RegistroCompletadoExitosamente;
 // use Illuminate\Support\Facades\Mail;
@@ -109,7 +110,8 @@ Route::post('EliminarVisibilityMaterial', 'App\Http\Controllers\MaterialesContro
 Route::post('updatemateriales/{idMaterial}', 'App\Http\Controllers\MaterialesController@updatemateriales');
 /*ARCHIVOS*/
 Route::resource('archivos', 'App\Http\Controllers\ArchivosController');
-
+Route::post('/uploadFile', [FileUploadController::class, 'uploadFile']);
+Route::post('/deleteFile', [FileUploadController::class, 'deleteFile']);
 /*PRERREQUISITOS*/
 Route::resource('Prerrequisito', 'App\Http\Controllers\PrerrequisitosController');
 Route::post('indexListarxGestion', 'App\Http\Controllers\PrerrequisitosController@indexListarxGestion');
