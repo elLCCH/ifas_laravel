@@ -11,7 +11,8 @@ class FileUploadController extends Controller
     {
         $file = $request->file('file');
         $path = '';
-        $fileName = time() . '_' . $file->getClientOriginalName();
+        // $fileName = time() . '_' . $file->getClientOriginalName();
+        $fileName = time() . '' . $file->getClientOriginalName();
 
         switch ($request->input('type')) {
             case 'Certificado':
@@ -25,6 +26,12 @@ class FileUploadController extends Controller
                 break;
             case 'DocColUni':
                 $path = 'DocColUniDocumentos';
+                break;
+            case 'Boleta_Pago':
+                $path = 'BoletasEventos';
+                break;
+            case 'Foto':
+                $path = 'FotoEventos';
                 break;
             default:
                 return response()->json(['error' => 'Tipo de archivo no válido'], 400);

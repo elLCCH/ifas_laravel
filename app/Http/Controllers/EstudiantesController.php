@@ -402,7 +402,12 @@ class EstudiantesController extends Controller
         $data = Estudiantes::where('id','=',$id)->firstOrFail();
         return $data;
     }
-
+    public function SeleccionarPorCI(Request $request)
+    {
+        $CI= $request->CI;
+        $data = Estudiantes::where('CI','=',$CI)->firstOrFail();
+        return $data;
+    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -421,6 +426,7 @@ class EstudiantesController extends Controller
      * @param  \App\Models\Estudiantes  $estudiantes
      * @return \Illuminate\Http\Response
      */
+
     public function update(Request $request, $id)
     {
 
@@ -644,6 +650,46 @@ class EstudiantesController extends Controller
         }
         Estudiantes::where('id','=',$id)->update($requestData);
         return $request;
+        // return $request;
+    }
+    public function EstudianteUpdatePlano(Request $request, $id)
+    {
+
+        $requestData = $request->all();
+        $estudiante =Estudiantes::findOrFail($id);
+        $requestData['Foto'] = $estudiante->Foto;
+        $requestData['Certificado'] = $request->Certificado;
+        $requestData['DocColUni'] = $request->DocColUni;
+        $requestData['CIDoc'] = $request->CIDoc;
+        $requestData['Boleta'] = $request->Boleta;
+        //SI NO ES TIPO HASH CREAR NUEVO HASH
+        if (Hash::needsRehash($request->Password))
+        {
+            $requestData['Password'] = Hash::make($request->Password);
+        }
+        //SI NO EXISTE O NO SE ENVIO EL PARAMETRO Password hacer
+        if ($request->has('Password')) {
+            //SI EXISTE
+        } else {
+            //NO EXISTE
+            $requestData['Password'] = $estudiante->Password;
+        }
+
+        if ($request->Admin_id == 'null') {
+            $requestData['Admin_id']=null;
+        }
+        if ($request->Observacion != 'NO INSCRITO') {
+            $requestData['updated_at']= Carbon::now(); //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
+
+        }else{
+
+            // $fechahoy=new Date();
+            $requestData['created_at']=  Carbon::now(); //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
+            $requestData['updated_at']=  Carbon::now(); //ESTO ES LO QUE HACE PARA QUE SEA LA FECHA LIMITE
+            //USAREMOS EL CREATED PARA EL CUADRO DE ESTUDIANTES
+        }
+        Estudiantes::where('id','=',$id)->update($requestData);
+        return $requestData;
         // return $request;
     }
     public function ReiniciarContrasenias(Request $request)

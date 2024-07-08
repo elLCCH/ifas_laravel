@@ -71,7 +71,8 @@ Route::post('DeshacerCulminarInscripciones', 'App\Http\Controllers\Calificacione
 /*ESTUDIANTES*/
 Route::resource('Estudiante', 'App\Http\Controllers\EstudiantesController');
 Route::post('ReiniciarContrasenias', 'App\Http\Controllers\EstudiantesController@ReiniciarContrasenias');
-Route::post('EstudianteUpdate/{admin}', 'App\Http\Controllers\EstudiantesController@actualizar');
+Route::post('EstudianteUpdate/{idest}', 'App\Http\Controllers\EstudiantesController@actualizar');
+Route::post('EstudianteUpdatePlano/{idest}', 'App\Http\Controllers\EstudiantesController@EstudianteUpdatePlano');
 Route::get('EstudianteCuadro', 'App\Http\Controllers\EstudiantesController@EstudianteCuadro');
 Route::post('AbrirPDF', 'App\Http\Controllers\EstudiantesController@AbrirPDF');
 Route::post('EliminarInactivos', 'App\Http\Controllers\EstudiantesController@EliminarInactivos');
@@ -79,6 +80,7 @@ Route::post('EstudianteAUTH', 'App\Http\Controllers\EstudiantesController@autent
 Route::get('ObtenerNombreCompleto/{idEst}', 'App\Http\Controllers\EstudiantesController@ObtenerNombreCompleto');
 Route::post('OrdenarLista', 'App\Http\Controllers\EstudiantesController@OrdenarLista');
 Route::get('indexSelection/{idest}', 'App\Http\Controllers\EstudiantesController@indexSelection');
+Route::post('SeleccionarPorCI', 'App\Http\Controllers\EstudiantesController@SeleccionarPorCI');
 Route::post('DetectarCantidadEstudiantesInscritos', 'App\Http\Controllers\EstudiantesController@DetectarCantidadEstudiantesInscritos');
 Route::post('VerificarCursoParalelo', 'App\Http\Controllers\EstudiantesController@VerificarCursoParalelo');
 Route::get('EstadisticasAsigEstudiantes/{idAnio}', 'App\Http\Controllers\EstudiantesController@EstadisticasAsigEstudiantes');
@@ -123,6 +125,8 @@ Route::post('updateEvento/{idEven}', 'App\Http\Controllers\EventosController@upd
 /*INS EVENTOS*/
 Route::resource('InsEvento', 'App\Http\Controllers\InsEventosController');
 Route::post('updateInsEvento/{idIns}', 'App\Http\Controllers\InsEventosController@updateInsEvento');
+Route::get('ObtenerPostulantesEvento/{idEvento}', 'App\Http\Controllers\InsEventosController@ObtenerPostulantesEvento');
+Route::post('SeleccionarPorCIidEvento', 'App\Http\Controllers\InsEventosController@SeleccionarPorCIidEvento');
 // ENVIAR MAIL
 Route::post('EnviarConfirmacion', 'App\Http\Controllers\EmailsController@Mails');
 // Route::post('EnviarConfirmacion', function () {
