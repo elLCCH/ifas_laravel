@@ -49,17 +49,17 @@ class InsEventosController extends Controller
     }
     public function SeleccionarPorCIidEvento(Request $request)
     {
-        $CI = $request->CI;
-        $IDEvento = $request->id_evento;
+        try {
+            $CI = $request->CI;
+            $IDEvento = $request->id_evento;
 
-        $data = ins_eventos::where('CI', '=', $CI)
-                        ->where('id_evento', '=', $IDEvento)
-                        ->first();
+            $data = ins_eventos::where('CI', '=', $CI)
+                               ->where('id_evento', '=', $IDEvento)
+                               ->firstOrFail();
 
-        if ($data) {
-            return response()->json($data, 200);
-        } else {
-            return response()->json(['message' => 'NO ENCONTRADO'], 404);
+            return response()->json(['data' => $data], 200);
+        } catch (\Exception $e) {
+            return response()->json(['data' => 'NO ENCONTRADO'], 200);
         }
     }
 
